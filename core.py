@@ -45,4 +45,4 @@ api.set_default_route(nyi)
 #api.set_default_route(OSMapper())
 
 # TODO - Do API stuff here
-print(api._routes)
+#print(api._routes)

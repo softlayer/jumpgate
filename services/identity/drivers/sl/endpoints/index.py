@@ -1,7 +1,6 @@
 import json
 import falcon
-
-from services.common.utils import get_url
+from services.identity import identity_dispatcher
 
 
 class SLIdentityIndex(object):
@@ -9,7 +8,8 @@ class SLIdentityIndex(object):
         versions = {
             'id': 'v2.0',
             'links': [
-                {'href': get_url('index'), 'rel': 'self'},
+                {'href': identity_dispatcher.get_endpoint_url('v3_index'),
+                 'rel': 'self'},
             ],
             'status': 'CURRENT',
             'media-types': [

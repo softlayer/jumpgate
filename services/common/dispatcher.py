@@ -11,11 +11,28 @@ class Dispatcher(object):
     def import_routes(self):
         for endpoint in self.__endpoints.values():
             if endpoint[1]:
+                print("Importing", endpoint[0])
                 self.__api.add_route(endpoint[0], endpoint[1])
 
-    def get_endpoint(self, nickname):
+    def get_endpoint_url(self, nickname, **kwargs):
+        url = ''
         if nickname in self.__endpoints:
-            return self.__endpoints[nickname]
+            url = self.__endpoints[nickname][0]
+
+        for var, value in kwargs.items():
+            if '{' + var + '}' in url:
+                url = url.replace('{' + var + '}', value)
+
+        return url
+
+    def get_unused_endpoints(self):
+        results = []
+
+        for nickname, endpoint in self.__endpoints.items():
+            if not endpoint[1]:
+                results.append(nickname)
+
+        return results
 
     def set_handler(self, nickname, handler):
         if nickname not in self.__endpoints:
