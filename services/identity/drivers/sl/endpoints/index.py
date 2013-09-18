@@ -3,12 +3,12 @@ import falcon
 from services.identity import identity_dispatcher
 
 
-class SLIdentityIndex(object):
+class SLIdentityV2Index(object):
     def on_get(self, req, resp):
         versions = {
             'id': 'v2.0',
             'links': [
-                {'href': identity_dispatcher.get_endpoint_url('v3_index'),
+                {'href': identity_dispatcher.get_endpoint_url('v2_index'),
                  'rel': 'self'},
             ],
             'status': 'CURRENT',

@@ -3,7 +3,7 @@ from core import api
 
 identity_dispatcher = Dispatcher(api)
 
-# V3 - http://api.openstack.org/api-ref.html#identity-v3
+# V3 API - http://api.openstack.org/api-ref.html#identity-v3
 
 # Versions
 identity_dispatcher.add_endpoint('v3_index', '/v3')
@@ -85,3 +85,30 @@ identity_dispatcher.add_endpoint('v3_role_users', '/v3/roles/{role_id}/users')
 # Policies
 identity_dispatcher.add_endpoint('v3_policies', '/v3/policies')
 identity_dispatcher.add_endpoint('v3_policy', '/v3/policies/{policy_id}')
+
+# V2.0 - http://api.openstack.org/api-ref.html#identity
+
+# NOTE - These endpoint are used by both the regular 2.0 and the admin 2.0 APIs
+# at the same time!
+identity_dispatcher.add_endpoint('v2_index', '/v2.0')
+identity_dispatcher.add_endpoint('v2_extensions', '/v2.0/extensions')
+identity_dispatcher.add_endpoint('v2_extension_alias',
+                                 '/v2.0/extensions/{alias}')
+identity_dispatcher.add_endpoint('v2_tokens', '/v2.0/tokens')
+identity_dispatcher.add_endpoint('v2_token_tenants', '/v2.0/tokens/tenants')
+
+# V2.0 Admin API - http://api.openstack.org/api-ref.html#identity-admin-v2.0
+# This list only includes those not defined above.
+
+identity_dispatcher.add_endpoint('v2_token', '/v2.0/tokens/{token_id}')
+identity_dispatcher.add_endpoint('v2_token_endpoints',
+                                 '/v2.0/tokens/{token_id}/endpoints')
+identity_dispatcher.add_endpoint('v2_users', '/v2.0/users')
+identity_dispatcher.add_endpoint('v2_user', '/v2.0/users/{user_id}')
+identity_dispatcher.add_endpoint('v2_user_roles',
+                                 '/v2.0/users/{user_id}/roles')
+identity_dispatcher.add_endpoint('v2_tenants', '/v2.0/tenants')
+identity_dispatcher.add_endpoint('v2_tenant', '/v2.0/tenants/{tenant_id}')
+identity_dispatcher.add_endpoint('v2_tenant_user_roles',
+                                 '/v2.0/tenants/{tenant_id}/users/{user_id}'
+                                 '/roles')

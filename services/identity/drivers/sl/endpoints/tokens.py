@@ -1,13 +1,21 @@
 import datetime
 import json
 import falcon
-from services.common.nested_dict import lookup
-from services.identity import identity_dispatcher
 from SoftLayer import Client, SoftLayerAPIError, TokenAuthentication
 
+from services.common.nested_dict import lookup
+from services.identity import identity_dispatcher
 
-class SLIdentityTokens(object):
-    def on_post(self, req, resp):
+
+class SLIdentityV2Tokens(object):
+    def on_delete(self, req, resp, token_id):
+        # This method is called when OpenStack wants to remove a token's
+        # validity, such as when a cookie expires. Our login tokens don't
+        # expire, so this does nothing.
+        resp.status = falcon.HTTP_202
+        resp.body = ''
+
+    def on_post(self, req, resp, token_id=None):
         headers = req.headers
 
         if 'x-auth-token' in headers:
@@ -132,6 +140,6 @@ class SLIdentityTokens(object):
             },
         }
 
-        print(access)
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'access': access})
+        

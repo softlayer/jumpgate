@@ -11,7 +11,6 @@ class Dispatcher(object):
     def import_routes(self):
         for endpoint in self.__endpoints.values():
             if endpoint[1]:
-                print("Importing", endpoint[0])
                 self.__api.add_route(endpoint[0], endpoint[1])
 
     def get_endpoint_url(self, nickname, **kwargs):
@@ -19,6 +18,7 @@ class Dispatcher(object):
         if nickname in self.__endpoints:
             url = self.__endpoints[nickname][0]
 
+        # TODO - Add in auto-tenant_id replacement
         for var, value in kwargs.items():
             if '{' + var + '}' in url:
                 url = url.replace('{' + var + '}', value)

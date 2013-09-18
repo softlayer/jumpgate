@@ -28,15 +28,16 @@ except FileNotFoundError as e:
     print("EXCEPTION:", e)
     api.config['driver_config'] = None
 
-if 'identity' in config:
-    try:
-        api.config['installed_modules']['identity'] = True
-        driver = importlib.import_module(config['identity'].get('driver'))
-#        api.config['identity_driver'] = driver
-    except ImportError as e:
-        # TODO - Add logging
-        print("EXCEPTION:", e)
-        api.config['installed_modules']['identity'] = False
+for service in ['identity', 'compute', 'image', 'block_storage']:
+    if service in config:
+        try:
+            api.config['installed_modules'][service] = True
+            driver = importlib.import_module(config[service].get('driver'))
+            # api.config[service + '_driver'] = driver
+        except ImportError as e:
+            # TODO - Add logging
+            print("Exception with %s:" % service, e)
+            api.config['installed_modules'][service] = False
 
 # Set the default route to the NYI object
 api.set_default_route(nyi)
@@ -45,4 +46,4 @@ api.set_default_route(nyi)
 #api.set_default_route(OSMapper())
 
 # TODO - Do API stuff here
-#print(api._routes)
+print(api._routes)
