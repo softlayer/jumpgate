@@ -1,14 +1,14 @@
 import configparser
 import importlib
 
-from services.common.babelfish import Babelfish
+from services.common.babelfish import Babelfish, before_request
 from services.common.nyi import NYI
 
 # TODO - TEMPORARY OPENSTACK MAPPER
 from services.openstack_mapper import OSMapper
 
 # The core application of the translation layer
-api = Babelfish()
+api = Babelfish(before=before_request)
 
 # An easy class that can be used to implement endpoints that are
 # Not Yet Implemented.
@@ -46,4 +46,4 @@ api.set_default_route(nyi)
 #api.set_default_route(OSMapper())
 
 # TODO - Do API stuff here
-print(api._routes)
+# print(api._routes)

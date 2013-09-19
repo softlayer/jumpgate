@@ -8,6 +8,9 @@ class Dispatcher(object):
     def add_endpoint(self, nickname, endpoint, handler=None):
         self.__endpoints[nickname] = [endpoint, handler]
 
+    def get_api(self):
+        return self.__api
+
     def import_routes(self):
         for endpoint in self.__endpoints.values():
             if endpoint[1]:
@@ -18,7 +21,14 @@ class Dispatcher(object):
         if nickname in self.__endpoints:
             url = self.__endpoints[nickname][0]
 
-        # TODO - Add in auto-tenant_id replacement
+        if '{tenant_id}' in url:
+            tenant_id = ''
+
+            if self.__api.current_tenant_id:
+                tenant_id = self.__api.current_tenant_id
+
+            url = url.replace('{tenant_id}', tenant_id)
+
         for var, value in kwargs.items():
             if '{' + var + '}' in url:
                 url = url.replace('{' + var + '}', value)

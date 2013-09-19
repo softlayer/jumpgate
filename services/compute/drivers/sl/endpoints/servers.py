@@ -6,7 +6,7 @@ from services.common.nested_dict import lookup
 from SoftLayer import CCIManager
 from SoftLayer.exceptions import SoftLayerAPIError
 
-from services.compute.drivers.sl import get_client
+from core import api
 from services.compute import compute_dispatcher as disp
 
 # This comes from Horizon. I wonder if there's a better place to get it.
@@ -32,7 +32,7 @@ SERVER_STATUSES = [
 
 class SLComputeV2Servers(object):
     def on_get(self, req, resp):
-        client = get_client(req)
+        client = api.config['sl_client']
         cci = CCIManager(client)
 
         params = {
@@ -63,7 +63,7 @@ class SLComputeV2Servers(object):
 
 class SLComputeV2Server(object):
     def on_get(self, req, resp, server_id):
-        client = get_client(self)
+        client = api.config['sl_client']
         cci = CCIManager(client)
 
         params = {
@@ -86,7 +86,7 @@ class SLComputeV2Server(object):
         resp.body = json.dumps({'server': results})
 
     def delete(self, tenant_id, instance_id):
-        client = get_client(self)
+        client = api.config['sl_client']
         cci = CCIManager(client)
 
         cci.cancel_instance(instance_id)

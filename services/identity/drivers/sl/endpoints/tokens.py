@@ -15,7 +15,7 @@ class SLIdentityV2Tokens(object):
         resp.status = falcon.HTTP_202
         resp.body = ''
 
-    def on_post(self, req, resp, token_id=None):
+    def on_post(self, req, resp):
         headers = req.headers
 
         if 'x-auth-token' in headers:
@@ -50,7 +50,9 @@ class SLIdentityV2Tokens(object):
         id = str(account['id'])
 
         # TODO - This dictionary shouldn't be hardcoded
-        v3_index = identity_dispatcher.get_endpoint_url('v3_index')
+        driver_config = identity_dispatcher.get_api().config['driver_config']
+        index_url = driver_config['keystone'].get('url') + \
+            identity_dispatcher.get_endpoint_url('v2_index')
         service_catalog = [
             {
                 'endpoint_links': [],
@@ -72,10 +74,10 @@ class SLIdentityV2Tokens(object):
                 'endpoints': [
                     {
                         'region': 'RegionOne',
-                        'publicURL': v3_index,
-                        'privateURL': v3_index,
-                        'adminURL': v3_index,
-                        'internalURL': v3_index,
+                        'publicURL': index_url,
+                        'privateURL': index_url,
+                        'adminURL': index_url,
+                        'internalURL': index_url,
                         'id': 1,
                     },
                 ],
@@ -140,6 +142,7 @@ class SLIdentityV2Tokens(object):
             },
         }
 
+#        print(access)
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'access': access})
         

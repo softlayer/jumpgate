@@ -42,3 +42,12 @@ compute_dispatcher.add_endpoint('v2_server_action',
 compute_dispatcher.add_endpoint('v2_flavors', '/v2/flavors')
 compute_dispatcher.add_endpoint('v2_flavors_detail', '/v2/flavors/detail')
 compute_dispatcher.add_endpoint('v2_flavor', '/v2/flavors/{flavor_id}')
+
+# Extensions - Not all drivers will support all of these
+
+# Usage Reports
+compute_dispatcher.add_endpoint('v2_tenants_usage',
+                                '/v2/{tenant_id}/os-simple-tenant-usage')
+compute_dispatcher.add_endpoint('v2_tenant_usage',
+                                '/v2/{tenant_id}/os-simple-tenant-usage'
+                                '/{tenant_id}')
