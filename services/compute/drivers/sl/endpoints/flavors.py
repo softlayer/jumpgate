@@ -5,7 +5,7 @@ from services.compute import compute_dispatcher as disp
 
 
 class SLComputeV2Flavor(object):
-    def on_get(self, req, resp, flavor_id):
+    def on_get(self, req, resp, flavor_id, tenant_id=None):
         flavor = {
             'disk': 25,
             'id': '1',
@@ -26,7 +26,8 @@ class SLComputeV2Flavor(object):
 
 
 class SLComputeV2Flavors(object):
-    def on_get(self, req, resp):
+    def on_get(self, req, resp, tenant_id=None):
+        print("FLAVORS")
         flavor = {
             'disk': 25,
             'id': '1',

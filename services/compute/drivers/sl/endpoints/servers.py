@@ -31,7 +31,7 @@ SERVER_STATUSES = [
 
 
 class SLComputeV2Servers(object):
-    def on_get(self, req, resp):
+    def on_get(self, req, resp, tenant_id):
         client = api.config['sl_client']
         cci = CCIManager(client)
 
@@ -58,7 +58,50 @@ class SLComputeV2Servers(object):
             })
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps(results)
+        resp.body = json.dumps({'servers': results})
+
+
+class SLComputeV2ServersDetail(object):
+    def on_get(self, req, resp, tenant_id):
+        client = api.config['sl_client']
+        cci = CCIManager(client)
+
+#        params = get_standard_params(['marker'])
+        params = {}
+        params['mask'] = get_virtual_guest_mask()
+
+        # We're not using the API's pagination because of how Horizon's
+        # pagination works.
+        # TODO - Can I improve this performance by caching offsets and markers?
+        # If I do, how will I deal with instance changes?
+#        marker = params['marker']
+#        del(params['marker'])
+        marker = None
+
+        results = []
+        offset = 0
+
+        if marker:
+            for instance in cci.list_instances():
+                if str(instance['id']) == marker:
+                    break
+                offset += 1
+
+        if offset:
+            params['offset'] = offset
+
+        # TODO - REMOVE THIS
+#        from SoftLayer.utils import query_filter
+#        params['filter'] = {'virtualGuests': {
+#            'hostname': query_filter('*nathan*')}}
+#        params['limit'] = 5
+
+        for instance in cci.list_instances(**params):
+            #print instance
+            results.append(get_server_details_dict(instance))
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps({'servers': results})
 
 
 class SLComputeV2Server(object):

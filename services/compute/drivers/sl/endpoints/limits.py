@@ -2,11 +2,10 @@ import json
 import falcon
 
 from core import api
-from services.compute import compute_dispatcher as disp
 
 
 class SLComputeV2Limits(object):
-    def on_get(self, req, resp):
+    def on_get(self, req, resp, tenant_id):
         client = api.config['sl_client']
 
         account = client['Account'].getObject(

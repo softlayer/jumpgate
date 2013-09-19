@@ -30,6 +30,8 @@ class Dispatcher(object):
             url = url.replace('{tenant_id}', tenant_id)
 
         for var, value in kwargs.items():
+            var = str(var)
+            value = str(value)
             if '{' + var + '}' in url:
                 url = url.replace('{' + var + '}', value)
 
