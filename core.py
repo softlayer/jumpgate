@@ -46,6 +46,6 @@ api.set_default_route(nyi)
 #api.set_default_route(OSMapper())
 
 # TODO - Do API stuff here
-for route in api._routes:
-    if 'servers' in route[0].pattern:
-        print((route[0].pattern), route[1], "\n")
+# for route in api._routes:
+#     if 'servers' in route[0].pattern:
+#         print((route[0].pattern), route[1], "\n")

@@ -62,7 +62,7 @@ class SLComputeV2Servers(object):
 
 
 class SLComputeV2ServersDetail(object):
-    def on_get(self, req, resp, tenant_id):
+    def on_get(self, req, resp, tenant_id=None):
         client = api.config['sl_client']
         cci = CCIManager(client)
 
@@ -105,7 +105,7 @@ class SLComputeV2ServersDetail(object):
 
 
 class SLComputeV2Server(object):
-    def on_get(self, req, resp, server_id):
+    def on_get(self, req, resp, tenant_id, server_id):
         client = api.config['sl_client']
         cci = CCIManager(client)
 

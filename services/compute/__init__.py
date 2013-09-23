@@ -50,9 +50,19 @@ compute_dispatcher.add_endpoint('v2_tenant_flavor',
 
 # Extensions - Not all drivers will support all of these
 
+# Security Groups
+compute_dispatcher.add_endpoint('v2_os_security_groups',
+                                '/v2/{tenant_id}/servers/{instance_id}'
+                                '/os-security-groups')
+
 # Usage Reports
 compute_dispatcher.add_endpoint('v2_tenants_usage',
                                 '/v2/{tenant_id}/os-simple-tenant-usage')
 compute_dispatcher.add_endpoint('v2_tenant_usage',
                                 '/v2/{tenant_id}/os-simple-tenant-usage'
                                 '/{target_id}')
+
+# Volume Attachments
+compute_dispatcher.add_endpoint('v2_os_volume_attachments',
+                                '/v2/{tenant_id}/servers/{instance_id}'
+                                '/os-volume_attachments')

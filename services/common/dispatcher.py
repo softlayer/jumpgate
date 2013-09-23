@@ -1,12 +1,10 @@
 class Dispatcher(object):
-    __api = None
-    __endpoints = {}
-
     def __init__(self, api):
         self.__api = api
+        self.__endpoints = {}
 
     def add_endpoint(self, nickname, endpoint, handler=None):
-        self.__endpoints[nickname] = [endpoint, handler]
+        self.__endpoints[nickname] = (endpoint, handler)
 
     def get_api(self):
         return self.__api
@@ -14,6 +12,7 @@ class Dispatcher(object):
     def import_routes(self):
         for endpoint in self.__endpoints.values():
             if endpoint[1]:
+                print("Importing", endpoint[0])
                 self.__api.add_route(endpoint[0], endpoint[1])
 
     def get_endpoint_url(self, nickname, **kwargs):
@@ -52,6 +51,5 @@ class Dispatcher(object):
             return None
 
         data = self.__endpoints[nickname]
-        data[1] = handler
 
-        self.__endpoints[nickname] = data
+        self.__endpoints[nickname] = (data[0], handler)

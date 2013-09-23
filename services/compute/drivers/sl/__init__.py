@@ -3,7 +3,9 @@ from .endpoints.flavors import SLComputeV2Flavor, SLComputeV2Flavors
 from .endpoints.limits import SLComputeV2Limits
 from .endpoints.servers import (SLComputeV2Server, SLComputeV2Servers,
                                 SLComputeV2ServersDetail)
+from .endpoints.security_groups import SLComputeV2OSSecurityGroups
 from .endpoints.usage import SLComputeV2Usage
+from .endpoints.volumes import SLComputeV2OSVolumeAttachments
 
 # Set handlers for the routes we support
 
@@ -18,6 +20,10 @@ compute_dispatcher.set_handler('v2_tenant_flavor', flavor)
 compute_dispatcher.set_handler('v2_tenant_flavors', flavors)
 compute_dispatcher.set_handler('v2_tenant_flavors_detail', flavors)
 compute_dispatcher.set_handler('v2_limits', SLComputeV2Limits())
+compute_dispatcher.set_handler('v2_os_security_groups',
+                               SLComputeV2OSSecurityGroups())
+compute_dispatcher.set_handler('v2_os_volume_attachments',
+                               SLComputeV2OSVolumeAttachments())
 compute_dispatcher.set_handler('v2_server', SLComputeV2Server())
 compute_dispatcher.set_handler('v2_servers', SLComputeV2Servers())
 compute_dispatcher.set_handler('v2_servers_detail', SLComputeV2ServersDetail())
