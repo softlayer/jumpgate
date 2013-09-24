@@ -36,7 +36,7 @@ class SLComputeV2ServerAction(object):
         body = json.loads(req.stream.read().decode())
 
         if len(body) == 0:
-            return bad_request(resp, message="Malformed request body", code=400)
+            return bad_request(resp, message="Malformed request body")
 
         client = api.config['sl_client']['Virtual_Guest']
 

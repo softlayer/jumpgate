@@ -7,15 +7,40 @@ from services.image import image_dispatcher as disp
 
 
 class SLImageV1Image(object):
+    __public_images = None
+    __private_images = None
+
     def get_image(self, image_guid):
         client = api.config['sl_client']
+        account = client['Account']
 
         matching_image = None
-        mask = get_image_mask()
-        for image in client['Account'].getBlockDeviceTemplateGroups(mask=mask):
+
+        private = self.__private_images
+
+        mask = 'id,accountId,name,globalIdentifier,blockDevices,parentId'
+
+        if not private:
+            private = account.getPrivateBlockDeviceTemplateGroups(mask=mask)
+            self.__private_images = private
+
+        for image in private:
             if image.get('globalIdentifier') == image_guid:
                 matching_image = image
                 break
+
+        if not matching_image:
+            public = self.__public_images
+
+            if not public:
+                vgbd = client['Virtual_Guest_Block_Device_Template_Group']
+                public = vgbd.getPublicImages(mask=mask)
+                self.__public_images = public
+
+            for image in public:
+                if image.get('globalIdentifier') == image_guid:
+                    matching_image = image
+                    break
 
         return matching_image
 
@@ -29,7 +54,7 @@ class SLImageV1Image(object):
         resp.body = json.dumps({'image': get_image_details_dict(results)})
 
     def on_head(self, req, resp, image_guid):
-        results = self.get_image(image_guid)
+        results = get_image_details_dict(self.get_image(image_guid))
 
         if not results:
             return not_found(resp, 'Image could not be found')
@@ -54,8 +79,8 @@ class SLImageV1Image(object):
         }
 
         resp.status = falcon.HTTP_200
-        resp.headers = headers
-        resp.body = json.dumps({'image': get_image_details_dict(results)})
+        resp.set_headers(headers)
+        resp.body = json.dumps({'image': results})
 
 
 class SLImageV1Images(object):
@@ -96,8 +121,8 @@ def get_image_details_dict(image, tenant_id=None):
     # TODO - Don't hardcode some of these values
     results = {
         'status': 'ACTIVE',
-        'updated': image['createDate'],
-        'created': image['createDate'],
+        'updated': image.get('createDate'),
+        'created': image.get('createDate'),
         'id': image['globalIdentifier'],
         'minDisk': 0,
         'progress': 100,
