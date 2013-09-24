@@ -7,7 +7,7 @@ from SoftLayer import CCIManager
 from SoftLayer.exceptions import SoftLayerAPIError
 
 from core import api
-from services.common.error_handling import not_found
+from services.common.error_handling import bad_request, not_found
 from services.compute import compute_dispatcher as disp
 
 # This comes from Horizon. I wonder if there's a better place to get it.
@@ -29,6 +29,55 @@ SERVER_STATUSES = [
     'REBOOT', 'REBUILD', 'RESCUE', 'RESIZE', 'REVERT_RESIZE', 'SHUTOFF',
     'SUSPENDED', 'UNKNOWN', 'VERIFY_RESIZE'
 ]
+
+
+class SLComputeV2ServerAction(object):
+    def on_post(self, req, resp, tenant_id, instance_id):
+        body = json.loads(req.stream.read().decode())
+
+        if len(body) == 0:
+            return bad_request(resp, message="Malformed request body", code=400)
+
+        client = api.config['sl_client']['Virtual_Guest']
+
+        if 'pause' in body or 'suspend' in body:
+            client.pause(id=instance_id)
+            resp.status = falcon.HTTP_202
+            return
+        elif 'unpause' in body or 'resume' in body:
+            client.resume(id=instance_id)
+            resp.status = falcon.HTTP_202
+            return
+        elif 'reboot' in body:
+            if body['reboot'].get('type') == 'SOFT':
+                client.rebootSoft(id=instance_id)
+            elif body['reboot'].get('type') == 'HARD':
+                client.rebootHard(id=instance_id)
+            else:
+                client.rebootDefault(id=instance_id)
+            resp.status = falcon.HTTP_202
+            return
+        elif 'os-stop' in body:
+            client.powerOff(id=instance_id)
+            resp.status = falcon.HTTP_202
+            return
+        elif 'os-start' in body:
+            client.powerOn(id=instance_id)
+            resp.status = falcon.HTTP_202
+            return
+        elif 'createImage' in body:
+            template = {'name': body['createImage']['name'],
+                        'volumes': body['createImage']['name']}
+            client.captureImage(template, id=instance_id)
+            resp.status = falcon.HTTP_202
+            return
+        elif 'os-getConsoleOutput' in body:
+            resp.status = falcon.HTTP_501
+            return
+
+        return bad_request(resp,
+                           message="There is no such action: %s" %
+                           body.keys()[0], code=400)
 
 
 class SLComputeV2Servers(object):
@@ -60,6 +109,35 @@ class SLComputeV2Servers(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'servers': results})
+
+    def on_post(self, req, resp, tenant_id):
+        body = json.loads(req.stream.read().decode())
+        client = api.config['sl_client']
+        cci = CCIManager(client)
+
+        # TODO - Turn the flavor reference into actual numbers
+        payload = {
+            'hostname': body['server']['name'],
+            'domain': 'example.com',  # TODO - Don't hardcode this
+            'cpus': 2,
+            'memory': 1024,
+            'hourly': True,  # TODO - How do we set this accurately?
+            # 'datacenter' => ['name' => $datacenter],
+            'image_id': body['server']['imageRef'],
+        }
+        new_instance = cci.create_instance(**payload)
+
+        print(new_instance)
+#        result = cci.verify_create_instance(**payload)
+#        new_instance = {'id': 2053839}
+
+        resp.body = json.dumps({'server': {
+            'id': new_instance['id'],
+            'links': [{
+                'href': disp.get_endpoint_url('v2_server',
+                                              instance_id=new_instance['id']),
+                'rel': 'self'}]
+        }})
 
 
 class SLComputeV2ServersDetail(object):
@@ -98,7 +176,6 @@ class SLComputeV2ServersDetail(object):
 #        params['limit'] = 5
 
         for instance in cci.list_instances(**params):
-            #print instance
             results.append(get_server_details_dict(instance))
 
         resp.status = falcon.HTTP_200
@@ -125,12 +202,12 @@ class SLComputeV2Server(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'server': results})
 
-    def delete(self, tenant_id, instance_id):
+    def delete(self, req, resp, tenant_id, instance_id):
         client = api.config['sl_client']
         cci = CCIManager(client)
 
         cci.cancel_instance(instance_id)
-        return {}, 204
+        resp.status = falcon.HTTP_204
 
 
 def get_server_details_dict(instance):

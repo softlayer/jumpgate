@@ -10,6 +10,7 @@ before_hooks = []
 
 
 def before_request(req, resp, kwargs):
+    print(req.method, ":", req.path)
     for hook in before_hooks:
         hook(req, resp, kwargs)
 

@@ -1,8 +1,6 @@
 import json
 import falcon
 from core import api
-# TODO - I need to centralize this better
-#from . import get_client
 
 
 class SLIdentityV2Tenants(object):

@@ -14,20 +14,20 @@ class SLComputeV2Limits(object):
         # TODO - This shouldn't be hardcoded
         limits = {
             'absolute': {
-                'totalInstancesUsed': account['hourlyVirtualGuestCount'],
-                'totalCoresUsed': 0,
-                'totalRAMUsed': 0,
-                'maxImageMeta': 999999,
-                'maxPersonality': 999999,
-                'maxPersonalitySize': 999999,
+                'maxImageMeta': 128,
+                'maxPersonality': 5,
+                'maxPersonalitySize': 10240,
                 'maxSecurityGroupRules': 999999,
                 'maxSecurityGroups': 999999,
                 'maxServerMeta': 999999,
                 'maxTotalCores': 999999,
-                'maxTotalFloatingIps': 0,
+                'maxTotalFloatingIps': 999999,
                 'maxTotalInstances': 999999,
-                'maxTotalKeypairs': 0,
-                'maxTotalRAMSize': 999999,
+                'maxTotalKeypairs': 999999,
+                'maxTotalRAMSize': 999999999,
+                'totalInstancesUsed': account['hourlyVirtualGuestCount'],
+                'totalCoresUsed': 0,
+                'totalRAMUsed': 0,
             }
         }
 

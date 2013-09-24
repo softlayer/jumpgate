@@ -36,7 +36,7 @@ compute_dispatcher.add_endpoint('v2_server_ips_network',
 
 # Server Actions
 compute_dispatcher.add_endpoint('v2_server_action',
-                                '/v2/{tenant_id}/servers/action')
+                                '/v2/{tenant_id}/servers/{instance_id}/action')
 
 # Flavors
 compute_dispatcher.add_endpoint('v2_flavor', '/v2/flavors/{flavor_id}')
@@ -55,11 +55,27 @@ compute_dispatcher.add_endpoint('v2_tenant_flavors_detail',
 compute_dispatcher.add_endpoint('v2_availability_zone',
                                 '/v2/{tenant_id}/os-availability-zone')
 
+# Floating IPs
+compute_dispatcher.add_endpoint('v2_os_floating_ips',
+                                '/v2/{tenant_id}/os-floating-ips')
+compute_dispatcher.add_endpoint('v2_os_floating_ips_id',
+                                '/v2/{tenant_id}/os-floating-ips/{id}')
+
 # Keypairs
 compute_dispatcher.add_endpoint('v2_os_keypairs',
                                 '/v2/{tenant_id}/os-keypairs')
 compute_dispatcher.add_endpoint('v2_os_keypair',
                                 '/v2/{tenant_id}/os-keypairs/{keypair_name}')
+
+# Quota Sets
+compute_dispatcher.add_endpoint('v2_os_quota_sets',
+                                '/v2/{tenant_id}/os-quota-sets')
+compute_dispatcher.add_endpoint('v2_os_quota_sets_default',
+                                '/v2/{tenant_id}/os-quota-sets/default')
+compute_dispatcher.add_endpoint('v2_os_quota_sets_user',
+                                '/v2/{tenant_id}/os-quota-sets/user={user_id}')
+compute_dispatcher.add_endpoint('v2_os_tenant_quota_sets',
+                                '/v2/{tenant_id}/os-quota-sets/{account_id}')
 
 # Security Groups
 compute_dispatcher.add_endpoint('v2_os_security_groups',

@@ -35,7 +35,7 @@ def get_client(req, resp, kwargs):
         client = Client(auth=auth)
 
         account = client['Account'].getObject()
-        tenants_id = account['id']
+        tenant_id = str(account['id'])
 
     api = identity_dispatcher.get_api()
     api.config['sl_client'] = client
