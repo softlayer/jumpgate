@@ -1,7 +1,10 @@
+from collections import OrderedDict
+
+
 class Dispatcher(object):
     def __init__(self, api):
         self.__api = api
-        self.__endpoints = {}
+        self.__endpoints = OrderedDict()
 
     def add_endpoint(self, nickname, endpoint, handler=None):
         self.__endpoints[nickname] = (endpoint, handler)

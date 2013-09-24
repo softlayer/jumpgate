@@ -2,6 +2,7 @@ import json
 import falcon
 
 from core import api
+from services.common.error_handling import not_found
 from services.image import image_dispatcher as disp
 
 
@@ -22,10 +23,7 @@ class SLImageV1Image(object):
         results = self.get_image(image_guid)
 
         if not results:
-            resp.status = falcon.HTTP_404
-            resp.body = json.dumps({'itemNotFound': {
-                'message':
-                'Image could not be found'}})
+            return not_found(resp, 'Image could not be found')
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'image': get_image_details_dict(results)})
@@ -34,18 +32,11 @@ class SLImageV1Image(object):
         results = self.get_image(image_guid)
 
         if not results:
-            resp.status = falcon.HTTP_404
-            resp.body = json.dumps({'itemNotFound': {
-                'message':
-                'Image could not be found'}})
-
-        status = ''
-        if results and results.get('status'):
-            status = results['status'].lower()
+            return not_found(resp, 'Image could not be found')
 
         headers = {
             'x-image-meta-id': image_guid,
-            'x-image-meta-status': status,
+            'x-image-meta-status': results['status'].lower(),
             'x-image-meta-owner': 'Need tenant ID here',
             'x-image-meta-name': results['name'],
             'x-image-meta-container_format': results['container_format'],
@@ -65,6 +56,37 @@ class SLImageV1Image(object):
         resp.status = falcon.HTTP_200
         resp.headers = headers
         resp.body = json.dumps({'image': get_image_details_dict(results)})
+
+
+class SLImageV1Images(object):
+    def on_get(self, req, resp):
+        client = api.config['sl_client']
+
+        # filter = {
+        #     'blockDeviceTemplateGroups':
+        #     {
+        #         'parentId': {
+        #             'operation': 'is_null',
+        #         }
+        #     }
+        # }
+        results = []
+
+        params = {}
+        params['mask'] = get_image_mask()
+
+        # TODO - Figure out why this filter doesn't work
+#        for image in image_obj.getPublicImages():
+#        images = client['Account'].getBlockDeviceTemplateGroups(filter=filter)
+#        print "COUNT: " + str(len(images))
+        for image in client['Account'].getBlockDeviceTemplateGroups(**params):
+            if not image or image['parentId']:
+                continue
+            results.append(get_image_details_dict(image))
+
+        resp.body = json.dumps({'images':
+                                sorted(results,
+                                       key=lambda x: x['name'].lower())})
 
 
 def get_image_details_dict(image, tenant_id=None):

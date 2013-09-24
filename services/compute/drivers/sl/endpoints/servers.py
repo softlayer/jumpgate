@@ -7,6 +7,7 @@ from SoftLayer import CCIManager
 from SoftLayer.exceptions import SoftLayerAPIError
 
 from core import api
+from services.common.error_handling import not_found
 from services.compute import compute_dispatcher as disp
 
 # This comes from Horizon. I wonder if there's a better place to get it.
@@ -117,11 +118,7 @@ class SLComputeV2Server(object):
         try:
             instance = cci.get_instance(**params)
         except SoftLayerAPIError:
-            resp.status = falcon.HTTP_404
-            resp.body = json.dumps({'itemNotFound': {
-                'message':
-                'Instance could not be found'}})
-            return None
+            return not_found(resp, 'Instance could not be found')
 
         results = get_server_details_dict(instance)
 
@@ -140,7 +137,7 @@ def get_server_details_dict(instance):
     image_id = lookup(instance, 'blockDeviceTemplateGroup', 'globalIdentifier')
     tenant_id = instance['accountId']
 
-    # TODO - Don't hardcode this flavor ID'
+    # TODO - Don't hardcode this flavor ID
     flavor_url = disp.get_endpoint_url('v2_flavor', flavor_id=1)
     server_url = disp.get_endpoint_url('v2_server', server_id=instance['id'])
 
@@ -179,6 +176,9 @@ def get_server_details_dict(instance):
             'version': 4,
         }]
 
+    # TODO - Don't hardcode this
+    image_name = ''
+
     results = {
         'id': instance['id'],
         'accessIPv4': '',
@@ -212,6 +212,7 @@ def get_server_details_dict(instance):
         'status': status,
         'tenant_id': tenant_id,
         'updated': instance['modifyDate'],
+        'image_name': image_name,
     }
 
     if image_id:

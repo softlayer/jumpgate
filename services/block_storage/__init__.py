@@ -3,7 +3,7 @@ from core import api
 
 storage_dispatcher = Dispatcher(api)
 
-# V2 API - http://api.openstack.org/api-ref.html#volumes-api
+# V2 API - http://api.openstack.org/api-ref-blockstorage.html#volumes-api
 
 storage_dispatcher.add_endpoint('v2_volumes', '/v2/{tenant_id}/volumes')
 storage_dispatcher.add_endpoint('v2_volumes_detail',

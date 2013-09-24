@@ -1,5 +1,4 @@
 import json
-import falcon
 
 from services.compute import compute_dispatcher as disp
 
@@ -21,7 +20,6 @@ class SLComputeV2Flavor(object):
             'vcpus': 2,
         }
 
-        resp.status = falcon.HTTP_200
         resp.body = json.dumps({'flavor': flavor})
 
 
@@ -47,5 +45,4 @@ class SLComputeV2Flavors(object):
             'OS-FLV-DISABLED:disabled': False,
         }
 
-        resp.status = falcon.HTTP_200
         resp.body = json.dumps({'flavors': [flavor]})

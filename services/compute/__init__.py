@@ -3,7 +3,7 @@ from core import api
 
 compute_dispatcher = Dispatcher(api)
 
-# V2 API - http://api.openstack.org/api-ref.html#compute
+# V2 API - http://api.openstack.org/api-ref-compute.html#compute
 
 # Extensions
 compute_dispatcher.add_endpoint('v2_extensions', '/v2/{tenant_id}/extensions')
@@ -14,11 +14,11 @@ compute_dispatcher.add_endpoint('v2_extension',
 compute_dispatcher.add_endpoint('v2_limits', '/v2/{tenant_id}/limits')
 
 # Servers
+compute_dispatcher.add_endpoint('v2_server',
+                                '/v2/{tenant_id}/servers/{server_id}')
 compute_dispatcher.add_endpoint('v2_servers', '/v2/{tenant_id}/servers')
 compute_dispatcher.add_endpoint('v2_servers_detail',
                                 '/v2/{tenant_id}/servers/detail')
-compute_dispatcher.add_endpoint('v2_server',
-                                '/v2/{tenant_id}/servers/{server_id}')
 
 # Server Metadata
 compute_dispatcher.add_endpoint('v2_server_metadata',
@@ -39,19 +39,32 @@ compute_dispatcher.add_endpoint('v2_server_action',
                                 '/v2/{tenant_id}/servers/action')
 
 # Flavors
+compute_dispatcher.add_endpoint('v2_flavor', '/v2/flavors/{flavor_id}')
 compute_dispatcher.add_endpoint('v2_flavors', '/v2/flavors')
 compute_dispatcher.add_endpoint('v2_flavors_detail', '/v2/flavors/detail')
-compute_dispatcher.add_endpoint('v2_flavor', '/v2/flavors/{flavor_id}')
+compute_dispatcher.add_endpoint('v2_tenant_flavor',
+                                '/v2/{tenant_id}/flavors/{flavor_id}')
 compute_dispatcher.add_endpoint('v2_tenant_flavors', '/v2/{tenant_id}/flavors')
 compute_dispatcher.add_endpoint('v2_tenant_flavors_detail',
                                 '/v2/{tenant_id}/flavors/detail')
-compute_dispatcher.add_endpoint('v2_tenant_flavor',
-                                '/v2/{tenant_id}/flavors/{flavor_id}')
 
-# Extensions - Not all drivers will support all of these
+# Extensions - http://api.openstack.org/api-ref-compute.html#compute-ext
+# Note: Not all drivers will support all of these
+
+# Extended Availability Zones
+compute_dispatcher.add_endpoint('v2_availability_zone',
+                                '/v2/{tenant_id}/os-availability-zone')
+
+# Keypairs
+compute_dispatcher.add_endpoint('v2_os_keypairs',
+                                '/v2/{tenant_id}/os-keypairs')
+compute_dispatcher.add_endpoint('v2_os_keypair',
+                                '/v2/{tenant_id}/os-keypairs/{keypair_name}')
 
 # Security Groups
 compute_dispatcher.add_endpoint('v2_os_security_groups',
+                                '/v2/{tenant_id}/os-security-groups')
+compute_dispatcher.add_endpoint('v2_os_server_security_groups',
                                 '/v2/{tenant_id}/servers/{instance_id}'
                                 '/os-security-groups')
 
