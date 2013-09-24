@@ -1,4 +1,6 @@
 from collections import OrderedDict
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Dispatcher(object):
@@ -15,7 +17,7 @@ class Dispatcher(object):
     def import_routes(self):
         for endpoint in self.__endpoints.values():
             if endpoint[1]:
-                print("Importing", endpoint[0])
+                logger.info("Importing", endpoint[0])
                 self.__api.add_route(endpoint[0], endpoint[1])
 
     def get_endpoint_url(self, nickname, **kwargs):
@@ -32,10 +34,8 @@ class Dispatcher(object):
             url = url.replace('{tenant_id}', tenant_id)
 
         for var, value in kwargs.items():
-            var = str(var)
-            value = str(value)
-            if '{' + var + '}' in url:
-                url = url.replace('{' + var + '}', value)
+            if '{%s}' % var in url:
+                url = url.replace('{%s}' % var, str(value))
 
         return url
 

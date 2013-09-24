@@ -1,10 +1,14 @@
 import datetime
 import json
 import falcon
+import logging
 from SoftLayer import Client, SoftLayerAPIError, TokenAuthentication
 
+from services.common.error_handling import unauthorized, compute_fault
 from services.common.nested_dict import lookup
 from services.identity import identity_dispatcher
+
+logger = logging.getLogger(__name__)
 
 
 class SLIdentityV2Tokens(object):
@@ -13,13 +17,13 @@ class SLIdentityV2Tokens(object):
         # validity, such as when a cookie expires. Our login tokens don't
         # expire, so this does nothing.
         resp.status = falcon.HTTP_202
-        resp.body = ''
+        resp.body = '{}'
 
     def on_post(self, req, resp):
         headers = req.headers
 
         if 'x-auth-token' in headers:
-            (userId, hash) = headers['x-auth-token'].split(':')            
+            (userId, hash) = headers['x-auth-token'].split(':')
         else:
             body = json.loads(req.stream.read().decode())
 
@@ -32,22 +36,29 @@ class SLIdentityV2Tokens(object):
                                                                    password)
             except SoftLayerAPIError as e:
                 # TODO - Do the right thing here
-                # if e.faultCode == \
-                #         'SoftLayer_Exception_User_Customer_LoginFailed':
-                #     return unauthorized(message=e.faultCode,
-                #                         details=e.faultString)
+                if e.faultCode == \
+                        'SoftLayer_Exception_User_Customer_LoginFailed':
+                    return unauthorized(resp,
+                                        message=e.faultCode,
+                                        details=e.faultString)
 
-                # return compute_fault(message=e.faultCode,
-                #                      details=e.faultString)
-                return None
+                return compute_fault(resp,
+                                     message=e.faultCode,
+                                     details=e.faultString)
 
         auth = TokenAuthentication(userId, hash)
         if auth:
             client = Client(auth=auth)
 
-        account = client['Account'].getObject()
-        user = client['Account'].getCurrentUser()
-        id = str(account['id'])
+        try:
+            account = client['Account'].getObject()
+            user = client['Account'].getCurrentUser()
+        except SoftLayerAPIError as e:
+            if e.faultCode == 'SoftLayer_Exception_InvalidLegacyToken':
+                return unauthorized(resp,
+                                    message=e.faultCode,
+                                    details=e.faultString)
+        id = account['id']
 
         # TODO - This dictionary shouldn't be hardcoded
         driver_config = identity_dispatcher.get_api().config['driver_config']
@@ -59,10 +70,10 @@ class SLIdentityV2Tokens(object):
                 'endpoints': [
                     {
                         'region': 'RegionOne',
-                        'publicURL': 'http://localhost:5000/v2/' + id,
-                        'privateURL': 'http://localhost:5000/v2/' + id,
-                        'adminURL': 'http://localhost:5000/v2/' + id,
-                        'internalURL': 'http://localhost:5000/v2/' + id,
+                        'publicURL': 'http://localhost:5000/v2/%s' % id,
+                        'privateURL': 'http://localhost:5000/v2/%s' % id,
+                        'adminURL': 'http://localhost:5000/v2/%s' % id,
+                        'internalURL': 'http://localhost:5000/v2/%s' % id,
                         'id': 1,
                     },
                 ],
@@ -135,7 +146,7 @@ class SLIdentityV2Tokens(object):
                 'id': id,
                 'roles': [
                     {'name': 'user'},
-#                    {'name': 'admin'}
+                    # {'name': 'admin'}
                 ],
                 'role_links': [],
                 'name': user['username']
@@ -145,4 +156,3 @@ class SLIdentityV2Tokens(object):
 #        print(access)
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'access': access})
-        

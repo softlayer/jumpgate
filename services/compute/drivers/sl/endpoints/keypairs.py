@@ -33,9 +33,9 @@ class SLComputeV2Keypairs(object):
         except (KeyError, TypeError):
             return bad_request(resp, 'Not all fields exist to create keypair.')
 
-        validate_result = validate_keypair_name(name)
-        if validate_result:
-            return validate_result
+        validate_result = validate_keypair_name(resp, name)
+        if not validate_result:
+            return
 
         client = api.config['sl_client']
         mgr = SshKeyManager(client)
@@ -47,7 +47,7 @@ class SLComputeV2Keypairs(object):
 
         try:
             keypair = mgr.add_key(key, name)
-            return {'keypair': format_keypair(keypair)}
+            resp.body = json.dumps({'keypair': format_keypair(keypair)})
         except SoftLayerAPIError as e:
             if 'Unable to generate a fingerprint' in e.faultString:
                 return bad_request(resp, e.faultString)
@@ -91,17 +91,21 @@ def format_keypair(keypair):
 
 def generate_random_key():
     chars = string.digits + string.ascii_letters
-    key = "".join([random.choice(chars) for i in xrange(8)])
+    key = "".join([random.choice(chars) for i in range(8)])
     return "ssh-rsa %s %s@invalid" % (NULL_KEY, key)
 
 
-def validate_keypair_name(key_name):
+def validate_keypair_name(resp, key_name):
     safechars = "_- " + string.digits + string.ascii_letters
     clean_value = "".join(x for x in key_name if x in safechars)
     if clean_value != key_name:
-        return bad_request(resp, 
-            'Keypair name contains unsafe characters')
+        bad_request(
+            resp, 'Keypair name contains unsafe characters')
+        return False
 
     if not 0 < len(key_name) < 256:
-        return bad_request(resp, 
-            'Keypair name must be between 1 and 255 characters long')
+        bad_request(
+            resp, 'Keypair name must be between 1 and 255 characters long')
+        return False
+
+    return True
