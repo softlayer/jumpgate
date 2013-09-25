@@ -17,7 +17,7 @@ class SLIdentityV2Tokens(object):
         # validity, such as when a cookie expires. Our login tokens don't
         # expire, so this does nothing.
         resp.status = falcon.HTTP_202
-        resp.body = '{}'
+        resp.body = ''
 
     def on_post(self, req, resp):
         headers = req.headers
@@ -55,15 +55,10 @@ class SLIdentityV2Tokens(object):
             user = client['Account'].getCurrentUser()
         except SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_InvalidLegacyToken':
-                return unauthorized(resp,
-                                    message=e.faultCode,
+                return unauthorized(message=e.faultCode,
                                     details=e.faultString)
         id = account['id']
-
-        # TODO - This dictionary shouldn't be hardcoded
-        driver_config = identity_dispatcher.get_api().config['driver_config']
-        index_url = driver_config['keystone'].get('url') + \
-            identity_dispatcher.get_endpoint_url('v2_index')
+        index_url = identity_dispatcher.get_endpoint_url(req, 'v2_index')
         service_catalog = [
             {
                 'endpoint_links': [],

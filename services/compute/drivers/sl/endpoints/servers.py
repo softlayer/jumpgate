@@ -327,4 +327,3 @@ def get_virtual_guest_mask():
     ]
 
     return 'mask[%s]' % ','.join(mask)
-        

@@ -20,24 +20,29 @@ class Dispatcher(object):
                 logger.info("Importing", endpoint[0])
                 self.__api.add_route(endpoint[0], endpoint[1])
 
-    def get_endpoint_url(self, nickname, **kwargs):
-        url = ''
+    def get_endpoint_path(self, nickname, **kwargs):
+        path = ''
         if nickname in self.__endpoints:
-            url = self.__endpoints[nickname][0]
+            path = self.__endpoints[nickname][0]
 
-        if '{tenant_id}' in url:
+        if '{tenant_id}' in path:
             tenant_id = ''
 
             if self.__api.current_tenant_id:
                 tenant_id = self.__api.current_tenant_id
 
-            url = url.replace('{tenant_id}', tenant_id)
+            path = path.replace('{tenant_id}', tenant_id)
 
         for var, value in kwargs.items():
-            if '{%s}' % var in url:
-                url = url.replace('{%s}' % var, str(value))
+            if '{%s}' % var in path:
+                path = path.replace('{%s}' % var, str(value))
+        return path
 
-        return url
+    def get_endpoint_url(self, req, nickname, **kwargs):
+        return (req.protocol + '://' +
+                req.get_header('host') +
+                req.app +
+                self.get_endpoint_path(nickname, **kwargs))
 
     def get_unused_endpoints(self):
         results = []
