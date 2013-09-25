@@ -15,13 +15,15 @@ tempest.api.compute.test_auth_token:AuthTokenTestJSON.test_v2_token
 tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list
 tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_detail
 # tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_detail_with_non_admin_user
-# tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_with_non_admin_user
-
-# tempest.api.compute.servers.test_create_server:ServersTestJSON.test_can_log_into_created_server
+tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_with_non_admin_user
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers_with_detail
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_server_response
-tempest.api.compute.servers.test_create_server:ServersTestJSON.test_host_name_is_same_as_server_name
-tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_created_server_vcpus
-# broken due to IP Address Checks
+
+# Skipped due to password being retreived at the start of provisioning
+# tempest.api.compute.servers.test_create_server:ServersTestJSON.test_host_name_is_same_as_server_name
+# tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_created_server_vcpus
+# tempest.api.compute.servers.test_create_server:ServersTestJSON.test_can_log_into_created_server
+
+# Broken due to IP Address Checks (Not applicable to SL Network)
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_server_details

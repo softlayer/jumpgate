@@ -54,6 +54,8 @@ compute_dispatcher.add_endpoint('v2_tenant_flavors_detail',
 # Extended Availability Zones
 compute_dispatcher.add_endpoint('v2_availability_zone',
                                 '/v2/{tenant_id}/os-availability-zone')
+compute_dispatcher.add_endpoint('v2_availability_zone_detail',
+                                '/v2/{tenant_id}/os-availability-zone/detail')
 
 # Floating IPs
 compute_dispatcher.add_endpoint('v2_os_floating_ips',

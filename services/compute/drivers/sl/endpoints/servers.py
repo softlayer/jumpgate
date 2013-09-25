@@ -11,7 +11,7 @@ from services.common.error_handling import bad_request, not_found
 from services.compute import compute_dispatcher as disp
 
 # This comes from Horizon. I wonder if there's a better place to get it.
-POWER_STATES = {
+OPENSTACK_POWER_MAP = {
     "NO STATE": 0,
     "RUNNING": 1,
     "BLOCKED": 2,
@@ -20,15 +20,7 @@ POWER_STATES = {
     "SHUTOFF": 5,
     "CRASHED": 6,
     "SUSPENDED": 7,
-    "FAILED": 8,
-    "BUILDING": 9,
 }
-
-SERVER_STATUSES = [
-    'ACTIVE', 'BUILD', 'DELETED', 'ERROR', 'HARD_REBOOT', 'PASSWORD', 'PAUSED',
-    'REBOOT', 'REBUILD', 'RESCUE', 'RESIZE', 'REVERT_RESIZE', 'SHUTOFF',
-    'SUSPENDED', 'UNKNOWN', 'VERIFY_RESIZE'
-]
 
 
 class SLComputeV2ServerAction(object):
@@ -118,25 +110,28 @@ class SLComputeV2Servers(object):
         # TODO - Turn the flavor reference into actual numbers
         payload = {
             'hostname': body['server']['name'],
-            'domain': 'example.com',  # TODO - Don't hardcode this
+            'domain': 'slapistack.com',  # TODO - Don't hardcode this
             'cpus': 2,
             'memory': 1024,
             'hourly': True,  # TODO - How do we set this accurately?
             # 'datacenter' => ['name' => $datacenter],
             'image_id': body['server']['imageRef'],
         }
-        new_instance = cci.create_instance(**payload)
 
-        print(new_instance)
-#        result = cci.verify_create_instance(**payload)
-#        new_instance = {'id': 2053839}
+        try:
+            new_instance = cci.create_instance(**payload)
+        except SoftLayerAPIError as e:
+            if e.faultCode == 'SoftLayer_Exception_InvalidValue':
+                return bad_request(message=e.faultCode, details=e.faultString)
 
+        resp.status = falcon.HTTP_202
         resp.body = json.dumps({'server': {
             'id': new_instance['id'],
             'links': [{
                 'href': disp.get_endpoint_path('v2_server',
                                                instance_id=new_instance['id']),
-                'rel': 'self'}]
+                'rel': 'self'}],
+            'adminPass': '',
         }})
 
 
@@ -202,11 +197,18 @@ class SLComputeV2Server(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'server': results})
 
-    def delete(self, req, resp, tenant_id, instance_id):
+    def on_delete(self, req, resp, tenant_id, server_id):
         client = api.config['sl_client']
         cci = CCIManager(client)
 
-        cci.cancel_instance(instance_id)
+        try:
+            cci.cancel_instance(server_id)
+        except SoftLayerAPIError as e:
+            if 'active transaction' in e.faultString:
+                return bad_request(
+                    message='Can not cancel an instance when there is already'
+                    ' an active transaction', code=409)
+            raise
         resp.status = falcon.HTTP_204
 
 
@@ -225,20 +227,23 @@ def get_server_details_dict(instance):
     if 'CLOUD_INSTANCE_NETWORK_RECLAIM' == transaction:
         task_state = 'deleting'
 
+    # Map SL Power States to OpenStack Power States
     power_state = 0
+    status = 'UNKNOWN'
 
-    if instance['powerState']['keyName'] in POWER_STATES:
-        power_state = POWER_STATES[instance['powerState']['keyName']]
-
-    status = instance['powerState']['keyName']
-
-    if 'RUNNING' == status:
-        status = 'ACTIVE'
-    elif 'HALTED' == status:
-        status = 'SHUTOFF'
-        power_state = POWER_STATES['SHUTDOWN']
-    elif status not in SERVER_STATUSES and instance.get('provisionDate'):
-        status = 'ACTIVE'
+    sl_power_state = instance['powerState']['keyName']
+    if sl_power_state == 'RUNNING':
+        if transaction or not instance.get('provisionDate'):
+            status = 'BUILD'
+            power_state = OPENSTACK_POWER_MAP['BLOCKED']
+        else:
+            status = 'ACTIVE'
+            power_state = OPENSTACK_POWER_MAP['RUNNING']
+    elif sl_power_state in OPENSTACK_POWER_MAP:
+        power_state = OPENSTACK_POWER_MAP[sl_power_state]
+    elif sl_power_state == 'HALTED':
+        status = 'BUILD'
+        power_state = OPENSTACK_POWER_MAP['BLOCKED']
 
     addresses = {}
     if instance.get('primaryBackendIpAddress'):

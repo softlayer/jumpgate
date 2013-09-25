@@ -21,6 +21,8 @@ flavors = SLComputeV2Flavors()
 
 compute_dispatcher.set_handler('v2_availability_zone',
                                SLComputeV2AvailabilityZones())
+compute_dispatcher.set_handler('v2_availability_zone_detail',
+                               SLComputeV2AvailabilityZones())
 
 compute_dispatcher.set_handler('v2_extensions', SLComputeV2Extensions())
 
