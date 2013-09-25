@@ -10,8 +10,8 @@ class SLComputeV2Flavor(object):
             'id': '1',
             'links': [
                 {
-                    'href': disp.get_endpoint_url('v2_flavor',
-                                                  flavor_id=flavor_id),
+                    'href': disp.get_endpoint_path('v2_flavor',
+                                                   flavor_id=flavor_id),
                     'rel': 'self',
                 }
             ],
@@ -30,8 +30,8 @@ class SLComputeV2Flavors(object):
             'id': '1',
             'links': [
                 {
-                    'href': disp.get_endpoint_url('v2_flavor',
-                                                  flavor_id='1'),
+                    'href': disp.get_endpoint_path('v2_flavor',
+                                                   flavor_id='1'),
                     'rel': 'self',
                 }
             ],

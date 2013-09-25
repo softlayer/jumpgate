@@ -105,22 +105,6 @@ class SLIdentityV2Tokens(object):
                 'type': 'image',
                 'name': 'image',
             },
-            # This would expose a "volumes" endpoint.
-            # {
-            #     'endpoint_links': [],
-            #     'endpoints': [
-            #         {
-            #             'region': 'RegionOne',
-            #             'publicURL': 'http://localhost:5000/v1/' + id,
-            #             'privateURL': 'http://localhost:5000/v1/' + id,
-            #             'adminURL': 'http://localhost:5000/v1/' + id,
-            #             'internalURL': 'http://localhost:5000/v1/' + id,
-            #             'id': 1,
-            #         },
-            #     ],
-            #     'type': 'volume',
-            #     'name': 'volume',
-            # }
         ]
 
         expiration = datetime.datetime.now() + datetime.timedelta(days=1)
@@ -141,13 +125,11 @@ class SLIdentityV2Tokens(object):
                 'id': id,
                 'roles': [
                     {'name': 'user'},
-                    # {'name': 'admin'}
                 ],
                 'role_links': [],
                 'name': user['username']
             },
         }
 
-#        print(access)
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'access': access})

@@ -68,8 +68,8 @@ class SLImageV1Image(object):
             'x-image-meta-created_at': results['created'],
             'x-image-meta-min_ram': results['minRam'],
             'x-image-meta-updated_at': results['updated'],
-            'location': disp.get_endpoint_url('v1_image',
-                                              image_guid=image_guid),
+            'location': disp.get_endpoint_path('v1_image',
+                                               image_guid=image_guid),
             'x-image-meta-deleted': False,
             'x-image-meta-protected': results['protected'],
             'x-image-meta-min_disk': results['minDisk'],
@@ -138,13 +138,13 @@ def get_image_details_dict(image, tenant_id=None):
         'name': image['name'],
         'links': [
             {
-                'href': disp.get_endpoint_url('v1_image',
-                                              image_guid=image['id']),
+                'href': disp.get_endpoint_path('v1_image',
+                                               image_guid=image['id']),
                 'rel': 'self',
             },
             {
-                'href': disp.get_endpoint_url('v1_image',
-                                              image_guid=image['id']),
+                'href': disp.get_endpoint_path('v1_image',
+                                               image_guid=image['id']),
                 'rel': 'bookmark',
             }
         ],

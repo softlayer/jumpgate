@@ -99,8 +99,8 @@ class SLComputeV2Servers(object):
                 'id': id,
                 'links': [
                     {
-                        'href': disp.get_endpoint_url('v2_server',
-                                                      server_id=id),
+                        'href': disp.get_endpoint_path('v2_server',
+                                                       server_id=id),
                         'rel': 'self',
                     }
                 ],
@@ -134,8 +134,8 @@ class SLComputeV2Servers(object):
         resp.body = json.dumps({'server': {
             'id': new_instance['id'],
             'links': [{
-                'href': disp.get_endpoint_url('v2_server',
-                                              instance_id=new_instance['id']),
+                'href': disp.get_endpoint_path('v2_server',
+                                               instance_id=new_instance['id']),
                 'rel': 'self'}]
         }})
 
@@ -215,8 +215,8 @@ def get_server_details_dict(instance):
     tenant_id = instance['accountId']
 
     # TODO - Don't hardcode this flavor ID
-    flavor_url = disp.get_endpoint_url('v2_flavor', flavor_id=1)
-    server_url = disp.get_endpoint_url('v2_server', server_id=instance['id'])
+    flavor_url = disp.get_endpoint_path('v2_flavor', flavor_id=1)
+    server_url = disp.get_endpoint_path('v2_server', server_id=instance['id'])
 
     task_state = None
     transaction = lookup(instance, 'activeTransaction', 'transactionStatus',
@@ -297,8 +297,8 @@ def get_server_details_dict(instance):
             'id': image_id,
             'links': [
                 {
-                    'href': disp.get_endpoint_url('v2_image',
-                                                  image_id=image_id),
+                    'href': disp.get_endpoint_path('v2_image',
+                                                   image_id=image_id),
                     'rel': 'self',
                 },
             ],
