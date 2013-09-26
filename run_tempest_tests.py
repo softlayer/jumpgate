@@ -19,7 +19,8 @@ def get_whitelist_from_file(path):
         whitelist = [test.strip() for test in f.readlines()]
 
     # filter commented-out tests
-    whitelist = filter(lambda t: not t.startswith('#'), whitelist)
+    whitelist = filter(lambda t: not t.startswith('#') and len(t) > 0,
+                       whitelist)
     return whitelist
 
 
@@ -63,7 +64,7 @@ def main():
                      % (','.join(options.args)))
         else:
             test_list = whitelist
-        args.append('--tests=%s' % ','.join(test_list))
+        args += test_list
 
     tempest_config = options.tempest_config
     if not os.path.isfile(tempest_config):
