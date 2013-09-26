@@ -12,6 +12,7 @@ from .endpoints.servers import (SLComputeV2Server, SLComputeV2Servers,
 from .endpoints.security_groups import SLComputeV2OSSecurityGroups
 from .endpoints.usage import SLComputeV2Usage
 from .endpoints.volumes import SLComputeV2OSVolumeAttachments
+from .endpoints.networks import SLComputeV2OSNetworks, SLComputeV2OSNetwork
 
 # Set handlers for the routes we support
 
@@ -34,6 +35,15 @@ compute_dispatcher.set_handler('v2_limits', SLComputeV2Limits())
 
 compute_dispatcher.set_handler('v2_os_floating_ips',
                                SLComputeV2OSFloatingIps())
+
+compute_dispatcher.set_handler('v2_os_tenant_networks',
+                               SLComputeV2OSNetworks())
+compute_dispatcher.set_handler('v2_os_tenant_network',
+                               SLComputeV2OSNetwork())
+compute_dispatcher.set_handler('v2_os_networks',
+                               SLComputeV2OSNetworks())
+compute_dispatcher.set_handler('v2_os_network',
+                               SLComputeV2OSNetwork())
 
 compute_dispatcher.set_handler('v2_os_keypair', SLComputeV2Keypair())
 compute_dispatcher.set_handler('v2_os_keypairs', SLComputeV2Keypairs())
@@ -60,6 +70,7 @@ compute_dispatcher.set_handler('v2_tenant_flavors', flavors)
 compute_dispatcher.set_handler('v2_tenant_flavors_detail', flavors)
 
 compute_dispatcher.set_handler('v2_tenant_usage', SLComputeV2Usage())
+
 
 # Don't forget to import the routes or else nothing will happen.
 compute_dispatcher.import_routes()

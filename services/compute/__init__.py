@@ -63,6 +63,19 @@ compute_dispatcher.add_endpoint('v2_os_floating_ips',
 compute_dispatcher.add_endpoint('v2_os_floating_ips_id',
                                 '/v2/{tenant_id}/os-floating-ips/{id}')
 
+# Networks
+compute_dispatcher.add_endpoint('v2_os_tenant_networks',
+                                '/v2/{tenant_id}/os-tenant-networks')
+compute_dispatcher.add_endpoint(
+    'v2_os_tenant_network',
+    '/v2/{tenant_id}/os-tenant-networks/{network_id}')
+compute_dispatcher.add_endpoint(
+    'v2_os_networks',
+    '/v2/{tenant_id}/os-networks')
+compute_dispatcher.add_endpoint(
+    'v2_os_network',
+    '/v2/{tenant_id}/os-networks/{network_id}')
+
 # Keypairs
 compute_dispatcher.add_endpoint('v2_os_keypairs',
                                 '/v2/{tenant_id}/os-keypairs')
