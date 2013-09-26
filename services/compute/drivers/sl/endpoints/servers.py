@@ -206,6 +206,7 @@ class SLComputeV2Server(object):
         except SoftLayerAPIError as e:
             if 'active transaction' in e.faultString:
                 return bad_request(
+                    resp,
                     message='Can not cancel an instance when there is already'
                     ' an active transaction', code=409)
             raise
@@ -221,10 +222,10 @@ def get_server_details_dict(instance):
     server_url = disp.get_endpoint_path('v2_server', server_id=instance['id'])
 
     task_state = None
-    transaction = lookup(instance, 'activeTransaction', 'transactionStatus',
-                         'transaction_name')
+    transaction = lookup(
+        instance, 'activeTransaction', 'transactionStatus', 'name')
 
-    if 'CLOUD_INSTANCE_NETWORK_RECLAIM' == transaction:
+    if transaction and 'RECLAIM' in transaction:
         task_state = 'deleting'
 
     # Map SL Power States to OpenStack Power States
