@@ -27,3 +27,8 @@ tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_serve
 
 # Broken due to IP Address Checks (Not applicable to SL Network)
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_server_details
+
+tempest.api.compute.test_auth_token:AuthTokenTestJSON.test_v2_token
+
+# tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions
+# tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions_invalid_server

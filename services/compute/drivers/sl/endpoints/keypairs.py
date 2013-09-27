@@ -5,7 +5,6 @@ import string
 
 from SoftLayer import SoftLayerAPIError, SshKeyManager
 
-from core import api
 from services.common.error_handling import bad_request, duplicate, not_found
 
 
@@ -17,7 +16,7 @@ NULL_KEY = "AAAAB3NzaC1yc2EAAAABIwAAAIEArkwv9X8eTVK4F7pMlSt45pWoiakFk" \
 
 class SLComputeV2Keypairs(object):
     def on_get(self, req, resp, tenant_id):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         mgr = SshKeyManager(client)
         keypairs = mgr.list_keys()
 
@@ -37,7 +36,7 @@ class SLComputeV2Keypairs(object):
         if not validate_result:
             return
 
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         mgr = SshKeyManager(client)
 
         # Make sure the key with that label doesn't already exist
@@ -58,7 +57,7 @@ class SLComputeV2Keypairs(object):
 
 class SLComputeV2Keypair(object):
     def on_get(self, req, resp, tenant_id, keypair_name):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         mgr = SshKeyManager(client)
         keys = mgr.list_keys(label=keypair_name)
         if len(keys) == 0:
@@ -70,7 +69,7 @@ class SLComputeV2Keypair(object):
 
     def on_delete(self, req, resp, tenant_id, keypair_name):
         # keypair_name
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         mgr = SshKeyManager(client)
         keys = mgr.list_keys(label=keypair_name)
         if len(keys) == 0:

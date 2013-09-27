@@ -21,5 +21,3 @@ class Babelfish(API):
     config = {
         'installed_modules': {},
     }
-
-    current_tenant_id = None

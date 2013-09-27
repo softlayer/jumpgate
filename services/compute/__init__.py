@@ -37,6 +37,9 @@ compute_dispatcher.add_endpoint('v2_server_ips_network',
 # Server Actions
 compute_dispatcher.add_endpoint('v2_server_action',
                                 '/v2/{tenant_id}/servers/{instance_id}/action')
+compute_dispatcher.add_endpoint(
+    'v2_os_instance_actions',
+    '/v2/{tenant_id}/servers/{server_id}/os-instance-actions')
 
 # Flavors
 compute_dispatcher.add_endpoint('v2_flavor', '/v2/flavors/{flavor_id}')

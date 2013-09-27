@@ -3,13 +3,12 @@ import json
 
 from SoftLayer import CCIManager
 
-from core import api
 from .servers import get_virtual_guest_mask
 
 
 class SLComputeV2Usage(object):
     def on_get(self, req, resp, tenant_id, target_id):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         cci = CCIManager(client)
         start_time = datetime.datetime.now() + datetime.timedelta(hours=-1)
         usage = {

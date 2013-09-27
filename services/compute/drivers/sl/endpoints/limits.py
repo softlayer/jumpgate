@@ -1,12 +1,10 @@
 import json
 import falcon
 
-from core import api
-
 
 class SLComputeV2Limits(object):
     def on_get(self, req, resp, tenant_id):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
 
         account = client['Account'].getObject(
             mask='mask[hourlyVirtualGuestCount]')

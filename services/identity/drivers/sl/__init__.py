@@ -1,4 +1,3 @@
-import falcon
 from SoftLayer import Client, TokenAuthentication
 from services.identity import identity_dispatcher
 from .endpoints.index import SLIdentityV2Index
@@ -26,19 +25,18 @@ identity_dispatcher.import_routes()
 # drivers can hook into.
 def get_client(req, resp, kwargs):
     client = Client()
-    tenant_id = None
+    client.auth = None
+    req.env['tenant_id'] = None
 
     if req.headers.get('x-auth-token'):
         (userId, hash) = req.headers['x-auth-token'].split(':')
 
         auth = TokenAuthentication(userId, hash)
-        client = Client(auth=auth)
+        client.auth = auth
 
         account = client['Account'].getObject()
-        tenant_id = str(account['id'])
+        req.env['tenant_id'] = str(account['id'])
 
-    api = identity_dispatcher.get_api()
-    api.config['sl_client'] = client
-    api.current_tenant_id = tenant_id
+    req.env['sl_client'] = client
 
 before_hooks.append(get_client)

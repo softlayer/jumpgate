@@ -1,12 +1,11 @@
 import json
-from core import api
 
 
 class SLComputeV2OSNetworks(object):
     def on_get(self, req, resp, tenant_id):
         networks = []
-        client = api.config['sl_client']['Account']
-        sl_networks = client.getSubnets(
+        client = req.env['sl_client']
+        sl_networks = client['Account'].getSubnets(
             mask='id, modifyDate, gateway, networkVlanId, broadcastAddress, '
             'netmask, networkIdentifier, cidr, reverseDomain, note')
         networks = [format_network(network) for network in sl_networks]
@@ -15,8 +14,8 @@ class SLComputeV2OSNetworks(object):
 
 class SLComputeV2OSNetwork(object):
     def on_get(self, req, resp, tenant_id, network_id):
-        client = api.config['sl_client']['Network_Subnet']
-        sl_network = client.getObject(
+        client = req.env['sl_client']
+        sl_network = client['Network_Subnet'].getObject(
             id=network_id,
             mask='id, modifyDate, gateway, networkVlanId, broadcastAddress, '
             'netmask, networkIdentifier, cidr, reverseDomain, note')

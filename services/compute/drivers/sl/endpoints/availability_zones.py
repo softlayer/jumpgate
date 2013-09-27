@@ -2,13 +2,12 @@ import json
 
 from SoftLayer import CCIManager
 
-from core import api
 from services.common.nested_dict import lookup
 
 
 class SLComputeV2AvailabilityZones(object):
     def on_get(self, req, resp, tenant_id):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         cci = CCIManager(client)
 
         all_options = cci.get_create_options()

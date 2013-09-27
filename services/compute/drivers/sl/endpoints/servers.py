@@ -6,7 +6,6 @@ from services.common.nested_dict import lookup
 from SoftLayer import CCIManager
 from SoftLayer.exceptions import SoftLayerAPIError
 
-from core import api
 from services.common.error_handling import bad_request, not_found
 from services.compute import compute_dispatcher as disp
 
@@ -30,7 +29,7 @@ class SLComputeV2ServerAction(object):
         if len(body) == 0:
             return bad_request(resp, message="Malformed request body")
 
-        client = api.config['sl_client']['Virtual_Guest']
+        client = req.env['sl_client']
 
         if 'pause' in body or 'suspend' in body:
             client.pause(id=instance_id)
@@ -74,7 +73,7 @@ class SLComputeV2ServerAction(object):
 
 class SLComputeV2Servers(object):
     def on_get(self, req, resp, tenant_id):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         cci = CCIManager(client)
 
         params = {
@@ -104,7 +103,7 @@ class SLComputeV2Servers(object):
 
     def on_post(self, req, resp, tenant_id):
         body = json.loads(req.stream.read().decode())
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         cci = CCIManager(client)
 
         # TODO - Turn the flavor reference into actual numbers
@@ -123,7 +122,9 @@ class SLComputeV2Servers(object):
         except SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_InvalidValue':
                 return bad_request(message=e.faultCode, details=e.faultString)
+            raise
 
+        resp.set_header('x-compute-request-id', 'create')
         resp.status = falcon.HTTP_202
         resp.body = json.dumps({'server': {
             'id': new_instance['id'],
@@ -137,7 +138,7 @@ class SLComputeV2Servers(object):
 
 class SLComputeV2ServersDetail(object):
     def on_get(self, req, resp, tenant_id=None):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         cci = CCIManager(client)
 
 #        params = get_standard_params(['marker'])
@@ -179,16 +180,12 @@ class SLComputeV2ServersDetail(object):
 
 class SLComputeV2Server(object):
     def on_get(self, req, resp, tenant_id, server_id):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         cci = CCIManager(client)
 
-        params = {
-            'id': server_id,
-            'mask': get_virtual_guest_mask(),
-        }
-
         try:
-            instance = cci.get_instance(**params)
+            instance = cci.get_instance(id=server_id,
+                                        mask=get_virtual_guest_mask())
         except SoftLayerAPIError:
             return not_found(resp, 'Instance could not be found')
 
@@ -198,7 +195,7 @@ class SLComputeV2Server(object):
         resp.body = json.dumps({'server': results})
 
     def on_delete(self, req, resp, tenant_id, server_id):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         cci = CCIManager(client)
 
         try:

@@ -47,8 +47,7 @@ class SLIdentityV2Tokens(object):
                                      details=e.faultString)
 
         auth = TokenAuthentication(userId, hash)
-        if auth:
-            client = Client(auth=auth)
+        client = Client(auth=auth)
 
         try:
             account = client['Account'].getObject()

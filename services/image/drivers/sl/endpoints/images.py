@@ -1,17 +1,17 @@
 import json
 import falcon
 
-from core import api
 from services.common.error_handling import not_found
 from services.image import image_dispatcher as disp
 
 
 class SLImageV1Image(object):
     __public_images = None
+    # This is not a safe place to store private images since this class
+    # is only initialized once per app instance
     __private_images = None
 
-    def get_image(self, image_guid):
-        client = api.config['sl_client']
+    def get_image(self, client, image_guid):
         account = client['Account']
 
         matching_image = None
@@ -45,7 +45,8 @@ class SLImageV1Image(object):
         return matching_image
 
     def on_get(self, req, resp, image_guid):
-        results = self.get_image(image_guid)
+        client = req.env['sl_client']
+        results = self.get_image(client, image_guid)
 
         if not results:
             return not_found(resp, 'Image could not be found')
@@ -54,7 +55,8 @@ class SLImageV1Image(object):
         resp.body = json.dumps({'image': get_image_details_dict(results)})
 
     def on_head(self, req, resp, image_guid):
-        results = get_image_details_dict(self.get_image(image_guid))
+        client = req.env['sl_client']
+        results = get_image_details_dict(self.get_image(client, image_guid))
 
         if not results:
             return not_found(resp, 'Image could not be found')
@@ -85,7 +87,7 @@ class SLImageV1Image(object):
 
 class SLImageV1Images(object):
     def on_get(self, req, resp):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
 
         # filter = {
         #     'blockDeviceTemplateGroups':

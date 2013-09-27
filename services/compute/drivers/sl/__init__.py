@@ -13,6 +13,7 @@ from .endpoints.security_groups import SLComputeV2OSSecurityGroups
 from .endpoints.usage import SLComputeV2Usage
 from .endpoints.volumes import SLComputeV2OSVolumeAttachments
 from .endpoints.networks import SLComputeV2OSNetworks, SLComputeV2OSNetwork
+from .endpoints.instance_actions import SLComputeV2InstanceActions
 
 # Set handlers for the routes we support
 
@@ -64,6 +65,8 @@ compute_dispatcher.set_handler('v2_server', SLComputeV2Server())
 compute_dispatcher.set_handler('v2_servers', SLComputeV2Servers())
 compute_dispatcher.set_handler('v2_servers_detail', SLComputeV2ServersDetail())
 compute_dispatcher.set_handler('v2_server_action', SLComputeV2ServerAction())
+compute_dispatcher.set_handler('v2_os_instance_actions',
+                               SLComputeV2InstanceActions())
 
 compute_dispatcher.set_handler('v2_tenant_flavor', flavor)
 compute_dispatcher.set_handler('v2_tenant_flavors', flavors)

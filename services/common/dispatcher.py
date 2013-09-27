@@ -25,13 +25,14 @@ class Dispatcher(object):
         if nickname in self.__endpoints:
             path = self.__endpoints[nickname][0]
 
-        if '{tenant_id}' in path:
-            tenant_id = ''
-
-            if self.__api.current_tenant_id:
-                tenant_id = self.__api.current_tenant_id
-
-            path = path.replace('{tenant_id}', tenant_id)
+        # TODO: this relies on global context to work, which is not
+        #       suitable for a multi-tenant API. Currently, the tenant id
+        #       is stored in req.env['tenant_id']. To use that required request
+        #       to be supplied.
+        # if '{tenant_id}' in path:
+        #     if self.__api.current_tenant_id:
+        #         tenant_id = self.__api.current_tenant_id
+        #         path = path.replace('{tenant_id}', tenant_id)
 
         for var, value in kwargs.items():
             if '{%s}' % var in path:

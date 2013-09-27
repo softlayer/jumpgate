@@ -1,11 +1,10 @@
 import json
 import falcon
-from core import api
 
 
 class SLIdentityV2Tenants(object):
     def on_get(self, req, resp):
-        client = api.config['sl_client']
+        client = req.env['sl_client']
         account = client['Account'].getObject()
 
         tenants = [
