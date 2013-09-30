@@ -20,19 +20,15 @@ class Dispatcher(object):
                 logger.info("Importing", endpoint[0])
                 self.__api.add_route(endpoint[0], endpoint[1])
 
-    def get_endpoint_path(self, nickname, **kwargs):
+    def get_endpoint_path(self, req, nickname, **kwargs):
         path = ''
         if nickname in self.__endpoints:
             path = self.__endpoints[nickname][0]
 
-        # TODO: this relies on global context to work, which is not
-        #       suitable for a multi-tenant API. Currently, the tenant id
-        #       is stored in req.env['tenant_id']. To use that required request
-        #       to be supplied.
-        # if '{tenant_id}' in path:
-        #     if self.__api.current_tenant_id:
-        #         tenant_id = self.__api.current_tenant_id
-        #         path = path.replace('{tenant_id}', tenant_id)
+        if '{tenant_id}' in path:
+            if req.env.get('tenant_id'):
+                tenant_id = req.env['tenant_id']
+                path = path.replace('{tenant_id}', tenant_id)
 
         for var, value in kwargs.items():
             if '{%s}' % var in path:
@@ -43,7 +39,7 @@ class Dispatcher(object):
         return (req.protocol + '://' +
                 req.get_header('host') +
                 req.app +
-                self.get_endpoint_path(nickname, **kwargs))
+                self.get_endpoint_path(req, nickname, **kwargs))
 
     def get_unused_endpoints(self):
         results = []

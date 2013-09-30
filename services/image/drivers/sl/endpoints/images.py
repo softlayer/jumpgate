@@ -52,11 +52,12 @@ class SLImageV1Image(object):
             return not_found(resp, 'Image could not be found')
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'image': get_image_details_dict(results)})
+        resp.body = json.dumps({'image': get_image_details_dict(req, results)})
 
     def on_head(self, req, resp, image_guid):
         client = req.env['sl_client']
-        results = get_image_details_dict(self.get_image(client, image_guid))
+        results = get_image_details_dict(
+            req, self.get_image(client, image_guid))
 
         if not results:
             return not_found(resp, 'Image could not be found')
@@ -70,8 +71,8 @@ class SLImageV1Image(object):
             'x-image-meta-created_at': results['created'],
             'x-image-meta-min_ram': results['minRam'],
             'x-image-meta-updated_at': results['updated'],
-            'location': disp.get_endpoint_path('v1_image',
-                                               image_guid=image_guid),
+            'location': disp.get_endpoint_url(req, 'v1_image',
+                                              image_guid=image_guid),
             'x-image-meta-deleted': False,
             'x-image-meta-protected': results['protected'],
             'x-image-meta-min_disk': results['minDisk'],
@@ -109,14 +110,14 @@ class SLImageV1Images(object):
         for image in client['Account'].getBlockDeviceTemplateGroups(**params):
             if not image or image['parentId']:
                 continue
-            results.append(get_image_details_dict(image))
+            results.append(get_image_details_dict(req, image))
 
         resp.body = json.dumps({'images':
                                 sorted(results,
                                        key=lambda x: x['name'].lower())})
 
 
-def get_image_details_dict(image, tenant_id=None):
+def get_image_details_dict(req, image, tenant_id=None):
     if not image:
         return {}
 
@@ -140,13 +141,13 @@ def get_image_details_dict(image, tenant_id=None):
         'name': image['name'],
         'links': [
             {
-                'href': disp.get_endpoint_path('v1_image',
-                                               image_guid=image['id']),
+                'href': disp.get_endpoint_url(req, 'v1_image',
+                                              image_guid=image['id']),
                 'rel': 'self',
             },
             {
-                'href': disp.get_endpoint_path('v1_image',
-                                               image_guid=image['id']),
+                'href': disp.get_endpoint_url(req, 'v1_image',
+                                              image_guid=image['id']),
                 'rel': 'bookmark',
             }
         ],

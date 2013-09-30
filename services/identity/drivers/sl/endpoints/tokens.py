@@ -54,8 +54,10 @@ class SLIdentityV2Tokens(object):
             user = client['Account'].getCurrentUser()
         except SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_InvalidLegacyToken':
-                return unauthorized(message=e.faultCode,
+                return unauthorized(resp,
+                                    message='Invalid Credentials',
                                     details=e.faultString)
+            raise
         id = account['id']
         index_url = identity_dispatcher.get_endpoint_url(req, 'v2_index')
         service_catalog = [

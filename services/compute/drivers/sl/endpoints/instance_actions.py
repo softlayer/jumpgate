@@ -1,16 +1,30 @@
 import json
 
+from SoftLayer import SoftLayerAPIError
+from services.common.error_handling import not_found
+
 
 class SLComputeV2InstanceActions(object):
     def on_get(self, req, resp, tenant_id, server_id):
+        try:
+            int(server_id)
+        except ValueError:
+            return not_found(resp, 'Instance could not be found')
+
         client = req.env['sl_client']
 
         actions = []
-        server = client['Virtual_Guest'].getObject(
-            id=server_id,
-            mask='id, accountId, '
-            'activeTransaction[transactionGroup, transactionStatus],'
-            'lastTransaction[transactionGroup, transactionStatus]')
+        try:
+            server = client['Virtual_Guest'].getObject(
+                id=server_id,
+                mask='id, accountId, '
+                'activeTransaction[transactionGroup, transactionStatus],'
+                'lastTransaction[transactionGroup, transactionStatus]')
+        except SoftLayerAPIError as e:
+            if e.faultCode == 'SoftLayer_Exception_ObjectNotFound':
+                return not_found(resp, 'Instance could not be found')
+            raise
+
         if server.get('lastTransaction'):
             actions.append(format_action(tenant_id, server['lastTransaction']))
 
@@ -18,7 +32,7 @@ class SLComputeV2InstanceActions(object):
             actions.append(
                 format_action(tenant_id, server['activeTransaction']))
 
-        return json.dumps({'instanceActions': actions})
+        resp.body = json.dumps({'instanceActions': actions})
 
 
 def format_action(account_id, transaction):

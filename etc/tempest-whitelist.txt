@@ -25,10 +25,35 @@ tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_serve
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_created_server_vcpus
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_can_log_into_created_server
 
-# Broken due to IP Address Checks (Not applicable to SL Network)
+# Skipped due to IP Address Checks (Not applicable to SL Network)
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_server_details
 
 tempest.api.compute.test_auth_token:AuthTokenTestJSON.test_v2_token
 
+# Skipped due to CCIs not tracking shutdowns/restarts/etc. events
 # tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions
-# tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions_invalid_server
+tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions_invalid_server
+
+# Skipped due to SL not having support for specifying default password
+# tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_server_with_admin_password
+tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_specify_keypair
+tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_with_existing_server_name
+tempest.api.compute.servers.test_servers:ServersTestJSON.test_delete_server_while_in_building_state
+# Skipped due to SL not having this layer of control on IP allocation
+# tempest.api.compute.servers.test_servers:ServersTestJSON.test_update_access_server_address
+tempest.api.compute.servers.test_servers:ServersTestJSON.test_update_server_name
+
+# tempest.scenario.orchestration.test_autoscaling.AutoScalingTest.test_scale_up_then_down
+# tempest.scenario.test_dashboard_basic_ops.TestDashboardBasicOps.test_basic_scenario
+# tempest.scenario.test_large_ops.TestLargeOpsScenario.test_large_ops_scenario
+# tempest.scenario.test_minimum_basic.TestMinimumBasicScenario.test_minimum_basic_scenario
+# tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_network_basic_ops
+# tempest.scenario.test_network_quotas.TestNetworkQuotaBasic.test_create_network_until_quota_hit
+# tempest.scenario.test_network_quotas.TestNetworkQuotaBasic.test_create_ports_until_quota_hit
+# tempest.scenario.test_network_quotas.TestNetworkQuotaBasic.test_create_subnet_until_quota_hit
+# tempest.scenario.test_server_advanced_ops.TestServerAdvancedOps.test_resize_server_confirm
+# tempest.scenario.test_server_advanced_ops.TestServerAdvancedOps.test_server_sequence_suspend_resume
+# tempest.scenario.test_server_basic_ops.TestServerBasicOps.test_server_basicops
+# tempest.scenario.test_snapshot_pattern.TestSnapshotPattern.test_snapshot_pattern
+# tempest.scenario.test_stamp_pattern.TestStampPattern.test_stamp_pattern
+# tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern

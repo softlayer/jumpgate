@@ -3,8 +3,7 @@ import falcon
 
 from services.common.nested_dict import lookup
 #from slapistack.utils.error_handling import bad_request
-from SoftLayer import CCIManager
-from SoftLayer.exceptions import SoftLayerAPIError
+from SoftLayer import CCIManager, SoftLayerAPIError
 
 from services.common.error_handling import bad_request, not_found
 from services.compute import compute_dispatcher as disp
@@ -29,37 +28,37 @@ class SLComputeV2ServerAction(object):
         if len(body) == 0:
             return bad_request(resp, message="Malformed request body")
 
-        client = req.env['sl_client']
+        vg_client = req.env['sl_client']['Virtual_Guest']
 
         if 'pause' in body or 'suspend' in body:
-            client.pause(id=instance_id)
+            vg_client.pause(id=instance_id)
             resp.status = falcon.HTTP_202
             return
         elif 'unpause' in body or 'resume' in body:
-            client.resume(id=instance_id)
+            vg_client.resume(id=instance_id)
             resp.status = falcon.HTTP_202
             return
         elif 'reboot' in body:
             if body['reboot'].get('type') == 'SOFT':
-                client.rebootSoft(id=instance_id)
+                vg_client.rebootSoft(id=instance_id)
             elif body['reboot'].get('type') == 'HARD':
-                client.rebootHard(id=instance_id)
+                vg_client.rebootHard(id=instance_id)
             else:
-                client.rebootDefault(id=instance_id)
+                vg_client.rebootDefault(id=instance_id)
             resp.status = falcon.HTTP_202
             return
         elif 'os-stop' in body:
-            client.powerOff(id=instance_id)
+            vg_client.powerOff(id=instance_id)
             resp.status = falcon.HTTP_202
             return
         elif 'os-start' in body:
-            client.powerOn(id=instance_id)
+            vg_client.powerOn(id=instance_id)
             resp.status = falcon.HTTP_202
             return
         elif 'createImage' in body:
             template = {'name': body['createImage']['name'],
                         'volumes': body['createImage']['name']}
-            client.captureImage(template, id=instance_id)
+            vg_client.captureImage(template, id=instance_id)
             resp.status = falcon.HTTP_202
             return
         elif 'os-getConsoleOutput' in body:
@@ -90,8 +89,8 @@ class SLComputeV2Servers(object):
                 'id': id,
                 'links': [
                     {
-                        'href': disp.get_endpoint_path('v2_server',
-                                                       server_id=id),
+                        'href': disp.get_endpoint_url(req, 'v2_server',
+                                                      server_id=id),
                         'rel': 'self',
                     }
                 ],
@@ -129,8 +128,8 @@ class SLComputeV2Servers(object):
         resp.body = json.dumps({'server': {
             'id': new_instance['id'],
             'links': [{
-                'href': disp.get_endpoint_path('v2_server',
-                                               instance_id=new_instance['id']),
+                'href': disp.get_endpoint_url(req, 'v2_server',
+                                              instance_id=new_instance['id']),
                 'rel': 'self'}],
             'adminPass': '',
         }})
@@ -172,7 +171,7 @@ class SLComputeV2ServersDetail(object):
 #        params['limit'] = 5
 
         for instance in cci.list_instances(**params):
-            results.append(get_server_details_dict(instance))
+            results.append(get_server_details_dict(req, instance))
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'servers': results})
@@ -189,7 +188,7 @@ class SLComputeV2Server(object):
         except SoftLayerAPIError:
             return not_found(resp, 'Instance could not be found')
 
-        results = get_server_details_dict(instance)
+        results = get_server_details_dict(req, instance)
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'server': results})
@@ -210,13 +209,14 @@ class SLComputeV2Server(object):
         resp.status = falcon.HTTP_204
 
 
-def get_server_details_dict(instance):
+def get_server_details_dict(req, instance):
     image_id = lookup(instance, 'blockDeviceTemplateGroup', 'globalIdentifier')
     tenant_id = instance['accountId']
 
     # TODO - Don't hardcode this flavor ID
-    flavor_url = disp.get_endpoint_path('v2_flavor', flavor_id=1)
-    server_url = disp.get_endpoint_path('v2_server', server_id=instance['id'])
+    flavor_url = disp.get_endpoint_url(req, 'v2_flavor', flavor_id=1)
+    server_url = disp.get_endpoint_url(req, 'v2_server',
+                                       server_id=instance['id'])
 
     task_state = None
     transaction = lookup(
@@ -295,13 +295,17 @@ def get_server_details_dict(instance):
         'image_name': image_name,
     }
 
+    # OpenStack only supports having one SSH Key assigned to an instance
+    if instance['sshKeys']:
+        results['key_name'] = instance['sshKeys'][0]['label']
+
     if image_id:
         results['image'] = {
             'id': image_id,
             'links': [
                 {
-                    'href': disp.get_endpoint_path('v2_image',
-                                                   image_id=image_id),
+                    'href': disp.get_endpoint_url(req, 'v2_image',
+                                                  image_id=image_id),
                     'rel': 'self',
                 },
             ],
@@ -327,6 +331,7 @@ def get_virtual_guest_mask():
         'primaryBackendIpAddress',
         'modifyDate',
         'provisionDate',
+        'sshKeys',
     ]
 
     return 'mask[%s]' % ','.join(mask)

@@ -8,7 +8,7 @@ class SLIdentityV2Index(object):
         versions = {
             'id': 'v2.0',
             'links': [
-                {'href': identity_dispatcher.get_endpoint_path('v2_index'),
+                {'href': identity_dispatcher.get_endpoint_url(req, 'v2_index'),
                  'rel': 'self'},
             ],
             'status': 'CURRENT',
