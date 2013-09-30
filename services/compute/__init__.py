@@ -66,18 +66,26 @@ compute_dispatcher.add_endpoint('v2_os_floating_ips',
 compute_dispatcher.add_endpoint('v2_os_floating_ips_id',
                                 '/v2/{tenant_id}/os-floating-ips/{id}')
 
-# Networks
-compute_dispatcher.add_endpoint('v2_os_tenant_networks',
-                                '/v2/{tenant_id}/os-tenant-networks')
-compute_dispatcher.add_endpoint(
-    'v2_os_tenant_network',
-    '/v2/{tenant_id}/os-tenant-networks/{network_id}')
-compute_dispatcher.add_endpoint(
-    'v2_os_networks',
-    '/v2/{tenant_id}/os-networks')
-compute_dispatcher.add_endpoint(
-    'v2_os_network',
-    '/v2/{tenant_id}/os-networks/{network_id}')
+# Floating IP Pools
+compute_dispatcher.add_endpoint('v2_os_floating_ip_pools',
+                                '/v2/{tenant_id}/os-floating-ip-pools')
+
+# Host Aggregates
+compute_dispatcher.add_endpoint('v2_os_aggregates',
+                                '/v2/{tenant_id}/os-aggregates')
+compute_dispatcher.add_endpoint('v2_os_aggregate',
+                                '/v2/{tenant_id}/os-aggregates/{aggregate_id}')
+compute_dispatcher.add_endpoint('v2_os_aggregate_action',
+                                '/v2/{tenant_id}/os-aggregates/{aggregate_id}'
+                                '/action')
+
+# Hypervisors
+compute_dispatcher.add_endpoint('v2_os_hypervisors',
+                                '/v2/{tenant_id}/os-hypervisors')
+compute_dispatcher.add_endpoint('v2_os_hypervisors_detail',
+                                '/v2/{tenant_id}/os-hypervisors/detail')
+compute_dispatcher.add_endpoint('v2_os_hypervisors_statistics',
+                                '/v2/{tenant_id}/os-hypervisors/statistics')
 
 # Keypairs
 compute_dispatcher.add_endpoint('v2_os_keypairs',
@@ -85,15 +93,44 @@ compute_dispatcher.add_endpoint('v2_os_keypairs',
 compute_dispatcher.add_endpoint('v2_os_keypair',
                                 '/v2/{tenant_id}/os-keypairs/{keypair_name}')
 
+# Manage Services
+compute_dispatcher.add_endpoint('v2_os_services',
+                                '/v2/{tenant_id}/os-services')
+compute_dispatcher.add_endpoint('v2_os_services_enable',
+                                '/v2/{tenant_id}/os-services/enable')
+compute_dispatcher.add_endpoint('v2_os_services_disable',
+                                '/v2/{tenant_id}/os-services/disable')
+
+# Networks
+compute_dispatcher.add_endpoint('v2_os_tenant_networks',
+                                '/v2/{tenant_id}/os-tenant-networks')
+compute_dispatcher.add_endpoint('v2_os_tenant_network',
+                                '/v2/{tenant_id}/os-tenant-networks'
+                                '/{network_id}')
+compute_dispatcher.add_endpoint('v2_os_networks',
+                                '/v2/{tenant_id}/os-networks')
+compute_dispatcher.add_endpoint('v2_os_network',
+                                '/v2/{tenant_id}/os-networks/{network_id}')
+
 # Quota Sets
 compute_dispatcher.add_endpoint('v2_os_quota_sets',
                                 '/v2/{tenant_id}/os-quota-sets')
 compute_dispatcher.add_endpoint('v2_os_quota_sets_default',
                                 '/v2/{tenant_id}/os-quota-sets/default')
+compute_dispatcher.add_endpoint('v2_os_quota_sets_target',
+                                '/v2/{tenant_id}/os-quota-sets/{target_id}')
+compute_dispatcher.add_endpoint('v2_os_quota_sets_target_defaults',
+                                '/v2/{tenant_id}/os-quota-sets/{target_id}'
+                                '/defaults')
 compute_dispatcher.add_endpoint('v2_os_quota_sets_user',
                                 '/v2/{tenant_id}/os-quota-sets/user={user_id}')
 compute_dispatcher.add_endpoint('v2_os_tenant_quota_sets',
                                 '/v2/{tenant_id}/os-quota-sets/{account_id}')
+compute_dispatcher.add_endpoint('v1_os_quota_sets_target',
+                                '/v1/{tenant_id}/os-quota-sets/{target_id}')
+compute_dispatcher.add_endpoint('v1_os_quota_sets_target_defaults',
+                                '/v1/{tenant_id}/os-quota-sets/{target_id'
+                                '}/defaults')
 
 # Security Groups
 compute_dispatcher.add_endpoint('v2_os_security_groups',
