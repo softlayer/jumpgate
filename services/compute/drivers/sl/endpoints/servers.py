@@ -2,7 +2,6 @@ import json
 import falcon
 
 from services.common.nested_dict import lookup
-#from slapistack.utils.error_handling import bad_request
 from SoftLayer import CCIManager, SoftLayerAPIError
 
 from services.common.error_handling import bad_request, not_found
@@ -120,7 +119,8 @@ class SLComputeV2Servers(object):
             new_instance = cci.create_instance(**payload)
         except SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_InvalidValue':
-                return bad_request(message=e.faultCode, details=e.faultString)
+                return bad_request(resp, message=e.faultCode,
+                                   details=e.faultString)
             raise
 
         resp.set_header('x-compute-request-id', 'create')
