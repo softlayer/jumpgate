@@ -18,3 +18,13 @@ storage_dispatcher.add_endpoint('v2_volume_type',
 storage_dispatcher.add_endpoint('v2_snapshots', '/v2/{tenant_id}/snapshots')
 storage_dispatcher.add_endpoint('v2_snapshot',
                                 '/v2/{tenant_id}/snapshots/{snapshot_id}')
+
+# V1 API - Unknown link
+
+storage_dispatcher.add_endpoint('v1_snapshots_detail',
+                                '/v1/{tenant_id}/snapshots/detail')
+storage_dispatcher.add_endpoint('v1_volume_types', '/v1/{tenant_id}/types')
+storage_dispatcher.add_endpoint('v1_volumes_detail',
+                                '/v1/{tenant_id}/volumes/detail')
+storage_dispatcher.add_endpoint('v1_volume',
+                                '/v1/{tenant_id}/volumes/{volume_id}')
