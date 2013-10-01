@@ -74,6 +74,15 @@ compute_dispatcher.add_endpoint('v2_os_floating_ips',
 compute_dispatcher.add_endpoint('v2_os_floating_ips_id',
                                 '/v2/{tenant_id}/os-floating-ips/{id}')
 
+# Floating IP DNS
+compute_dispatcher.add_endpoint('v2_os_floating_ip_dns',
+                                '/v2/{tenant_id}/os-floating-ip-dns')
+compute_dispatcher.add_endpoint('v2_os_floating_ip_dns_domain',
+                                '/v2/{tenant_id}/os-floating-ip-dns/{domain}')
+compute_dispatcher.add_endpoint('v2_os_floating_ip_dns_domain_entry',
+                                '/v2/{tenant_id}/os-floating-ip-dns/{domain}'
+                                '/entries/{entry}')
+
 # Floating IP Pools
 compute_dispatcher.add_endpoint('v2_os_floating_ip_pools',
                                 '/v2/{tenant_id}/os-floating-ip-pools')

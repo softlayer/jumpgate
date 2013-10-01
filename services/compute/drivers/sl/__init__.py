@@ -2,6 +2,7 @@ from services.compute import compute_dispatcher
 from .endpoints.availability_zones import SLComputeV2AvailabilityZones
 from .endpoints.extensions import SLComputeV2Extensions
 from .endpoints.extra_specs import SLComputeV2ExtraSpecsFlavor
+from .endpoints.dns import SLComputeV2DNSDomains, SLComputeV2DNSDomainEntry
 from .endpoints.flavors import SLComputeV2Flavor, SLComputeV2Flavors
 from .endpoints.flavors import (
     SLComputeV2Flavor, SLComputeV2Flavors, SLComputeV2FlavorsDetail)
@@ -38,6 +39,11 @@ compute_dispatcher.set_handler('v2_os_extra_specs_flavor',
 compute_dispatcher.set_handler('v2_flavor', flavor)
 compute_dispatcher.set_handler('v2_flavors', flavors)
 compute_dispatcher.set_handler('v2_flavors_detail', flavors_detail)
+
+compute_dispatcher.set_handler('v2_os_floating_ip_dns',
+                               SLComputeV2DNSDomains())
+compute_dispatcher.set_handler('v2_os_floating_ip_dns_domain_entry',
+                               SLComputeV2DNSDomainEntry())
 
 compute_dispatcher.set_handler('v2_limits', SLComputeV2Limits())
 
