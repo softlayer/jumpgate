@@ -104,7 +104,8 @@ class SLComputeV2Servers(object):
         client = req.env['sl_client']
         cci = CCIManager(client)
 
-        # TODO - Turn the flavor reference into actual numbers
+        # TODO - Turn the flavor reference body['server']['flavorRef'] into
+        # actual numbers
         payload = {
             'hostname': body['server']['name'],
             'domain': 'slapistack.com',  # TODO - Don't hardcode this

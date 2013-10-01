@@ -3,6 +3,14 @@ import json
 from SoftLayer import SoftLayerAPIError
 from services.common.error_handling import not_found
 
+# NOTES: Using the Event_Log instead of transactions might fit better.
+# One issue with this is that there is no create CCI event. However, there is a
+# 'Power On' event that happens very near the createDate of the relevent CCI.
+# If math.abs(Virtual_Guest.createDate - eventCreateDate) <= 5 seconds
+#     and the userType == 'SYSTEM'
+#     and the eventName == 'Power On'
+# then this is a creation event instead of a 'Power On' event.
+
 
 class SLComputeV2InstanceActions(object):
     def on_get(self, req, resp, tenant_id, server_id):

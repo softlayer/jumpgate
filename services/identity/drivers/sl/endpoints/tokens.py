@@ -14,11 +14,11 @@ logger = logging.getLogger(__name__)
 class SLIdentityV2Tokens(object):
     def on_post(self, req, resp):
         headers = req.headers
+        body = json.loads(req.stream.read().decode())
 
         if 'x-auth-token' in headers:
             (userId, hash) = headers['x-auth-token'].split(':')
         else:
-            body = json.loads(req.stream.read().decode())
 
             username = lookup(body, 'auth', 'passwordCredentials', 'username')
             password = lookup(body, 'auth', 'passwordCredentials', 'password')
@@ -98,6 +98,21 @@ class SLIdentityV2Tokens(object):
                 ],
                 'type': 'image',
                 'name': 'image',
+            },
+            {
+                'endpoint_links': [],
+                'endpoints': [
+                    {
+                        'region': 'RegionOne',
+                        'publicURL': 'http://localhost:5000',
+                        'privateURL': 'http://localhost:5000',
+                        'adminURL': 'http://localhost:5000',
+                        'internalURL': 'http://localhost:5000',
+                        'id': 1,
+                    },
+                ],
+                'type': 'network',
+                'name': 'network',
             },
         ]
 

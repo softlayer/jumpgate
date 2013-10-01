@@ -5,37 +5,8 @@ from services.common.error_handling import not_found
 from services.image import image_dispatcher as disp
 
 
-class SLImageV2Image(object):
-    def on_get(self, req, resp, tenant_id, image_guid):
-        client = req.env['sl_client']
-        image_obj = SLImages(client)
-        results = image_obj.get_image(image_guid)
-
-        if not results:
-            return not_found(resp, 'Image could not be found')
-
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'image': get_image_details_dict(req, results)})
-
-
-class SLImageV2ImagesDetail(object):
-    def on_get(self, req, resp, tenant_id=None):
-        client = req.env['sl_client']
-        image_obj = SLImages(client)
-        results = []
-
-        for image in image_obj.get_public_images():
-            results.append(get_image_details_dict(req, image))
-
-        if not results:
-            return not_found(resp, 'No images found')
-
-        resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'images': results})
-
-
 class SLImageV1Image(object):
-    def on_get(self, req, resp, image_guid):
+    def on_get(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)
         results = image_obj.get_image(image_guid)
@@ -46,7 +17,7 @@ class SLImageV1Image(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'image': get_image_details_dict(req, results)})
 
-    def on_head(self, req, resp, image_guid):
+    def on_head(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)
         results = get_image_details_dict(
@@ -80,7 +51,7 @@ class SLImageV1Image(object):
 
 
 class SLImageV1Images(object):
-    def on_get(self, req, resp):
+    def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
 
         # filter = {

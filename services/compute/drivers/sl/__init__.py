@@ -3,6 +3,8 @@ from .endpoints.availability_zones import SLComputeV2AvailabilityZones
 from .endpoints.extensions import SLComputeV2Extensions
 from .endpoints.extra_specs import SLComputeV2ExtraSpecsFlavor
 from .endpoints.flavors import SLComputeV2Flavor, SLComputeV2Flavors
+from .endpoints.flavors import (
+    SLComputeV2Flavor, SLComputeV2Flavors, SLComputeV2FlavorsDetail)
 from .endpoints.floating_ips import SLComputeV2OSFloatingIps
 from .endpoints.keypairs import SLComputeV2Keypairs, SLComputeV2Keypair
 from .endpoints.limits import SLComputeV2Limits
@@ -21,6 +23,7 @@ from .endpoints.instance_actions import SLComputeV2InstanceActions
 # V2 Routes
 flavor = SLComputeV2Flavor()
 flavors = SLComputeV2Flavors()
+flavors_detail = SLComputeV2FlavorsDetail()
 
 compute_dispatcher.set_handler('v2_availability_zone',
                                SLComputeV2AvailabilityZones())
@@ -34,7 +37,7 @@ compute_dispatcher.set_handler('v2_os_extra_specs_flavor',
 
 compute_dispatcher.set_handler('v2_flavor', flavor)
 compute_dispatcher.set_handler('v2_flavors', flavors)
-compute_dispatcher.set_handler('v2_flavors_detail', flavors)
+compute_dispatcher.set_handler('v2_flavors_detail', flavors_detail)
 
 compute_dispatcher.set_handler('v2_limits', SLComputeV2Limits())
 
@@ -74,7 +77,7 @@ compute_dispatcher.set_handler('v2_os_instance_actions',
 
 compute_dispatcher.set_handler('v2_tenant_flavor', flavor)
 compute_dispatcher.set_handler('v2_tenant_flavors', flavors)
-compute_dispatcher.set_handler('v2_tenant_flavors_detail', flavors)
+compute_dispatcher.set_handler('v2_tenant_flavors_detail', flavors_detail)
 
 compute_dispatcher.set_handler('v2_tenant_usage', SLComputeV2Usage())
 
