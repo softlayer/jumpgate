@@ -7,8 +7,12 @@ image_dispatcher = Dispatcher(api)
 
 image_dispatcher.add_endpoint('v2_schema_images',
                               '/v2/schemas/images')
-image_dispatcher.add_endpoint('v2_images', '/v2/images')
-image_dispatcher.add_endpoint('v2_image', '/v2/images/{image_guid}')
+image_dispatcher.add_endpoint('v2_schema_image',
+                              '/v2/schemas/image')
+image_dispatcher.add_endpoint('v2_images', '/v2/{tenant_id}/images')
+image_dispatcher.add_endpoint('v2_image',
+                              '/v2/{tenant_id}/images/{image_guid}')
+
 image_dispatcher.add_endpoint('v2_image_file', '/v2/images/{image_guid}/file')
 image_dispatcher.add_endpoint('v2_image_tag',
                               '/v2/images/{image_guid}/tags/{tag}')

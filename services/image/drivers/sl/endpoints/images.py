@@ -44,7 +44,7 @@ class SLImageV1Image(object):
 
         return matching_image
 
-    def on_get(self, req, resp, image_guid):
+    def on_get(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         results = self.get_image(client, image_guid)
 
@@ -54,7 +54,7 @@ class SLImageV1Image(object):
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'image': get_image_details_dict(req, results)})
 
-    def on_head(self, req, resp, image_guid):
+    def on_head(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         results = get_image_details_dict(
             req, self.get_image(client, image_guid))
@@ -87,7 +87,7 @@ class SLImageV1Image(object):
 
 
 class SLImageV1Images(object):
-    def on_get(self, req, resp):
+    def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
 
         # filter = {

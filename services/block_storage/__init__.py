@@ -6,6 +6,8 @@ storage_dispatcher = Dispatcher(api)
 # V2 API - http://api.openstack.org/api-ref-blockstorage.html#volumes-api
 
 storage_dispatcher.add_endpoint('v2_volumes', '/v2/{tenant_id}/volumes')
+storage_dispatcher.add_endpoint('v2_os_volumes', '/v2/{tenant_id}/os-volumes')
+
 storage_dispatcher.add_endpoint('v2_volumes_detail',
                                 '/v2/{tenant_id}/volumes/detail')
 storage_dispatcher.add_endpoint('v2_volume',
