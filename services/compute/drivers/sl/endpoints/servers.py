@@ -101,9 +101,6 @@ class SLComputeV2Servers(object):
 
     def on_post(self, req, resp, tenant_id):
         body = json.loads(req.stream.read().decode())
-        print("POST server")
-        print(body)
-        raise Exception()
         client = req.env['sl_client']
         cci = CCIManager(client)
 

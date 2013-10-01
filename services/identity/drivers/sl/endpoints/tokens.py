@@ -22,8 +22,6 @@ class SLIdentityV2Tokens(object):
     def on_post(self, req, resp):
         headers = req.headers
         body = json.loads(req.stream.read().decode())
-        print("ON POST TOKENS")
-        print(body)
 
         if 'x-auth-token' in headers:
             (userId, hash) = headers['x-auth-token'].split(':')
