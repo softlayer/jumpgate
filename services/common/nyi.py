@@ -21,7 +21,7 @@ class NYI(object):
     def _standard_responder(self, req, resp):
         print("UNKNOWN PATH:", req.method, req.path)
         resp.status = falcon.HTTP_501
-        resp.body = json.dumps({
+        resp.body = json.dumps({'notImplemented': {
             'message': 'Not Implemented',
             'detail': 'Not Implemented',
-        })
+        }})

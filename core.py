@@ -28,7 +28,7 @@ except FileNotFoundError as e:
     print("EXCEPTION:", e)
     api.config['driver_config'] = None
 
-for service in ['identity', 'compute', 'image', 'block_storage']:
+for service in ['shared', 'identity', 'compute', 'image', 'block_storage']:
     if service in config:
         try:
             api.config['installed_modules'][service] = True

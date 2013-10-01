@@ -60,6 +60,14 @@ compute_dispatcher.add_endpoint('v2_availability_zone',
 compute_dispatcher.add_endpoint('v2_availability_zone_detail',
                                 '/v2/{tenant_id}/os-availability-zone/detail')
 
+# Flavor Extra Specs
+compute_dispatcher.add_endpoint('v2_os_extra_specs_flavor',
+                                '/v2/{tenant_id}/flavors/{flavor_id}'
+                                '/os-extra_specs')
+compute_dispatcher.add_endpoint('v2_os_extra_specs_flavor_key',
+                                '/v2/{tenant_id}/flavors/{flavor_id}'
+                                '/os-extra_specs/{key_id}')
+
 # Floating IPs
 compute_dispatcher.add_endpoint('v2_os_floating_ips',
                                 '/v2/{tenant_id}/os-floating-ips')

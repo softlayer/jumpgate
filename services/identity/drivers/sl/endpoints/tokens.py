@@ -12,13 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class SLIdentityV2Tokens(object):
-    def on_delete(self, req, resp, token_id):
-        # This method is called when OpenStack wants to remove a token's
-        # validity, such as when a cookie expires. Our login tokens don't
-        # expire, so this does nothing.
-        resp.status = falcon.HTTP_202
-        resp.body = ''
-
     def on_post(self, req, resp):
         headers = req.headers
 
@@ -134,3 +127,12 @@ class SLIdentityV2Tokens(object):
 
         resp.status = falcon.HTTP_200
         resp.body = json.dumps({'access': access})
+
+
+class SLIdentityV2Token(object):
+    def on_delete(self, req, resp, token_id):
+        # This method is called when OpenStack wants to remove a token's
+        # validity, such as when a cookie expires. Our login tokens don't
+        # expire, so this does nothing.
+        resp.status = falcon.HTTP_202
+        resp.body = ''

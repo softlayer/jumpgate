@@ -1,6 +1,7 @@
 from services.compute import compute_dispatcher
 from .endpoints.availability_zones import SLComputeV2AvailabilityZones
 from .endpoints.extensions import SLComputeV2Extensions
+from .endpoints.extra_specs import SLComputeV2ExtraSpecsFlavor
 from .endpoints.flavors import SLComputeV2Flavor, SLComputeV2Flavors
 from .endpoints.floating_ips import SLComputeV2OSFloatingIps
 from .endpoints.keypairs import SLComputeV2Keypairs, SLComputeV2Keypair
@@ -27,6 +28,9 @@ compute_dispatcher.set_handler('v2_availability_zone_detail',
                                SLComputeV2AvailabilityZones())
 
 compute_dispatcher.set_handler('v2_extensions', SLComputeV2Extensions())
+
+compute_dispatcher.set_handler('v2_os_extra_specs_flavor',
+                               SLComputeV2ExtraSpecsFlavor())
 
 compute_dispatcher.set_handler('v2_flavor', flavor)
 compute_dispatcher.set_handler('v2_flavors', flavors)

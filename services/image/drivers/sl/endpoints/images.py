@@ -5,48 +5,40 @@ from services.common.error_handling import not_found
 from services.image import image_dispatcher as disp
 
 
+class SLImageV2Image(object):
+    def on_get(self, req, resp, tenant_id, image_guid):
+        client = req.env['sl_client']
+        image_obj = SLImages(client)
+        results = image_obj.get_image(image_guid)
+
+        if not results:
+            return not_found(resp, 'Image could not be found')
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps({'image': get_image_details_dict(req, results)})
+
+
+class SLImageV2ImagesDetail(object):
+    def on_get(self, req, resp, tenant_id=None):
+        client = req.env['sl_client']
+        image_obj = SLImages(client)
+        results = []
+
+        for image in image_obj.get_public_images():
+            results.append(get_image_details_dict(req, image))
+
+        if not results:
+            return not_found(resp, 'No images found')
+
+        resp.status = falcon.HTTP_200
+        resp.body = json.dumps({'images': results})
+
+
 class SLImageV1Image(object):
-    __public_images = None
-    # This is not a safe place to store private images since this class
-    # is only initialized once per app instance
-    __private_images = None
-
-    def get_image(self, client, image_guid):
-        account = client['Account']
-
-        matching_image = None
-
-        private = self.__private_images
-
-        mask = 'id,accountId,name,globalIdentifier,blockDevices,parentId'
-
-        if not private:
-            private = account.getPrivateBlockDeviceTemplateGroups(mask=mask)
-            self.__private_images = private
-
-        for image in private:
-            if image.get('globalIdentifier') == image_guid:
-                matching_image = image
-                break
-
-        if not matching_image:
-            public = self.__public_images
-
-            if not public:
-                vgbd = client['Virtual_Guest_Block_Device_Template_Group']
-                public = vgbd.getPublicImages(mask=mask)
-                self.__public_images = public
-
-            for image in public:
-                if image.get('globalIdentifier') == image_guid:
-                    matching_image = image
-                    break
-
-        return matching_image
-
     def on_get(self, req, resp, image_guid):
         client = req.env['sl_client']
-        results = self.get_image(client, image_guid)
+        image_obj = SLImages(client)
+        results = image_obj.get_image(image_guid)
 
         if not results:
             return not_found(resp, 'Image could not be found')
@@ -56,8 +48,9 @@ class SLImageV1Image(object):
 
     def on_head(self, req, resp, image_guid):
         client = req.env['sl_client']
+        image_obj = SLImages(client)
         results = get_image_details_dict(
-            req, self.get_image(client, image_guid))
+            req, image_obj.get_image(image_guid))
 
         if not results:
             return not_found(resp, 'Image could not be found')
@@ -118,7 +111,7 @@ class SLImageV1Images(object):
 
 
 def get_image_details_dict(req, image, tenant_id=None):
-    if not image:
+    if not image or not image.get('globalIdentifier'):
         return {}
 
     # TODO - Don't hardcode some of these values
@@ -166,3 +159,51 @@ def get_image_mask():
     ]
 
     return 'mask[%s]' % ','.join(mask)
+
+
+class SLImages(object):
+    __public_images = None
+    # This is not a safe place to store private images since this class
+    # is only initialized once per app instance
+#    __private_images = None
+
+    def __init__(self, client):
+        self.__private_images = None
+        self.client = client
+
+    def get_image(self, image_guid):
+        matching_image = None
+
+#        private = self.__private_images
+
+#        if not private:
+#            account = self.client['Account']
+#            private = account.getPrivateBlockDeviceTemplateGroups(mask=mask)
+#            self.__private_images = private
+
+#        for image in private:
+#            if image.get('globalIdentifier') == image_guid:
+#                matching_image = image
+#                break
+
+        if not matching_image:
+            public = self.get_public_images()
+
+            for image in public:
+                if image.get('globalIdentifier') == image_guid:
+                    matching_image = image
+                    break
+
+        return matching_image
+
+    def get_public_images(self):
+        public = self.__public_images
+
+        if not public:
+            mask = 'id,accountId,name,globalIdentifier,blockDevices,parentId'
+
+            vgbd = self.client['Virtual_Guest_Block_Device_Template_Group']
+            public = vgbd.getPublicImages(mask=mask)
+            self.__public_images = public
+
+        return public
