@@ -2,10 +2,10 @@ import datetime
 import json
 import falcon
 import logging
-from SoftLayer import Client, SoftLayerAPIError, TokenAuthentication
+from SoftLayer import Client, SoftLayerAPIError
 
-from services.common.error_handling import unauthorized, compute_fault
-from services.common.nested_dict import lookup
+from services.shared.drivers.sl.auth import get_auth
+from services.common.error_handling import unauthorized
 from services.identity import identity_dispatcher
 
 logger = logging.getLogger(__name__)
@@ -13,33 +13,10 @@ logger = logging.getLogger(__name__)
 
 class SLIdentityV2Tokens(object):
     def on_post(self, req, resp):
-        headers = req.headers
-        body = json.loads(req.stream.read().decode())
-
-        if 'x-auth-token' in headers:
-            (userId, hash) = headers['x-auth-token'].split(':')
-        else:
-
-            username = lookup(body, 'auth', 'passwordCredentials', 'username')
-            password = lookup(body, 'auth', 'passwordCredentials', 'password')
-
-            try:
-                client = Client()
-                (userId, hash) = client.authenticate_with_password(username,
-                                                                   password)
-            except SoftLayerAPIError as e:
-                # TODO - Do the right thing here
-                if e.faultCode == \
-                        'SoftLayer_Exception_User_Customer_LoginFailed':
-                    return unauthorized(resp,
-                                        message=e.faultCode,
-                                        details=e.faultString)
-
-                return compute_fault(resp,
-                                     message=e.faultCode,
-                                     details=e.faultString)
-
-        auth = TokenAuthentication(userId, hash)
+        body = req.stream.read().decode()
+        auth, token, err = get_auth(req, resp, body=body)
+        if err:
+            return err
         client = Client(auth=auth)
 
         try:
@@ -120,7 +97,7 @@ class SLIdentityV2Tokens(object):
         access = {
             'token': {
                 'expires': expiration.isoformat(),
-                'id': str(userId) + ':' + hash,
+                'id': token,
                 'tenant': {
                     'id': id,
                     'enabled': True,

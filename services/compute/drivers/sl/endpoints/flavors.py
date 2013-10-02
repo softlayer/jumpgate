@@ -4,46 +4,53 @@ from services.common.error_handling import bad_request, not_found
 from services.compute import compute_dispatcher as disp
 
 FLAVORS = {
-    '1': {
-        'id': '1',
+    1: {
+        'id': 1,
         'name': '1 vCPU, 1GB ram, 25GB',
         'ram': 1024,
         'disk': 25,
         'cpus': 1,
     },
-    '2': {
-        'id': '2',
+    2: {
+        'id': 2,
         'name': '1 vCPU, 1GB ram, 100GB',
         'ram': 1024,
         'disk': 100,
         'cpus': 1,
     },
-    '3': {
-        'id': '3',
+    3: {
+        'id': 3,
         'name': '2 vCPU, 2GB ram, 100GB',
-        'ram': 4 * 1024,
+        'ram': 2 * 1024,
         'disk': 100,
         'cpus': 2,
     },
-    '4': {
-        'id': '4',
+    4: {
+        'id': 4,
         'name': '4 vCPU, 4GB ram, 100GB',
         'ram': 4 * 1024,
         'disk': 100,
         'cpus': 4,
     },
-    '5': {
-        'id': '5',
+    5: {
+        'id': 5,
         'name': '8 vCPU, 8GB ram, 100GB',
         'ram': 8 * 1024,
         'disk': 100,
         'cpus': 8,
     },
 }
+# Set flavor '1' as the default
+FLAVORS[None] = FLAVORS[1]
 
 
 class SLComputeV2Flavor(object):
     def on_get(self, req, resp, flavor_id, tenant_id=None):
+        try:
+            flavor_id = int(flavor_id)
+        except ValueError:
+            return not_found(resp, 'Flavor could not be found')
+
         if flavor_id not in FLAVORS:
             return not_found(resp, 'Flavor could not be found')
 
@@ -73,11 +80,11 @@ class SLComputeV2FlavorsDetail(object):
 
 
 def filter_flavor_refs(req, resp, flavor_refs):
-    if req.get_param('marker'):
+    if req.get_param('marker') is not None:
         marker = req.get_param('marker')
-        flavor_refs = [f for f in flavor_refs if f['id'] > marker]
+        flavor_refs = [f for f in flavor_refs if str(f['id']) > marker]
 
-    if req.get_param('minDisk'):
+    if req.get_param('minDisk') is not None:
         try:
             min_disk = int(req.get_param('minDisk'))
             flavor_refs = [f for f in flavor_refs
@@ -86,7 +93,7 @@ def filter_flavor_refs(req, resp, flavor_refs):
             bad_request(resp, message="Invalid minDisk parameter.")
             return
 
-    if req.get_param('minRam'):
+    if req.get_param('minRam') is not None:
         try:
             min_ram = int(req.get_param('minRam'))
             flavor_refs = [f for f in flavor_refs if f['ram'] >= min_ram]
@@ -94,7 +101,7 @@ def filter_flavor_refs(req, resp, flavor_refs):
             bad_request(resp, message="Invalid minRam parameter.")
             return
 
-    if req.get_param('limit'):
+    if req.get_param('limit') is not None:
         try:
             limit = int(req.get_param('limit'))
             flavor_refs = flavor_refs[:limit]

@@ -1,6 +1,7 @@
-from SoftLayer import Client, TokenAuthentication
+from SoftLayer import Client
 
 from services.common.babelfish import before_hooks
+from services.shared.drivers.sl.auth import get_auth
 
 
 def get_client(req, resp, kwargs):
@@ -9,9 +10,9 @@ def get_client(req, resp, kwargs):
     req.env['tenant_id'] = None
 
     if req.headers.get('x-auth-token'):
-        (userId, hash) = req.headers['x-auth-token'].split(':')
-
-        auth = TokenAuthentication(userId, hash)
+        auth, token, err = get_auth(req, resp)
+        if err:
+            return err
         client.auth = auth
 
         account = client['Account'].getObject()

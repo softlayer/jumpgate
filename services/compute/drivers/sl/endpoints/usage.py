@@ -35,7 +35,7 @@ class SLComputeV2Usage(object):
                 'local_gb': 1,
                 'memory_mb': instance['maxMemory'],
                 'name': instance['hostname'],
-                'started_at': instance['provisionDate'],
+                'started_at': instance.get('provisionDate'),
                 'state': instance['status']['keyName'].lower(),
                 'tenant_id': target_id,
                 'uptime': 3600,

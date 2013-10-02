@@ -10,7 +10,8 @@ tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_get_keypair_det
 tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_create_with_invalid_pub_key
 tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_create_with_pub_key
 tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_delete_nonexistant_key
-# Skipped due to the expected behavior of creating public/private key pairs. SL doesn't support that
+
+# Skipped due to the expected behavior of automatically creating public/private key pairs. SL doesn't support that
 # tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_create_delete
 # tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypairs_create_list_delete
 
@@ -18,7 +19,7 @@ tempest.api.compute.test_auth_token:AuthTokenTestJSON.test_v2_token
 tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list
 tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_detail
 tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_with_non_admin_user
-# Skipped due to non-admin users able to see availabiloty zone listing
+# Skipped due to non-admin users able to see availability zone listing
 # tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_detail_with_non_admin_user
 
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers
@@ -30,6 +31,9 @@ tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_serve
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_created_server_vcpus
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_can_log_into_created_server
 
+# Skipped due to SL not having support for specifying default password
+# tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_server_with_admin_password
+
 # Skipped due to IP Address Checks (Not applicable to SL Network)
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_server_details
 
@@ -37,8 +41,6 @@ tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_serve
 # tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions
 tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions_invalid_server
 
-# Skipped due to SL not having support for specifying default password
-# tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_server_with_admin_password
 
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_specify_keypair
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_with_existing_server_name
@@ -48,19 +50,21 @@ tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_with_existi
 # Skipped due to SL not having this level of control on IP allocation
 # tempest.api.compute.servers.test_servers:ServersTestJSON.test_update_access_server_address
 
+# Skipped due to several reasons
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_flavor
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_image
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_server_name
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_server_status
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_limit_results
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_flavor
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_image
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_limit
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_server_name
+# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_image
+# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_server_status
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_server_status
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filtered_by_ip
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filtered_by_ip_regex
-# tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filtered_by_name_wildcard
+
+tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_server_name
+tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_limit_results
+tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_limit
+tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_server_name
+tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filtered_by_name_wildcard
+tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filtered_by_ip
 
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_get_flavor
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_get_flavor_details_for_invalid_flavor_id
