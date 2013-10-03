@@ -1,4 +1,3 @@
-import json
 import falcon
 
 
@@ -17,4 +16,4 @@ class SLIdentityV2Tenants(object):
         ]
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'tenants': tenants, 'tenant_links': []})
+        resp.body = {'tenants': tenants, 'tenant_links': []}

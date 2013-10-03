@@ -1,4 +1,3 @@
-import json
 
 from SoftLayer import CCIManager
 
@@ -21,4 +20,4 @@ class SLComputeV2AvailabilityZones(object):
                             'zoneName': name})
         results = sorted(results, key=lambda x: x['zoneName'])
 
-        resp.body = json.dumps({'availabilityZoneInfo': results})
+        resp.body = {'availabilityZoneInfo': results}

@@ -1,4 +1,3 @@
-import json
 import falcon
 from services.identity import identity_dispatcher
 
@@ -21,4 +20,4 @@ class SLIdentityV2Index(object):
         }
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'versions': versions})
+        resp.body = {'versions': versions}

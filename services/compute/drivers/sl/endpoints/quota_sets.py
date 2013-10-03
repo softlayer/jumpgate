@@ -1,4 +1,3 @@
-import json
 
 
 class SLComputeV2OSQuotaSets(object):
@@ -19,4 +18,4 @@ class SLComputeV2OSQuotaSets(object):
             "security_groups": 10
         }
 
-        resp.body = json.dumps({'quota_set': qs})
+        resp.body = {'quota_set': qs}

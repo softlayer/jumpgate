@@ -96,7 +96,7 @@ class SLComputeV2Servers(object):
             })
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'servers': results})
+        resp.body = {'servers': results}
 
     def on_post(self, req, resp, tenant_id):
         client = req.env['sl_client']
@@ -114,6 +114,12 @@ class SLComputeV2Servers(object):
                 return bad_request(resp, 'KeyPair could not be found')
             ssh_keys.append(keys[0]['id'])
 
+        private_network_only = False
+        if lookup(body, 'networks'):
+            if not any([network['uuid'] == 'public'
+                        in network for network in lookup(body, 'networks')]):
+                private_network_only = True
+
         flavor = FLAVORS[flavor_id]
         cci = CCIManager(client)
 
@@ -126,6 +132,7 @@ class SLComputeV2Servers(object):
             # 'datacenter' => ['name' => $datacenter],
             'image_id': body['server']['imageRef'],
             'ssh_keys': ssh_keys,
+            'private': private_network_only,
         }
 
         try:
@@ -138,14 +145,14 @@ class SLComputeV2Servers(object):
 
         resp.set_header('x-compute-request-id', 'create')
         resp.status = falcon.HTTP_202
-        resp.body = json.dumps({'server': {
+        resp.body = {'server': {
             'id': new_instance['id'],
             'links': [{
                 'href': disp.get_endpoint_url(req, 'v2_server',
                                               instance_id=new_instance['id']),
                 'rel': 'self'}],
             'adminPass': '',
-        }})
+        }}
 
 
 def get_list_params(req):
@@ -223,7 +230,7 @@ class SLComputeV2ServersDetail(object):
             results.append(get_server_details_dict(req, instance))
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'servers': results})
+        resp.body = {'servers': results}
 
 
 class SLComputeV2Server(object):
@@ -240,7 +247,7 @@ class SLComputeV2Server(object):
         results = get_server_details_dict(req, instance)
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'server': results})
+        resp.body = {'server': results}
 
     def on_delete(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']

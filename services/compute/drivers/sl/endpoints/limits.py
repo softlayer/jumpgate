@@ -1,4 +1,3 @@
-import json
 import falcon
 
 
@@ -30,4 +29,4 @@ class SLComputeV2Limits(object):
         }
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'limits': limits})
+        resp.body = {'limits': limits}

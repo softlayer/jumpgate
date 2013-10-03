@@ -1,12 +1,12 @@
 from falcon import API
 
-#after_hooks = []
+after_hooks = []
 before_hooks = []
 
 
-# def after_request(req, resp, kwargs):
-#     for hook in after_hooks:
-#         hook(req, resp, kwargs)
+def after_request(req, resp):
+    for hook in after_hooks:
+        hook(req, resp)
 
 
 def before_request(req, resp, kwargs):

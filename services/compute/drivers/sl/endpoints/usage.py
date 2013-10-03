@@ -1,5 +1,4 @@
 import datetime
-import json
 
 from SoftLayer import CCIManager
 
@@ -45,4 +44,4 @@ class SLComputeV2Usage(object):
             usage['total_memory_mb_usage'] += instance['maxMemory']
             usage['server_usages'].append(server_dict)
 
-        resp.body = json.dumps({'tenant_usage': usage})
+        resp.body = {'tenant_usage': usage}

@@ -1,4 +1,3 @@
-import json
 import falcon
 
 from services.common.error_handling import not_found
@@ -15,7 +14,7 @@ class SLImageV1Image(object):
             return not_found(resp, 'Image could not be found')
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'image': get_image_details_dict(req, results)})
+        resp.body = {'image': get_image_details_dict(req, results)}
 
     def on_head(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
@@ -47,7 +46,7 @@ class SLImageV1Image(object):
 
         resp.status = falcon.HTTP_200
         resp.set_headers(headers)
-        resp.body = json.dumps({'image': results})
+        resp.body = {'image': results}
 
 
 class SLImageV1Images(object):
@@ -76,9 +75,8 @@ class SLImageV1Images(object):
                 continue
             results.append(get_image_details_dict(req, image))
 
-        resp.body = json.dumps({'images':
-                                sorted(results,
-                                       key=lambda x: x['name'].lower())})
+        resp.body = {'images': sorted(results,
+                                      key=lambda x: x['name'].lower())}
 
 
 def get_image_details_dict(req, image, tenant_id=None):

@@ -1,4 +1,3 @@
-import json
 
 
 class SLComputeV2OSNetworks(object):
@@ -9,7 +8,7 @@ class SLComputeV2OSNetworks(object):
             mask='id, modifyDate, gateway, networkVlanId, broadcastAddress, '
             'netmask, networkIdentifier, cidr, reverseDomain, note')
         networks = [format_network(network) for network in sl_networks]
-        resp.body = json.dumps({'networks': networks})
+        resp.body = {'networks': networks}
 
 
 class SLComputeV2OSNetwork(object):
@@ -20,7 +19,7 @@ class SLComputeV2OSNetwork(object):
             mask='id, modifyDate, gateway, networkVlanId, broadcastAddress, '
             'netmask, networkIdentifier, cidr, reverseDomain, note')
         network = format_network(sl_network)
-        resp.body = json.dumps({'network': network})
+        resp.body = {'network': network}
 
 
 def format_network(sl_network):

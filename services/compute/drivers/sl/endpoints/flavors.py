@@ -1,4 +1,3 @@
-import json
 from services.common.error_handling import bad_request, not_found
 
 from services.compute import compute_dispatcher as disp
@@ -55,17 +54,16 @@ class SLComputeV2Flavor(object):
             return not_found(resp, 'Flavor could not be found')
 
         flavor = get_flavor_details(req, FLAVORS[flavor_id], detail=True)
-        resp.body = json.dumps({'flavor': flavor})
+        resp.body = {'flavor': flavor}
 
 
 class SLComputeV2Flavors(object):
     def on_get(self, req, resp, tenant_id=None):
-        flavor_refs = [flavor for flavor_id, flavor in FLAVORS.items()]
-        flavor_refs = filter_flavor_refs(req, resp, flavor_refs)
+        flavor_refs = filter_flavor_refs(req, resp, get_listing_flavors())
         if flavor_refs is None:
             return
         flavors = [get_flavor_details(req, flavor) for flavor in flavor_refs]
-        resp.body = json.dumps({'flavors': flavors})
+        resp.body = {'flavors': flavors}
 
 
 class SLComputeV2FlavorsDetail(object):
@@ -76,7 +74,11 @@ class SLComputeV2FlavorsDetail(object):
             return
         flavors = [get_flavor_details(req, flavor, detail=True)
                    for flavor in flavor_refs]
-        resp.body = json.dumps({'flavors': flavors})
+        resp.body = {'flavors': flavors}
+
+
+def get_listing_flavors():
+    return [flavor for flavor_id, flavor in FLAVORS.items() if flavor_id]
 
 
 def filter_flavor_refs(req, resp, flavor_refs):

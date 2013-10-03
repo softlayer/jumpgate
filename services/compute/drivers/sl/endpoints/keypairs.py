@@ -20,9 +20,9 @@ class SLComputeV2Keypairs(object):
         mgr = SshKeyManager(client)
         keypairs = mgr.list_keys()
 
-        resp.body = json.dumps({
+        resp.body = {
             'keypairs': [{
-                'keypair': format_keypair(keypair)} for keypair in keypairs]})
+                'keypair': format_keypair(keypair)} for keypair in keypairs]}
 
     def on_post(self, req, resp, tenant_id):
         body = json.loads(req.stream.read().decode())
@@ -46,7 +46,7 @@ class SLComputeV2Keypairs(object):
 
         try:
             keypair = mgr.add_key(key, name)
-            resp.body = json.dumps({'keypair': format_keypair(keypair)})
+            resp.body = {'keypair': format_keypair(keypair)}
         except SoftLayerAPIError as e:
             if 'Unable to generate a fingerprint' in e.faultString:
                 return bad_request(resp, e.faultString)
@@ -65,7 +65,7 @@ class SLComputeV2Keypair(object):
 
         keypair = mgr.get_key(keys[0]['id'])
 
-        resp.body = json.dumps({'keypair': format_keypair(keypair)})
+        resp.body = {'keypair': format_keypair(keypair)}
 
     def on_delete(self, req, resp, tenant_id, keypair_name):
         # keypair_name

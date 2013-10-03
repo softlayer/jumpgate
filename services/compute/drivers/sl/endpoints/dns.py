@@ -1,5 +1,6 @@
-import falcon
 import json
+
+import falcon
 import urllib.parse
 
 from SoftLayer import DNSManager
@@ -22,7 +23,7 @@ class SLComputeV2DNSDomains(object):
                 'availability_zone': None,
             })
 
-        resp.body = json.dumps({'domain_entries': results})
+        resp.body = {'domain_entries': results}
 
 
 class SLComputeV2DNSDomainEntry(object):
@@ -54,8 +55,7 @@ class SLComputeV2DNSDomainEntry(object):
         result = get_dns_entry_dict(domain, record['host'], record['data'],
                                     record['type'], record['id'])
 
-        resp.body = json.dumps({'dns_entry': result})
-
+        resp.body = {'dns_entry': result}
 
     def on_put(self, req, resp, tenant_id, domain, entry):
         client = req.env['sl_client']
@@ -82,7 +82,7 @@ class SLComputeV2DNSDomainEntry(object):
         result = get_dns_entry_dict(domain, entry, ip, record_type,
                                     new_record['id'])
 
-        resp.body = json.dumps({'dns_entry': result})
+        resp.body = {'dns_entry': result}
 
 
 def get_dns_entry_dict(domain, name, ip, type, id=None):

@@ -1,5 +1,4 @@
 import datetime
-import json
 import falcon
 import logging
 from SoftLayer import Client, SoftLayerAPIError
@@ -118,7 +117,7 @@ class SLIdentityV2Tokens(object):
         }
 
         resp.status = falcon.HTTP_200
-        resp.body = json.dumps({'access': access})
+        resp.body = {'access': access}
 
 
 class SLIdentityV2Token(object):

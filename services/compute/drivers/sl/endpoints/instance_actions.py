@@ -1,4 +1,3 @@
-import json
 
 from SoftLayer import SoftLayerAPIError
 from services.common.error_handling import not_found
@@ -10,6 +9,8 @@ from services.common.error_handling import not_found
 #     and the userType == 'SYSTEM'
 #     and the eventName == 'Power On'
 # then this is a creation event instead of a 'Power On' event.
+# client['Event_Log'].getAllObjects(
+#    limit=10, filter={'userType': {'operation': 'SYSTEM'}}
 
 
 class SLComputeV2InstanceActions(object):
@@ -40,7 +41,7 @@ class SLComputeV2InstanceActions(object):
             actions.append(
                 format_action(tenant_id, server['activeTransaction']))
 
-        resp.body = json.dumps({'instanceActions': actions})
+        resp.body = {'instanceActions': actions}
 
 
 def format_action(account_id, transaction):
