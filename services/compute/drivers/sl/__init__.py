@@ -3,9 +3,10 @@ from .endpoints.availability_zones import SLComputeV2AvailabilityZones
 from .endpoints.extensions import SLComputeV2Extensions
 from .endpoints.extra_specs import SLComputeV2ExtraSpecsFlavor
 from .endpoints.dns import SLComputeV2DNSDomains, SLComputeV2DNSDomainEntry
-from .endpoints.flavors import SLComputeV2Flavor, SLComputeV2Flavors
 from .endpoints.flavors import (
     SLComputeV2Flavor, SLComputeV2Flavors, SLComputeV2FlavorsDetail)
+from .endpoints.server_metadata import (
+    SLComputeV2ServerMetadata, SLComputeV2ServerMetadataKey)
 from .endpoints.floating_ips import SLComputeV2OSFloatingIps
 from .endpoints.keypairs import SLComputeV2Keypairs, SLComputeV2Keypair
 from .endpoints.limits import SLComputeV2Limits
@@ -80,6 +81,11 @@ compute_dispatcher.set_handler('v2_servers_detail', SLComputeV2ServersDetail())
 compute_dispatcher.set_handler('v2_server_action', SLComputeV2ServerAction())
 compute_dispatcher.set_handler('v2_os_instance_actions',
                                SLComputeV2InstanceActions())
+
+compute_dispatcher.set_handler('v2_server_metadata',
+                               SLComputeV2ServerMetadata())
+compute_dispatcher.set_handler('v2_server_metadata_key',
+                               SLComputeV2ServerMetadataKey())
 
 compute_dispatcher.set_handler('v2_tenant_flavor', flavor)
 compute_dispatcher.set_handler('v2_tenant_flavors', flavors)
