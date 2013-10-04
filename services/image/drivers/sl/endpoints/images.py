@@ -132,8 +132,6 @@ def get_image_mask():
 
 class SLImages(object):
     __public_images = None
-    # This is not a safe place to store private images since this class
-    # is only initialized once per app instance
 #    __private_images = None
 
     def __init__(self, client):
