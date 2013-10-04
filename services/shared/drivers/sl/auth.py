@@ -37,7 +37,7 @@ def get_password_auth(req, resp, body=None):
     return auth, token, None
 
 
-def get_api_key_auth(req, resp, body=False):
+def get_api_key_auth(req, resp, body=None):
     headers = req.headers
 
     if 'x-auth-token' in headers:

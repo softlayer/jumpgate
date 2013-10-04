@@ -26,8 +26,8 @@ for service in ['shared', 'identity', 'compute', 'image', 'block_storage',
                 'network']:
     if service in config:
         try:
-            api.config['installed_modules'][service] = True
             driver = importlib.import_module(config[service].get('driver'))
+            api.config['installed_modules'][service] = True
             # api.config[service + '_driver'] = driver
         except ImportError as e:
             # TODO - Add logging

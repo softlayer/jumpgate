@@ -10,8 +10,8 @@ class SLIdentityV2Tenants(object):
             {
                 'enabled': True,
                 'description': None,
-                'name': account['id'],
-                'id': account['id'],
+                'name': str(account['id']),
+                'id': str(account['id']),
             },
         ]
 

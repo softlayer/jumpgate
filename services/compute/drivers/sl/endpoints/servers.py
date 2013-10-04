@@ -105,6 +105,8 @@ class SLComputeV2Servers(object):
         if flavor_id not in FLAVORS:
             return bad_request(resp, 'Flavor could not be found')
 
+        flavor = FLAVORS[flavor_id]
+
         ssh_keys = []
         key_name = body['server'].get('key_name')
         if key_name:
@@ -120,7 +122,10 @@ class SLComputeV2Servers(object):
                         in network for network in lookup(body, 'networks')]):
                 private_network_only = True
 
-        flavor = FLAVORS[flavor_id]
+        user_data = {}
+        if lookup(body, 'metadata'):
+            user_data = lookup(body, 'metadata')
+
         cci = CCIManager(client)
 
         payload = {
@@ -133,6 +138,7 @@ class SLComputeV2Servers(object):
             'image_id': body['server']['imageRef'],
             'ssh_keys': ssh_keys,
             'private': private_network_only,
+            'userdata': json.dumps(user_data),
         }
 
         try:
