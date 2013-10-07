@@ -16,6 +16,19 @@ class SLIdentityV2Index(object):
                     'type': 'application/vnd.openstack.compute.v1.0+json',
                 }
             ],
+        }, {
+            'id': 'v1.0',
+            'links': [{
+                'href': identity_dispatcher.get_endpoint_url(req, 'v1_index'),
+                'rel': 'self'
+            }],
+            'status': 'ACTIVE',
+            'media-types': [
+                {
+                    'base': 'application/json',
+                    'type': 'application/vnd.openstack.compute.v1.0+json',
+                }
+            ],
         }]
 
-        resp.body = {'versions': {'values': versions}}
+        resp.body = {'versions': versions}

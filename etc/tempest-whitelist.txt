@@ -114,3 +114,7 @@ tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_filte
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_limit_results
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_using_marker
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_with_detail
+
+# Skipping image tests because they require the creation of template containers from scratch, which we can't currently do.
+# tempest.api.image.v2.test_images:ListImagesTest.test_index_no_params
+# tempest.api.image.v1.test_images:ListImagesTest.test_index_no_params

@@ -1,5 +1,7 @@
+import datetime
 import json
 import falcon
+import uuid
 
 from babelfish.common.error_handling import not_found
 from babelfish.image import image_dispatcher as disp
@@ -8,7 +10,7 @@ from babelfish.image import image_dispatcher as disp
 class SLImageV2SchemaImages(object):
     # TODO - This needs to be updated for our specifications
     def on_get(self, req, resp):
-        resp.body = json.dumps({
+        resp.body = {
             "name": "images",
             "properties": {
                 "first": {
@@ -215,13 +217,13 @@ class SLImageV2SchemaImages(object):
                     "rel": "describedby"
                 }
             ]
-        })
+        }
 
 
 class SLImageV2SchemaImage(object):
     # TODO - This needs to be updated for our specifications
     def on_get(self, req, resp):
-        result = {
+        resp.body = {
             "name": "image",
             "properties": {
                 "architecture": {
@@ -399,11 +401,31 @@ class SLImageV2SchemaImage(object):
             ]
         }
 
-        print(type(json.loads(json.dumps(result))))
-        resp.body = json.dumps(result)
-
 
 class SLImageV2Images(object):
+    def on_delete(self, req, resp, image_guid):
+        # TODO - What should this do?
+        resp.status = falcon.HTTP_204
+
+    def on_post(self, req, resp):
+        body = json.loads(req.stream.read().decode())
+
+        # TODO - Need to determine how to handle this for real
+        id = body.get('id', str(uuid.uuid4()))
+
+        resp.body = {
+            'id': id,
+            'name': body['name'],
+            'status': 'queued',
+            'visibility': body.get('visibility', 'public'),
+            'tags': [],
+            'created_at': '2012-08-11T17:15:52Z',
+            'updated_at': '2012-08-11T17:15:52Z',
+            'self': disp.get_endpoint_url(req, 'v2_image', image_guid=id),
+            'file': disp.get_endpoint_url(req, 'v2_image_file', image_guid=id),
+            'schema': disp.get_endpoint_url(req, 'v2_schema_image'),
+        }
+
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
 
@@ -434,6 +456,10 @@ class SLImageV2Images(object):
 
 
 class SLImageV1Image(object):
+    def on_delete(self, req, resp, image_guid):
+        # TODO - What should this do?
+        resp.status = falcon.HTTP_204
+
     def on_get(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)
@@ -475,7 +501,6 @@ class SLImageV1Image(object):
 
         resp.status = falcon.HTTP_200
         resp.set_headers(headers)
-#        resp.body = {'image': results}
 
 
 class SLImageV1Images(object):
@@ -507,6 +532,34 @@ class SLImageV1Images(object):
         resp.body = {'images': sorted(results,
                                       key=lambda x: x['name'].lower())}
 
+    def on_post(self, req, resp):
+        headers = req.headers
+
+        try:
+            body = json.loads(req.stream.read().decode())
+        except ValueError:
+            body = {}
+
+        image_details = {
+            'location': headers.get('x-image-meta-location'),
+            'container_format': headers.get('x-image-meta-container-format',
+                                            'bare'),
+            'name': headers['x-image-meta-name'],
+            'disk_format': headers.get('x-image-meta-disk-format', 'raw'),
+            'visibility': 'private',
+        }
+
+        if headers['x-image-meta-is-public']:
+            image_details['visibility'] = 'public'
+
+        # TODO - Need to determine how to handle this for real
+        id = body.get('id', str(uuid.uuid4()))
+
+        resp.body = {'image': {
+            'id': id,
+            'location': disp.get_endpoint_url(req, 'v1_image', image_guid=id),
+        }}
+
 
 def get_v2_image_details_dict(req, image, tenant_id=None):
     if not image or not image.get('globalIdentifier'):
@@ -518,7 +571,7 @@ def get_v2_image_details_dict(req, image, tenant_id=None):
         'name': image['name'],
         'status': 'active',
         'visibility': 'public',
-        'size': image.get('blockDevicesDiskSpaceTotal', 0),
+        'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
 #        "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
         'tags': [],
         'updated': image.get('createDate'),
@@ -546,7 +599,7 @@ def get_v1_image_details_dict(req, image, tenant_id=None):
         'progress': 100,
         'minRam': 0,
         'metaData': None,
-        'size': image.get('blockDevicesDiskSpaceTotal', 0),
+        'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
         'OS-EXT-IMG-SIZE:size': None,
         'container_format': 'raw',
         'disk_format': 'raw',
