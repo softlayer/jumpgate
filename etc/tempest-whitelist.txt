@@ -25,11 +25,43 @@ tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.t
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers_with_detail
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_server_response
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_numeric_server_name
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_server_name_length_exceeds_256
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_with_invalid_flavor
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_with_invalid_image
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_with_invalid_network_uuid
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_with_non_existant_keypair
+# Skipped due to lack of support for security groups
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_with_nonexistent_security_group
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_delete_non_existent_server
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_delete_server_pass_id_exceeding_length_limit
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_delete_server_pass_negative_id
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_get_non_existent_server
+# Skipped due to lack of direct IP assignment support
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_invalid_access_ip_v4_address
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_invalid_ip_v6_address
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_pause_non_existent_server
+# Skipped due to lack of support for 'personality' files
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_personality_file_contents_not_encoded
+# Skipped because this test does not wait for an active state before deleting the server
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_reboot_deleted_server
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_rebuild_deleted_server
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_server_name_blank
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_stop_non_existent_server
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_update_name_of_non_existent_server
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_update_server_name_length_exceeds_256
+tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_update_server_set_empty_name
+# TODO
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_pause_paused_server
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_update_server_of_another_tenant
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_delete_a_server_of_another_tenant
+# tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_server_metadata_exceeds_length_limit
 
 # Skipped due to password being retreived at the start of provisioning
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_host_name_is_same_as_server_name
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_created_server_vcpus
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_can_log_into_created_server
+
 
 # Skipped due to SL not having support for specifying default password
 # tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_server_with_admin_password
@@ -44,7 +76,8 @@ tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_l
 
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_specify_keypair
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_with_existing_server_name
-# tempest.api.compute.servers.test_servers:ServersTestJSON.test_update_server_name
+tempest.api.compute.servers.test_servers:ServersTestJSON.test_update_server_name
+# Skipped due to not being able to cancel a server while there is a pending transaction
 # tempest.api.compute.servers.test_servers:ServersTestJSON.test_delete_server_while_in_building_state
 
 # Skipped due to SL not having this level of control on IP allocation
