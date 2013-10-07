@@ -337,9 +337,12 @@ def get_server_details_dict(req, instance):
             power_state = OPENSTACK_POWER_MAP['RUNNING']
     elif sl_power_state == 'PAUSED':
         status = 'PAUSED'
-        power_state = OPENSTACK_POWER_MAP[sl_power_state]
+        power_state = OPENSTACK_POWER_MAP['PAUSED']
     elif sl_power_state in OPENSTACK_POWER_MAP:
         power_state = OPENSTACK_POWER_MAP[sl_power_state]
+    elif sl_power_state == 'HALTED' and instance.get('provisionDate'):
+        status = 'SHUTOFF'
+        power_state = OPENSTACK_POWER_MAP['SHUTOFF']
     elif sl_power_state == 'HALTED':
         status = 'BUILD'
         power_state = OPENSTACK_POWER_MAP['BLOCKED']
