@@ -1,8 +1,8 @@
 import json
 import falcon
 
-from babelfish.common.error_handling import not_found
-from babelfish.image import image_dispatcher as disp
+from services.common.error_handling import not_found
+from services.image import image_dispatcher as disp
 
 
 class SLImageV2SchemaImages(object):
@@ -585,6 +585,8 @@ def get_image_mask():
 
 class SLImages(object):
     __public_images = None
+    # This is not a safe place to store private images since this class
+    # is only initialized once per app instance
 #    __private_images = None
 
     def __init__(self, client):
