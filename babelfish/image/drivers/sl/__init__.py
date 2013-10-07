@@ -11,6 +11,9 @@ image_dispatcher.set_handler('v2_images', SLImageV2Images())
 image_dispatcher.set_handler('v2_images_detail', SLImageV1Images())
 image_dispatcher.set_handler('v2_schema_image', SLImageV2SchemaImage())
 image_dispatcher.set_handler('v2_schema_images', SLImageV2SchemaImages())
+image_dispatcher.set_handler('v2_tenant_image', SLImageV1Image())
+image_dispatcher.set_handler('v2_tenant_images', SLImageV2Images())
+image_dispatcher.set_handler('v2_tenant_images_detail', SLImageV1Images())
 
 # V1 Routes
 image_dispatcher.set_handler('v1_image', SLImageV1Image())

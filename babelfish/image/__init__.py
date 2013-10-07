@@ -13,10 +13,15 @@ image_dispatcher.add_endpoint('v2_image',
                               '/v2/images/{image_guid}')
 image_dispatcher.add_endpoint('v2_images', '/v2/images')
 image_dispatcher.add_endpoint('v2_images_detail',
-                              '/v2/{tenant_id}/images/detail')
+                              '/v2/images/detail')
 image_dispatcher.add_endpoint('v2_image_file', '/v2/images/{image_guid}/file')
 image_dispatcher.add_endpoint('v2_image_tag',
                               '/v2/images/{image_guid}/tags/{tag}')
+image_dispatcher.add_endpoint('v2_tenant_image',
+                              '/v2/{tenant_id}/images/{image_guid}')
+image_dispatcher.add_endpoint('v2_tenant_images', '/v2/{tenant_id}/images')
+image_dispatcher.add_endpoint('v2_tenant_images_detail',
+                              '/v2/{tenant_id}/images/detail')
 
 # V1 API - http://api.openstack.org/api-ref-image.html#os-images-1.0
 

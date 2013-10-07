@@ -403,11 +403,21 @@ class SLImageV2SchemaImage(object):
 
 
 class SLImageV2Images(object):
-    def on_delete(self, req, resp, image_guid):
+    def on_delete(self, req, resp, image_guid=None, tenant_id=None):
+        if not image_guid:
+            return not_found(resp, 'Image could not be found')
+
+        client = req.env['sl_client']
+        image_obj = SLImages(client)
+        results = image_obj.get_image(image_guid)
+
+        if not results:
+            return not_found(resp, 'Image could not be found')
+
         # TODO - What should this do?
         resp.status = falcon.HTTP_204
 
-    def on_post(self, req, resp):
+    def on_post(self, req, resp, tenant_id=None):
         body = json.loads(req.stream.read().decode())
 
         # TODO - Need to determine how to handle this for real
@@ -456,7 +466,17 @@ class SLImageV2Images(object):
 
 
 class SLImageV1Image(object):
-    def on_delete(self, req, resp, image_guid):
+    def on_delete(self, req, resp, image_guid=None, tenant_id=None):
+        if not image_guid:
+            return not_found(resp, 'Image could not be found')
+
+        client = req.env['sl_client']
+        image_obj = SLImages(client)
+        results = image_obj.get_image(image_guid)
+
+        if not results:
+            return not_found(resp, 'Image could not be found')
+
         # TODO - What should this do?
         resp.status = falcon.HTTP_204
 
@@ -532,7 +552,7 @@ class SLImageV1Images(object):
         resp.body = {'images': sorted(results,
                                       key=lambda x: x['name'].lower())}
 
-    def on_post(self, req, resp):
+    def on_post(self, req, resp, tenant_id=None):
         headers = req.headers
 
         try:

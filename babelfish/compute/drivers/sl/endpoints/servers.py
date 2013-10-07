@@ -5,7 +5,8 @@ from SoftLayer import CCIManager, SshKeyManager, SoftLayerAPIError
 
 from babelfish.common.nested_dict import lookup
 from babelfish.shared.drivers.sl.errors import convert_errors
-from babelfish.common.error_handling import bad_request, duplicate
+from babelfish.common.error_handling import (bad_request, duplicate,
+                                             compute_fault, not_found)
 from babelfish.compute import compute_dispatcher as disp
 from .flavors import FLAVORS
 
@@ -31,6 +32,16 @@ class SLComputeV2ServerAction(object):
             return bad_request(resp, message="Malformed request body")
 
         vg_client = req.env['sl_client']['Virtual_Guest']
+
+        try:
+            instance_id = int(instance_id)
+        except ValueError:
+            return not_found(resp, "Invalid instance ID specified.")
+
+        try:
+            vg_client.get_object(id=instance_id)
+        except SoftLayerAPIError:
+            return not_found("Instance not found.")
 
         if 'pause' in body or 'suspend' in body:
             try:
@@ -65,8 +76,11 @@ class SLComputeV2ServerAction(object):
         elif 'createImage' in body:
             template = {'name': body['createImage']['name'],
                         'volumes': body['createImage']['name']}
-            vg_client.captureImage(template, id=instance_id)
-            resp.status = falcon.HTTP_202
+            try:
+                vg_client.captureImage(template, id=instance_id)
+                resp.status = falcon.HTTP_202
+            except SoftLayerAPIError as e:
+                compute_fault(resp, e.message)
             return
         elif 'os-getConsoleOutput' in body:
             resp.status = falcon.HTTP_501
@@ -341,7 +355,7 @@ def get_server_details_dict(req, instance):
     elif sl_power_state in OPENSTACK_POWER_MAP:
         power_state = OPENSTACK_POWER_MAP[sl_power_state]
     elif sl_power_state == 'HALTED':
-        status = 'BUILD'
+        status = 'SHUTOFF'
         power_state = OPENSTACK_POWER_MAP['BLOCKED']
 
     addresses = {}
