@@ -3,6 +3,12 @@ from babelfish.api import app
 
 identity_dispatcher = Dispatcher(app)
 
+identity_dispatcher.add_endpoint('main_index', '/')
+
+identity_dispatcher.add_endpoint('main_index', '/')
+
+identity_dispatcher.add_endpoint('main_index', '/')
+
 # V3 API - http://api.openstack.org/api-ref-identity.html#identity-v3
 
 # Versions
@@ -90,7 +96,8 @@ identity_dispatcher.add_endpoint('v3_policy', '/v3/policies/{policy_id}')
 
 # NOTE - These endpoint are used by both the regular 2.0 and the admin 2.0 APIs
 # at the same time!
-identity_dispatcher.add_endpoint('v2_index', '/v2.0')
+identity_dispatcher.add_endpoint('v2_index', '/v2')
+identity_dispatcher.add_endpoint('v2_auth_index', '/v2.0')
 identity_dispatcher.add_endpoint('v2_extensions', '/v2.0/extensions')
 identity_dispatcher.add_endpoint('v2_extension_alias',
                                  '/v2.0/extensions/{alias}')

@@ -1,10 +1,485 @@
+import datetime
+import json
 import falcon
+import uuid
 
 from babelfish.common.error_handling import not_found
 from babelfish.image import image_dispatcher as disp
 
 
+class SLImageV2SchemaImages(object):
+    # TODO - This needs to be updated for our specifications
+    def on_get(self, req, resp):
+        resp.body = {
+            "name": "images",
+            "properties": {
+                "first": {
+                    "type": "string"
+                },
+                "images": {
+                    "items": {
+                        "name": "image",
+                        "properties": {
+                            "architecture": {
+                                "description": "Operating system architecture as specified in http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-images.html",
+                                "type": "string"
+                            },
+                            "checksum": {
+                                "description": "md5 hash of image contents. (READ-ONLY)",
+                                "maxLength": 32,
+                                "type": "string"
+                            },
+                            "container_format": {
+                                "description": "Format of the container",
+                                "enum": [
+                                    "ami",
+                                    "ari",
+                                    "aki",
+                                    "bare",
+                                    "ovf"
+                                ],
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "description": "Date and time of image registration (READ-ONLY)",
+                                "type": "string"
+                            },
+                            "direct_url": {
+                                "description": "URL to access the image file kept in external store (READ-ONLY)",
+                                "type": "string"
+                            },
+                            "disk_format": {
+                                "description": "Format of the disk",
+                                "enum": [
+                                    "ami",
+                                    "ari",
+                                    "aki",
+                                    "vhd",
+                                    "vmdk",
+                                    "raw",
+                                    "qcow2",
+                                    "vdi",
+                                    "iso"
+                                ],
+                                "type": "string"
+                            },
+                            "file": {
+                                "description": "(READ-ONLY)",
+                                "type": "string"
+                            },
+                            "id": {
+                                "description": "An identifier for the image",
+                                "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                                "type": "string"
+                            },
+                            "instance_uuid": {
+                                "description": "ID of instance used to create this image.",
+                                "type": "string"
+                            },
+                            "kernel_id": {
+                                "description": "ID of image stored in Glance that should be used as the kernel when booting an AMI-style image.",
+                                "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                                "type": "string"
+                            },
+                            "locations": {
+                                "description": "A set of URLs to access the image file kept in external store",
+                                "items": {
+                                    "properties": {
+                                        "metadata": {
+                                            "type": "object"
+                                        },
+                                        "url": {
+                                            "maxLength": 255,
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "url",
+                                        "metadata"
+                                    ],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            },
+                            "min_disk": {
+                                "description": "Amount of disk space (in GB) required to boot image.",
+                                "type": "integer"
+                            },
+                            "min_ram": {
+                                "description": "Amount of ram (in MB) required to boot image.",
+                                "type": "integer"
+                            },
+                            "name": {
+                                "description": "Descriptive name for the image",
+                                "maxLength": 255,
+                                "type": "string"
+                            },
+                            "os_distro": {
+                                "description": "Common name of operating system distribution as specified in http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-images.html",
+                                "type": "string"
+                            },
+                            "os_version": {
+                                "description": "Operating system version as specified by the distributor",
+                                "type": "string"
+                            },
+                            "protected": {
+                                "description": "If true, image will not be deletable.",
+                                "type": "boolean"
+                            },
+                            "ramdisk_id": {
+                                "description": "ID of image stored in Glance that should be used as the ramdisk when booting an AMI-style image.",
+                                "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                                "type": "string"
+                            },
+                            "schema": {
+                                "description": "(READ-ONLY)",
+                                "type": "string"
+                            },
+                            "self": {
+                                "description": "(READ-ONLY)",
+                                "type": "string"
+                            },
+                            "size": {
+                                "description": "Size of image file in bytes (READ-ONLY)",
+                                "type": "integer"
+                            },
+                            "status": {
+                                "description": "Status of the image (READ-ONLY)",
+                                "enum": [
+                                    "queued",
+                                    "saving",
+                                    "active",
+                                    "killed",
+                                    "deleted",
+                                    "pending_delete"
+                                ],
+                                "type": "string"
+                            },
+                            "tags": {
+                                "description": "List of strings related to the image",
+                                "items": {
+                                    "maxLength": 255,
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            },
+                            "updated_at": {
+                                "description": "Date and time of the last image modification (READ-ONLY)",
+                                "type": "string"
+                            },
+                            "visibility": {
+                                "description": "Scope of image accessibility",
+                                "enum": [
+                                    "public",
+                                    "private"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "links": [
+                            {
+                                "href": "{self}",
+                                "rel": "self"
+                            },
+                            {
+                                "href": "{file}",
+                                "rel": "enclosure"
+                            },
+                            {
+                                "href": "{schema}",
+                                "rel": "describedby"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "links": [
+                {
+                    "href": "{first}",
+                    "rel": "first"
+                },
+                {
+                    "href": "{next}",
+                    "rel": "next"
+                },
+                {
+                    "href": "{schema}",
+                    "rel": "describedby"
+                }
+            ]
+        }
+
+
+class SLImageV2SchemaImage(object):
+    # TODO - This needs to be updated for our specifications
+    def on_get(self, req, resp):
+        resp.body = {
+            "name": "image",
+            "properties": {
+                "architecture": {
+                    "description": "Operating system architecture as specified in http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-images.html",
+                    "type": "string"
+                },
+                "checksum": {
+                    "description": "md5 hash of image contents. (READ-ONLY)",
+                    "maxLength": 32,
+                    "type": "string"
+                },
+                "container_format": {
+                    "description": "Format of the container",
+                    "enum": [
+                        "ami",
+                        "ari",
+                        "aki",
+                        "bare",
+                        "ovf"
+                    ],
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "Date and time of image registration (READ-ONLY)",
+                    "type": "string"
+                },
+                "direct_url": {
+                    "description": "URL to access the image file kept in external store (READ-ONLY)",
+                    "type": "string"
+                },
+                "disk_format": {
+                    "description": "Format of the disk",
+                    "enum": [
+                        "ami",
+                        "ari",
+                        "aki",
+                        "vhd",
+                        "vmdk",
+                        "raw",
+                        "qcow2",
+                        "vdi",
+                        "iso"
+                    ],
+                    "type": "string"
+                },
+                "file": {
+                    "description": "(READ-ONLY)",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "An identifier for the image",
+                    "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                    "type": "string"
+                },
+                "instance_uuid": {
+                    "description": "ID of instance used to create this image.",
+                    "type": "string"
+                },
+                "kernel_id": {
+                    "description": "ID of image stored in Glance that should be used as the kernel when booting an AMI-style image.",
+                    "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                    "type": "string"
+                },
+                "locations": {
+                    "description": "A set of URLs to access the image file kept in external store",
+                    "items": {
+                        "properties": {
+                            "metadata": {
+                                "type": "object"
+                            },
+                            "url": {
+                                "maxLength": 255,
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "url",
+                            "metadata"
+                        ],
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "min_disk": {
+                    "description": "Amount of disk space (in GB) required to boot image.",
+                    "type": "integer"
+                },
+                "min_ram": {
+                    "description": "Amount of ram (in MB) required to boot image.",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Descriptive name for the image",
+                    "maxLength": 255,
+                    "type": "string"
+                },
+                "os_distro": {
+                    "description": "Common name of operating system distribution as specified in http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-images.html",
+                    "type": "string"
+                },
+                "os_version": {
+                    "description": "Operating system version as specified by the distributor",
+                    "type": "string"
+                },
+                "protected": {
+                    "description": "If true, image will not be deletable.",
+                    "type": "boolean"
+                },
+                "ramdisk_id": {
+                    "description": "ID of image stored in Glance that should be used as the ramdisk when booting an AMI-style image.",
+                    "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                    "type": "string"
+                },
+                "schema": {
+                    "description": "(READ-ONLY)",
+                    "type": "string"
+                },
+                "self": {
+                    "description": "(READ-ONLY)",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "Size of image file in bytes (READ-ONLY)",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "Status of the image (READ-ONLY)",
+                    "enum": [
+                        "queued",
+                        "saving",
+                        "active",
+                        "killed",
+                        "deleted",
+                        "pending_delete"
+                    ],
+                    "type": "string"
+                },
+                "tags": {
+                    "description": "List of strings related to the image",
+                    "items": {
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "updated_at": {
+                    "description": "Date and time of the last image modification (READ-ONLY)",
+                    "type": "string"
+                },
+                "visibility": {
+                    "description": "Scope of image accessibility",
+                    "enum": [
+                        "public",
+                        "private"
+                    ],
+                    "type": "string"
+                }
+            },
+            "additionalProperties": {
+                "type": "string"
+            },
+            "links": [
+                {
+                    "href": "{self}",
+                    "rel": "self"
+                },
+                {
+                    "href": "{file}",
+                    "rel": "enclosure"
+                },
+                {
+                    "href": "{schema}",
+                    "rel": "describedby"
+                }
+            ]
+        }
+
+
+class SLImageV2Images(object):
+    def on_delete(self, req, resp, image_guid=None, tenant_id=None):
+        if not image_guid:
+            return not_found(resp, 'Image could not be found')
+
+        client = req.env['sl_client']
+        image_obj = SLImages(client)
+        results = image_obj.get_image(image_guid)
+
+        if not results:
+            return not_found(resp, 'Image could not be found')
+
+        # TODO - What should this do?
+        resp.status = falcon.HTTP_204
+
+    def on_post(self, req, resp, tenant_id=None):
+        body = json.loads(req.stream.read().decode())
+
+        # TODO - Need to determine how to handle this for real
+        id = body.get('id', str(uuid.uuid4()))
+
+        resp.body = {
+            'id': id,
+            'name': body['name'],
+            'status': 'queued',
+            'visibility': body.get('visibility', 'public'),
+            'tags': [],
+            'created_at': '2012-08-11T17:15:52Z',
+            'updated_at': '2012-08-11T17:15:52Z',
+            'self': disp.get_endpoint_url(req, 'v2_image', image_guid=id),
+            'file': disp.get_endpoint_url(req, 'v2_image_file', image_guid=id),
+            'schema': disp.get_endpoint_url(req, 'v2_schema_image'),
+        }
+
+    def on_get(self, req, resp, tenant_id=None):
+        client = req.env['sl_client']
+
+        # filter = {
+        #     'blockDeviceTemplateGroups':
+        #     {
+        #         'parentId': {
+        #             'operation': 'is_null',
+        #         }
+        #     }
+        # }
+        results = []
+
+        params = {}
+        params['mask'] = get_image_mask()
+
+        # TODO - Figure out why this filter doesn't work
+#        for image in image_obj.getPublicImages():
+#        images = client['Account'].getBlockDeviceTemplateGroups(filter=filter)
+#        print "COUNT: " + str(len(images))
+        for image in client['Account'].getBlockDeviceTemplateGroups(**params):
+            if not image or image['parentId']:
+                continue
+            results.append(get_v2_image_details_dict(req, image))
+
+        resp.body = {'images': sorted(results,
+                                      key=lambda x: x['name'].lower())}
+
+
 class SLImageV1Image(object):
+    def on_delete(self, req, resp, image_guid=None, tenant_id=None):
+        if not image_guid:
+            return not_found(resp, 'Image could not be found')
+
+        client = req.env['sl_client']
+        image_obj = SLImages(client)
+        results = image_obj.get_image(image_guid)
+
+        if not results:
+            return not_found(resp, 'Image could not be found')
+
+        # TODO - What should this do?
+        resp.status = falcon.HTTP_204
+
     def on_get(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)
@@ -14,12 +489,12 @@ class SLImageV1Image(object):
             return not_found(resp, 'Image could not be found')
 
         resp.status = falcon.HTTP_200
-        resp.body = {'image': get_image_details_dict(req, results)}
+        resp.body = {'image': get_v1_image_details_dict(req, results)}
 
     def on_head(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)
-        results = get_image_details_dict(
+        results = get_v1_image_details_dict(
             req, image_obj.get_image(image_guid))
 
         if not results:
@@ -46,7 +521,6 @@ class SLImageV1Image(object):
 
         resp.status = falcon.HTTP_200
         resp.set_headers(headers)
-        resp.body = {'image': results}
 
 
 class SLImageV1Images(object):
@@ -73,13 +547,65 @@ class SLImageV1Images(object):
         for image in client['Account'].getBlockDeviceTemplateGroups(**params):
             if not image or image['parentId']:
                 continue
-            results.append(get_image_details_dict(req, image))
+            results.append(get_v1_image_details_dict(req, image))
 
         resp.body = {'images': sorted(results,
                                       key=lambda x: x['name'].lower())}
 
+    def on_post(self, req, resp, tenant_id=None):
+        headers = req.headers
 
-def get_image_details_dict(req, image, tenant_id=None):
+        try:
+            body = json.loads(req.stream.read().decode())
+        except ValueError:
+            body = {}
+
+        image_details = {
+            'location': headers.get('x-image-meta-location'),
+            'container_format': headers.get('x-image-meta-container-format',
+                                            'bare'),
+            'name': headers['x-image-meta-name'],
+            'disk_format': headers.get('x-image-meta-disk-format', 'raw'),
+            'visibility': 'private',
+        }
+
+        if headers['x-image-meta-is-public']:
+            image_details['visibility'] = 'public'
+
+        # TODO - Need to determine how to handle this for real
+        id = body.get('id', str(uuid.uuid4()))
+
+        resp.body = {'image': {
+            'id': id,
+            'location': disp.get_endpoint_url(req, 'v1_image', image_guid=id),
+        }}
+
+
+def get_v2_image_details_dict(req, image, tenant_id=None):
+    if not image or not image.get('globalIdentifier'):
+        return {}
+
+    # TODO - Don't hardcode some of these values
+    results = {
+        'id': image['globalIdentifier'],
+        'name': image['name'],
+        'status': 'active',
+        'visibility': 'public',
+        'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
+#        "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
+        'tags': [],
+        'updated': image.get('createDate'),
+        'created': image.get('createDate'),
+        'self': disp.get_endpoint_url(req, 'v2_image', image_guid=image['id']),
+        'file': disp.get_endpoint_url(req, 'v2_image_file',
+                                      image_guid=image['id']),
+        'schema': disp.get_endpoint_url(req, 'v2_schema_image'),
+    }
+
+    return results
+
+
+def get_v1_image_details_dict(req, image, tenant_id=None):
     if not image or not image.get('globalIdentifier'):
         return {}
 
@@ -93,7 +619,7 @@ def get_image_details_dict(req, image, tenant_id=None):
         'progress': 100,
         'minRam': 0,
         'metaData': None,
-        'size': image.get('blockDevicesDiskSpaceTotal', 0),
+        'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
         'OS-EXT-IMG-SIZE:size': None,
         'container_format': 'raw',
         'disk_format': 'raw',

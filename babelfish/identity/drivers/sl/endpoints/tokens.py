@@ -34,7 +34,7 @@ class SLIdentityV2Tokens(object):
                 'id': 1,
             }],
             'type': 'compute',
-            'name': 'compute',
+            'name': 'nova',
         }, {
             'endpoint_links': [],
             'endpoints': [
@@ -48,7 +48,7 @@ class SLIdentityV2Tokens(object):
                 },
             ],
             'type': 'identity',
-            'name': 'identity',
+            'name': 'keystone',
         }, {
             'endpoint_links': [],
             'endpoints': [
@@ -62,7 +62,7 @@ class SLIdentityV2Tokens(object):
                 },
             ],
             'type': 'image',
-            'name': 'image',
+            'name': 'glance',
         }, {
             'endpoint_links': [],
             'endpoints': [
@@ -76,7 +76,7 @@ class SLIdentityV2Tokens(object):
                 },
             ],
             'type': 'network',
-            'name': 'network',
+            'name': 'neutron',
         }]
 
         expiration = datetime.datetime.now() + datetime.timedelta(days=1)

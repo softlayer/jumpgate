@@ -5,6 +5,8 @@ from .endpoints.tokens import SLIdentityV2Tokens, SLIdentityV2Token
 
 # Set handlers for the routes we support
 
+identity_dispatcher.set_handler('main_index', SLIdentityV2Index())
+
 # V3 Routes
 # None currently supported
 
