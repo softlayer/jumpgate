@@ -121,6 +121,7 @@ tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_with_
 
 # Skipping until we determine how we're going to handle images. It appears we can't create a new image from a server that was created from an image.
 # tempest.api.compute.images.test_images:ImagesTestJSON.test_create_image_from_stopped_server
+# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON
 
 # Skipping due to a URL bug in Tempest caused by non-encoded variables
 # tempest.api.compute.images.test_images:ImagesTestJSON.test_create_image_from_invalid_server

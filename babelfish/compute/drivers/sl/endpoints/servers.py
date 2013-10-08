@@ -39,7 +39,7 @@ class SLComputeV2ServerAction(object):
             return not_found(resp, "Invalid instance ID specified.")
 
         try:
-            vg_client.get_object(id=instance_id)
+            vg_client.getObject(id=instance_id)
         except SoftLayerAPIError:
             return not_found("Instance not found.")
 
