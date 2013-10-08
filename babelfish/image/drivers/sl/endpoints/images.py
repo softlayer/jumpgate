@@ -667,27 +667,37 @@ class SLImages(object):
     def get_image(self, image_guid):
         matching_image = None
 
-#        private = self.__private_images
+        private = self.get_private_images()
 
-#        if not private:
-#            account = self.client['Account']
-#            private = account.getPrivateBlockDeviceTemplateGroups(mask=mask)
-#            self.__private_images = private
-
-#        for image in private:
-#            if image.get('globalIdentifier') == image_guid:
-#                matching_image = image
-#                break
+        for image in private:
+            if image.get('globalIdentifier') == image_guid:
+                matching_image = image
+                break
 
         if not matching_image:
             public = self.get_public_images()
 
             for image in public:
+                print(image.get('name'), image.get('globalIdentifier'))
                 if image.get('globalIdentifier') == image_guid:
                     matching_image = image
                     break
 
         return matching_image
+
+    def get_private_images(self):
+#        private = self.__private_images
+
+        private = None
+
+        if not private:
+            mask = 'id,accountId,name,globalIdentifier,blockDevices,parentId'
+
+            account = self.client['Account']
+            private = account.getPrivateBlockDeviceTemplateGroups(mask=mask)
+ #           self.__private_images = private
+
+        return private
 
     def get_public_images(self):
         public = self.__public_images

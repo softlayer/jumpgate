@@ -131,3 +131,6 @@ tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_image_blank_id
 tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_image_non_hex_string_id
 tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_image_negative_image_id
 tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_image_id_is_over_35_character_limit
+
+tempest.api.compute.images.test_list_images:ListImagesTestJSON
+
