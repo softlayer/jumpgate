@@ -124,7 +124,7 @@ class SLComputeV2Servers(object):
     def on_post(self, req, resp, tenant_id):
         client = req.env['sl_client']
         body = json.loads(req.stream.read().decode())
-        flavor_id = body['server'].get('flavorRef')
+        flavor_id = int(body['server'].get('flavorRef'))
         if flavor_id not in FLAVORS:
             return bad_request(resp, 'Flavor could not be found')
 
@@ -153,8 +153,12 @@ class SLComputeV2Servers(object):
                 private_network_only = True
 
         user_data = {}
-        if lookup(body, 'metadata'):
-            user_data = lookup(body, 'metadata')
+        if lookup(body, 'server', 'metadata'):
+            user_data = lookup(body, 'server', 'metadata')
+
+        datacenter = None
+        if lookup(body, 'server', 'availability_zone'):
+            datacenter = lookup(body, 'server', 'availability_zone')
 
         cci = CCIManager(client)
 
@@ -164,7 +168,7 @@ class SLComputeV2Servers(object):
             'cpus': flavor['cpus'],
             'memory': flavor['ram'],
             'hourly': True,  # TODO - How do we set this accurately?
-            # 'datacenter' => ['name' => $datacenter],
+            'datacenter': datacenter,
             'image_id': body['server']['imageRef'],
             'ssh_keys': ssh_keys,
             'private': private_network_only,

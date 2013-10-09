@@ -1,4 +1,3 @@
-import falcon
 
 
 class SLIdentityV2Tenants(object):
@@ -15,5 +14,4 @@ class SLIdentityV2Tenants(object):
             },
         ]
 
-        resp.status = falcon.HTTP_200
         resp.body = {'tenants': tenants, 'tenant_links': []}

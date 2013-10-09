@@ -5,10 +5,6 @@ identity_dispatcher = Dispatcher(app)
 
 identity_dispatcher.add_endpoint('main_index', '/')
 
-identity_dispatcher.add_endpoint('main_index', '/')
-
-identity_dispatcher.add_endpoint('main_index', '/')
-
 # V3 API - http://api.openstack.org/api-ref-identity.html#identity-v3
 
 # Versions
