@@ -11,10 +11,6 @@ tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_create_
 tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_create_with_pub_key
 tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_delete_nonexistant_key
 
-# Skipped due to the expected behavior of automatically creating public/private key pairs. SL doesn't support that
-# tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypair_create_delete
-# tempest.api.compute.keypairs.test_keypairs:KeyPairsTestJSON.test_keypairs_create_list_delete
-
 tempest.api.compute.test_auth_token:AuthTokenTestJSON.test_v2_token
 tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list
 tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_detail
@@ -25,6 +21,7 @@ tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.t
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers_with_detail
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_server_response
+
 tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_numeric_server_name
 tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_server_name_length_exceeds_256
 tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_with_invalid_flavor
@@ -56,12 +53,32 @@ tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_u
 # tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_update_server_of_another_tenant
 # tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_delete_a_server_of_another_tenant
 # tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_create_server_metadata_exceeds_length_limit
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_rebuild_nonexistent_server
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_rebuild_server
 
 # Skipped due to password being retreived at the start of provisioning
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_host_name_is_same_as_server_name
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_created_server_vcpus
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_can_log_into_created_server
 
+# These might be skipped until these issues are fixed: 1014647, 1014683
+tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_pause_unpause_server
+tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_reboot_server_hard
+tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_reboot_server_soft
+tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_stop_start_server
+
+# Skipped due to various unsupported features
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_suspend_resume_server
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_change_server_password
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_get_console_output
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_get_console_output_invalid_server_id
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_get_console_output_server_id_in_reboot_status
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_lock_unlock_server
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_reboot_nonexistent_server_soft
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_resize_server_confirm
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_resize_server_revert
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_resize_server_using_nonexist_flavor
+# tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_resize_server_using_null_flavor
 
 # Skipped due to SL not having support for specifying default password
 # tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_server_with_admin_password
@@ -72,7 +89,6 @@ tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_u
 # Skipped due to CCIs not tracking shutdowns/restarts/etc. events
 # tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions
 tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions_invalid_server
-
 
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_specify_keypair
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_with_existing_server_name
@@ -91,6 +107,21 @@ tempest.api.compute.servers.test_servers:ServersTestJSON.test_update_server_name
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_server_status
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filter_by_server_status
 # tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_filtered_by_ip_regex
+
+# Skipped due to tests expecting to be able to delete a server directly after starting to create one.
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_changes_since
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_changes_since_future_date
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_changes_since_invalid_date
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_limits
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_limits_greater_than_actual_count
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_limits_pass_negative_value
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_limits_pass_string
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_non_existing_flavor
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_non_existing_image
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_by_non_existing_server_name
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_detail_server_is_deleted
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_status_non_existing
+# tempest.api.compute.servers.test_list_servers_negative:ListServersNegativeTestJSON.test_list_servers_with_a_deleted_server
 
 tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_filter_by_server_name
 tempest.api.compute.servers.test_list_server_filters:ListServerFiltersTestJSON.test_list_servers_detailed_limit_results
@@ -114,6 +145,9 @@ tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_filte
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_limit_results
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_using_marker
 tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_with_detail
+
+tempest.api.compute.limits.test_absolute_limits:AbsoluteLimitsTestJSON.test_absLimits_get
+# tempest.api.compute.limits.test_absolute_limits.AbsoluteLimitsTestJSON.test_max_image_meta_exceed_limit
 
 # Skipping some image tests because they require the creation of template containers from scratch, which we can't currently do.
 # tempest.api.image.v2.test_images:ListImagesTest.test_index_no_params

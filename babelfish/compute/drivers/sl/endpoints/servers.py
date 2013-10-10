@@ -149,7 +149,7 @@ class SLComputeV2Servers(object):
     def on_post(self, req, resp, tenant_id):
         client = req.env['sl_client']
         body = json.loads(req.stream.read().decode())
-        flavor_id = body['server'].get('flavorRef')
+        flavor_id = int(body['server'].get('flavorRef'))
         if flavor_id not in FLAVORS:
             return bad_request(resp, 'Flavor could not be found')
 
@@ -178,8 +178,12 @@ class SLComputeV2Servers(object):
                 private_network_only = True
 
         user_data = {}
-        if lookup(body, 'metadata'):
-            user_data = lookup(body, 'metadata')
+        if lookup(body, 'server', 'metadata'):
+            user_data = lookup(body, 'server', 'metadata')
+
+        datacenter = None
+        if lookup(body, 'server', 'availability_zone'):
+            datacenter = lookup(body, 'server', 'availability_zone')
 
         cci = CCIManager(client)
 
@@ -189,7 +193,7 @@ class SLComputeV2Servers(object):
             'cpus': flavor['cpus'],
             'memory': flavor['ram'],
             'hourly': True,  # TODO - How do we set this accurately?
-            # 'datacenter' => ['name' => $datacenter],
+            'datacenter': datacenter,
             'image_id': body['server']['imageRef'],
             'ssh_keys': ssh_keys,
             'private': private_network_only,
@@ -376,9 +380,12 @@ def get_server_details_dict(req, instance):
             power_state = OPENSTACK_POWER_MAP['RUNNING']
     elif sl_power_state == 'PAUSED':
         status = 'PAUSED'
-        power_state = OPENSTACK_POWER_MAP[sl_power_state]
+        power_state = OPENSTACK_POWER_MAP['PAUSED']
     elif sl_power_state in OPENSTACK_POWER_MAP:
         power_state = OPENSTACK_POWER_MAP[sl_power_state]
+    elif sl_power_state == 'HALTED' and instance.get('provisionDate'):
+        status = 'SHUTOFF'
+        power_state = OPENSTACK_POWER_MAP['SHUTOFF']
     elif sl_power_state == 'HALTED':
         status = 'SHUTOFF'
         power_state = OPENSTACK_POWER_MAP['BLOCKED']

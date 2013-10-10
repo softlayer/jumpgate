@@ -1,4 +1,6 @@
-import falcon
+from babelfish.common.error_handling import not_implemented
+import logging
+logger = logging.getLogger(__name__)
 
 
 class NYI(object):
@@ -18,11 +20,5 @@ class NYI(object):
         self._standard_responder(req, resp)
 
     def _standard_responder(self, req, resp):
-        print("UNKNOWN PATH:", req.method, req.path)
-        resp.status = falcon.HTTP_501
-        resp.body = {
-            'notImplemented': {
-                'message': 'Not Implemented',
-                'detail': 'Not Implemented',
-            }
-        }
+        logger.warning("UNKNOWN PATH: %s %s", req.method, req.path)
+        not_implemented(resp, 'Not Implemented', details='Not Implemented')

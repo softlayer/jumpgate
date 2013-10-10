@@ -25,6 +25,8 @@ class SLComputeV2Limits(object):
                 'totalInstancesUsed': account['hourlyVirtualGuestCount'],
                 'totalCoresUsed': 0,
                 'totalRAMUsed': 0,
+                'totalFloatingIpsUsed': 0,
+                'totalSecurityGroupsUsed': 0,
             }
         }
 

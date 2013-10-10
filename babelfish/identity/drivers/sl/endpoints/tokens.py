@@ -22,7 +22,7 @@ class SLIdentityV2Tokens(object):
         user = client['Account'].getCurrentUser(mask='id, account, username')
         account = user['account']
 
-        index_url = identity_dispatcher.get_endpoint_url(req, 'v2_index')
+        index_url = identity_dispatcher.get_endpoint_url(req, 'v2_auth_index')
         service_catalog = [{
             'endpoint_links': [],
             'endpoints': [{
@@ -99,7 +99,7 @@ class SLIdentityV2Tokens(object):
                     {'name': 'user'},
                 ],
                 'role_links': [],
-                'name': user['username']
+                'name': user['username'],
             },
         }
 

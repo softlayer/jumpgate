@@ -31,7 +31,7 @@ def convert_errors(handler):
                     resp, message=e.faultCode, details=e.faultString)
             elif 'must be alphanumeric strings' in e.faultString:
                 return bad_request(
-                    resp, message=e.faultCode, details=e.faultString)
+                    resp, message='Invalid hostname', details=e.faultString)
             elif e.faultCode == 'SoftLayer_Exception_InvalidLegacyToken':
                 return unauthorized(resp,
                                     message='Invalid Credentials',

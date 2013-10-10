@@ -1,6 +1,10 @@
 import falcon
 
 
+def not_implemented(resp, message, details=None, code=falcon.HTTP_501):
+    error(resp, 'notImplemented', message, details=details, code=code)
+
+
 def compute_fault(resp, message, details=None, code=falcon.HTTP_500):
     error(resp, 'computeFault', message, details=details, code=code)
 
