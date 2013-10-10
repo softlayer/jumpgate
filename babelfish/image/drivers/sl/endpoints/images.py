@@ -3,6 +3,8 @@ import json
 import falcon
 import uuid
 
+from SoftLayer.utils import query_filter
+
 from babelfish.common.error_handling import not_found
 from babelfish.image import image_dispatcher as disp
 
@@ -439,6 +441,14 @@ class SLImageV2Images(object):
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
 
+        filter = {}
+
+        if req.get_param('name'):
+            query = query_filter(req.get_param('name'))
+            if 'blockDeviceTemplateGroups' not in filter:
+                filter['blockDeviceTemplateGroups'] = {}
+            filter['blockDeviceTemplateGroups']['name'] = query
+
         # filter = {
         #     'blockDeviceTemplateGroups':
         #     {
@@ -452,16 +462,31 @@ class SLImageV2Images(object):
         params = {}
         params['mask'] = get_image_mask()
 
-        # TODO - Figure out why this filter doesn't work
-#        for image in image_obj.getPublicImages():
-#        images = client['Account'].getBlockDeviceTemplateGroups(filter=filter)
-#        print "COUNT: " + str(len(images))
-        for image in client['Account'].getBlockDeviceTemplateGroups(**params):
-            if not image or image['parentId']:
-                continue
-            results.append(get_v2_image_details_dict(req, image))
+        if filter:
+            params['filter'] = filter
 
-        resp.body = {'images': sorted(results,
+        if req.get_param('limit'):
+            params['limit'] = req.get_param('limit')
+
+        results = client['Account'].getBlockDeviceTemplateGroups(**params)
+
+        if not results:
+            resp.body = {}
+            return
+
+        if not isinstance(results, list):
+            results = [results]
+
+        output = []
+        for image in results:
+            if not image:  # or 'parentId' not in image:
+                continue
+            formatted_image = get_v2_image_details_dict(req, image)
+
+            if formatted_image:
+                output.append(formatted_image)
+
+        resp.body = {'images': sorted(output,
                                       key=lambda x: x['name'].lower())}
 
 
@@ -540,16 +565,22 @@ class SLImageV1Images(object):
         params = {}
         params['mask'] = get_image_mask()
 
-        # TODO - Figure out why this filter doesn't work
-#        for image in image_obj.getPublicImages():
-#        images = client['Account'].getBlockDeviceTemplateGroups(filter=filter)
-#        print "COUNT: " + str(len(images))
-        for image in client['Account'].getBlockDeviceTemplateGroups(**params):
-            if not image or image['parentId']:
-                continue
-            results.append(get_v1_image_details_dict(req, image))
+        results = client['Account'].getBlockDeviceTemplateGroups(**params)
 
-        resp.body = {'images': sorted(results,
+        if not results:
+            resp.body = {}
+            return
+
+        if not isinstance(results, list):
+            results = [results]
+
+        output = []
+        for image in client['Account'].getBlockDeviceTemplateGroups(**params):
+            if not image or 'parentId' not in image:
+                continue
+            output.append(get_v1_image_details_dict(req, image))
+
+        resp.body = {'images': sorted(output,
                                       key=lambda x: x['name'].lower())}
 
     def on_post(self, req, resp, tenant_id=None):
@@ -661,27 +692,39 @@ class SLImages(object):
 #    __private_images = None
 
     def __init__(self, client):
-        self.__private_images = None
         self.client = client
 
-    def get_image(self, image_guid):
+    def get_image(self, image_guid=None, name=None, most_recent=False):
         matching_image = None
 
         private = self.get_private_images()
+        time = ''
+
+        if image_guid:
+            key = 'globalIdentifier'
+            value = image_guid
+        else:
+            key = 'name'
+            value = name
 
         for image in private:
-            if image.get('globalIdentifier') == image_guid:
-                matching_image = image
-                break
+            if image.get(key) == value:
+                if not most_recent or image['createDate'] > time:
+                    matching_image = image
+                    time = image['createDate']
+                    if not most_recent:
+                        break
 
         if not matching_image:
             public = self.get_public_images()
 
             for image in public:
-                print(image.get('name'), image.get('globalIdentifier'))
-                if image.get('globalIdentifier') == image_guid:
-                    matching_image = image
-                    break
+                if image.get(key) == value:
+                    if not most_recent or image['createDate'] > time:
+                        matching_image = image
+                        time = image['createDate']
+                        if not most_recent:
+                            break
 
         return matching_image
 
@@ -691,7 +734,8 @@ class SLImages(object):
         private = None
 
         if not private:
-            mask = 'id,accountId,name,globalIdentifier,blockDevices,parentId'
+            mask = 'id,accountId,name,globalIdentifier,blockDevices' + \
+                   ',parentId,createDate'
 
             account = self.client['Account']
             private = account.getPrivateBlockDeviceTemplateGroups(mask=mask)
@@ -703,7 +747,8 @@ class SLImages(object):
         public = self.__public_images
 
         if not public:
-            mask = 'id,accountId,name,globalIdentifier,blockDevices,parentId'
+            mask = 'id,accountId,name,globalIdentifier,blockDevices' + \
+                   ',parentId,createDate'
 
             vgbd = self.client['Virtual_Guest_Block_Device_Template_Group']
             public = vgbd.getPublicImages(mask=mask)

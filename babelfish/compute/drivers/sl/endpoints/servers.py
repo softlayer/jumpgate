@@ -8,6 +8,8 @@ from babelfish.shared.drivers.sl.errors import convert_errors
 from babelfish.common.error_handling import (bad_request, duplicate,
                                              compute_fault, not_found)
 from babelfish.compute import compute_dispatcher as disp
+from babelfish.image import image_dispatcher as img_disp
+from babelfish.image.drivers.sl.endpoints.images import SLImages
 from .flavors import FLAVORS
 
 # This comes from Horizon. I wonder if there's a better place to get it.
@@ -32,6 +34,7 @@ class SLComputeV2ServerAction(object):
             return bad_request(resp, message="Malformed request body")
 
         vg_client = req.env['sl_client']['Virtual_Guest']
+        cci = CCIManager(req.env['sl_client'])
 
         try:
             instance_id = int(instance_id)
@@ -39,7 +42,7 @@ class SLComputeV2ServerAction(object):
             return not_found(resp, "Invalid instance ID specified.")
 
         try:
-            vg_client.getObject(id=instance_id)
+            instance = cci.get_instance(instance_id)
         except SoftLayerAPIError:
             return not_found("Instance not found.")
 
@@ -74,13 +77,35 @@ class SLComputeV2ServerAction(object):
             resp.status = falcon.HTTP_202
             return
         elif 'createImage' in body:
+            # TODO - I don't remember why we created this template dict
             template = {'name': body['createImage']['name'],
                         'volumes': body['createImage']['name']}
+            disks = []
+
+            for disk in filter(lambda x: x['device'] == '0',
+                               instance['blockDevices']):
+                disks.append(disk)
+
             try:
-                vg_client.captureImage(template, id=instance_id)
+                result = vg_client.createArchiveTransaction(
+                    template['name'],
+                    disks,
+                    "Auto-created by OpenStack compatibility layer",
+                    id=instance_id,
+                )
+                cci.wait_for_transaction(instance_id, 300)
+                image_obj = SLImages(req.env['sl_client'])
+                image = image_obj.get_image(name=template['name'],
+                                            most_recent=True)
+                image_guid = image.get('globalIdentifier')
+
+                url = img_disp.get_endpoint_url(req, 'v2_image',
+                                                image_guid=image_guid)
+
                 resp.status = falcon.HTTP_202
+                resp.set_header('location', url)
             except SoftLayerAPIError as e:
-                compute_fault(resp, e.message)
+                compute_fault(resp, e.faultString)
             return
         elif 'os-getConsoleOutput' in body:
             resp.status = falcon.HTTP_501

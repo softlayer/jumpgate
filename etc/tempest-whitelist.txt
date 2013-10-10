@@ -119,13 +119,10 @@ tempest.api.compute.flavors.test_flavors:FlavorsTestJSON.test_list_flavors_with_
 # tempest.api.image.v2.test_images:ListImagesTest.test_index_no_params
 # tempest.api.image.v1.test_images:ListImagesTest.test_index_no_params
 
-# Skipping until we determine how we're going to handle images. It appears we can't create a new image from a server that was created from an image.
-# tempest.api.compute.images.test_images:ImagesTestJSON.test_create_image_from_stopped_server
-# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON
-
-# Skipping due to a URL bug in Tempest caused by non-encoded variables
+# Skipping due to a URL bug in Tempest caused by non-encoded HTML entities
 # tempest.api.compute.images.test_images:ImagesTestJSON.test_create_image_from_invalid_server
 
+tempest.api.compute.images.test_images:ImagesTestJSON.test_create_image_from_stopped_server
 tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_image_with_invalid_image_id
 tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_non_existent_image
 tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_image_blank_id
@@ -135,3 +132,25 @@ tempest.api.compute.images.test_images:ImagesTestJSON.test_delete_image_id_is_ov
 
 tempest.api.compute.images.test_list_images:ListImagesTestJSON
 
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_get_image_not_existing
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_get_nonexistant_image
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_filter_by_name
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_limit_results
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_with_detail_filter_by_name
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_with_detail_limit_results
+
+# Skipping because we can't get a list of CCIs using a given image
+# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_filter_by_server_id
+# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_filter_by_server_ref
+# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_with_detail_filter_by_server_ref
+
+# Skipping until I work out image types
+# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_filter_by_type
+# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_with_detail_filter_by_type
+
+# Skipping until I work out image statuses
+# tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_filter_by_status
+
+# Needs a bit more work to get date filters working
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_filter_by_changes_since
+tempest.api.compute.images.test_list_image_filters:ListImageFiltersTestJSON.test_list_images_with_detail_filter_by_changes_since
