@@ -1,2 +1,0 @@
-slapi-openstack-compatibility
-=============================
