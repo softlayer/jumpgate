@@ -63,21 +63,22 @@ class SLIdentityV2Tokens(object):
             ],
             'type': 'image',
             'name': 'glance',
-        }, {
-            'endpoint_links': [],
-            'endpoints': [
-                {
-                    'region': 'RegionOne',
-                    'publicURL': 'http://localhost:5000',
-                    'privateURL': 'http://localhost:5000',
-                    'adminURL': 'http://localhost:5000',
-                    'internalURL': 'http://localhost:5000',
-                    'id': 1,
-                },
-            ],
-            'type': 'network',
-            'name': 'neutron',
-        }]
+        }, #{
+        #     'endpoint_links': [],
+        #     'endpoints': [
+        #         {
+        #             'region': 'RegionOne',
+        #             'publicURL': 'http://localhost:5000',
+        #             'privateURL': 'http://localhost:5000',
+        #             'adminURL': 'http://localhost:5000',
+        #             'internalURL': 'http://localhost:5000',
+        #             'id': 1,
+        #         },
+        #     ],
+        #     'type': 'network',
+        #     'name': 'neutron',
+        # }
+        ]
 
         expiration = datetime.datetime.now() + datetime.timedelta(days=1)
         access = {

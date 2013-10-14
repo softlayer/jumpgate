@@ -41,10 +41,7 @@ class SLComputeV2ServerAction(object):
         except ValueError:
             return not_found(resp, "Invalid instance ID specified.")
 
-        try:
-            instance = cci.get_instance(instance_id)
-        except SoftLayerAPIError:
-            return not_found("Instance not found.")
+        instance = cci.get_instance(instance_id)
 
         if 'pause' in body or 'suspend' in body:
             try:
