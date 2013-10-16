@@ -74,9 +74,7 @@ class SLComputeV2ServerAction(object):
             resp.status = falcon.HTTP_202
             return
         elif 'createImage' in body:
-            # TODO - I don't remember why we created this template dict
-            template = {'name': body['createImage']['name'],
-                        'volumes': body['createImage']['name']}
+            image_name = body['createImage']['name']
             disks = []
 
             for disk in filter(lambda x: x['device'] == '0',
@@ -85,14 +83,14 @@ class SLComputeV2ServerAction(object):
 
             try:
                 result = vg_client.createArchiveTransaction(
-                    template['name'],
+                    image_name,
                     disks,
                     "Auto-created by OpenStack compatibility layer",
                     id=instance_id,
                 )
                 cci.wait_for_transaction(instance_id, 300)
                 image_obj = SLImages(req.env['sl_client'])
-                image = image_obj.get_image(name=template['name'],
+                image = image_obj.get_image(name=image_name,
                                             most_recent=True)
                 image_guid = image.get('globalIdentifier')
 
@@ -311,8 +309,6 @@ class SLComputeV2Server(object):
         client = req.env['sl_client']
         cci = CCIManager(client)
 
-        # TODO: ADD TENANT CHECK
-
         try:
             cci.cancel_instance(server_id)
         except SoftLayerAPIError as e:
@@ -329,8 +325,6 @@ class SLComputeV2Server(object):
         client = req.env['sl_client']
         cci = CCIManager(client)
         body = json.loads(req.stream.read().decode())
-
-        # TODO: ADD TENANT CHECK
 
         if 'name' in lookup(body, 'server'):
             if lookup(body, 'server', 'name').strip() == '':

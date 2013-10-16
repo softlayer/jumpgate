@@ -52,8 +52,7 @@ class Dispatcher(object):
 
     def set_handler(self, nickname, handler):
         if nickname not in self.__endpoints:
-            # TODO - Need to raise an appropriate exception here
-            return None
+            raise ValueError("Unsupported endpoint '%s' specified." % nickname)
 
         data = self.__endpoints[nickname]
 

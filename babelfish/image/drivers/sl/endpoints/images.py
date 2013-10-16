@@ -484,6 +484,7 @@ class SLImageV2Images(object):
             formatted_image = get_v2_image_details_dict(req, image)
 
             if formatted_image:
+                formatted_image['visibility'] = 'private'
                 output.append(formatted_image)
 
         resp.body = {'images': sorted(output,
@@ -551,36 +552,29 @@ class SLImageV1Image(object):
 class SLImageV1Images(object):
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
+        image_obj = SLImages(client)
 
-        # filter = {
-        #     'blockDeviceTemplateGroups':
-        #     {
-        #         'parentId': {
-        #             'operation': 'is_null',
-        #         }
-        #     }
-        # }
         results = []
 
-        params = {}
-        params['mask'] = get_image_mask()
-
-        results = client['Account'].getBlockDeviceTemplateGroups(**params)
-
-        if not results:
-            resp.body = {}
-            return
-
-        if not isinstance(results, list):
-            results = [results]
-
-        output = []
-        for image in client['Account'].getBlockDeviceTemplateGroups(**params):
-            if not image or 'parentId' not in image:
+        for image in image_obj.get_public_images():
+            if not image:  # or 'parentId' not in image:
                 continue
-            output.append(get_v1_image_details_dict(req, image))
+            image['visibility'] = 'public'
+            formatted_image = get_v1_image_details_dict(req, image)
 
-        resp.body = {'images': sorted(output,
+            if formatted_image:
+                results.append(formatted_image)
+
+        for image in image_obj.get_private_images():
+            if not image:  # or 'parentId' not in image:
+                continue
+            image['visibility'] = 'private'
+            formatted_image = get_v1_image_details_dict(req, image)
+
+            if formatted_image:
+                results.append(formatted_image)
+
+        resp.body = {'images': sorted(results,
                                       key=lambda x: x['name'].lower())}
 
     def on_post(self, req, resp, tenant_id=None):
@@ -621,7 +615,7 @@ def get_v2_image_details_dict(req, image, tenant_id=None):
         'id': image['globalIdentifier'],
         'name': image['name'],
         'status': 'active',
-        'visibility': 'public',
+        'visibility': image.get('visibility', 'public'),
         'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
 #        "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
         'tags': [],
@@ -654,7 +648,7 @@ def get_v1_image_details_dict(req, image, tenant_id=None):
         'OS-EXT-IMG-SIZE:size': None,
         'container_format': 'raw',
         'disk_format': 'raw',
-        'is_public': False,
+        'is_public': True if image.get('visibility') == 'public' else False,
         'protected': False,
         'owner': tenant_id,
         'name': image['name'],
@@ -711,6 +705,7 @@ class SLImages(object):
             if image.get(key) == value:
                 if not most_recent or image['createDate'] > time:
                     matching_image = image
+                    matching_image['visibility'] = 'private'
                     time = image['createDate']
                     if not most_recent:
                         break
@@ -722,6 +717,7 @@ class SLImages(object):
                 if image.get(key) == value:
                     if not most_recent or image['createDate'] > time:
                         matching_image = image
+                        matching_image['visibility'] = 'public'
                         time = image['createDate']
                         if not most_recent:
                             break
