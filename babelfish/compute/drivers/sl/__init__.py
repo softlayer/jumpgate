@@ -6,7 +6,6 @@ from .endpoints.dns import DNSDomainsV2, DNSDomainEntryV2
 from .endpoints.flavors import (
     FlavorV2, FlavorsV2, FlavorsDetailV2)
 from .endpoints.floating_ips import OSFloatingIpsV2
-from .endpoints.index import IndexV2
 from .endpoints.keypairs import KeypairsV2, KeypairV2
 from .endpoints.limits import LimitsV2
 from .endpoints.quota_sets import OSQuotaSetsV2
