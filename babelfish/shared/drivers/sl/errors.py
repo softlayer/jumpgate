@@ -2,7 +2,7 @@ from functools import wraps
 import sys
 import traceback
 
-from SoftLayer import SoftLayerAPIError
+from SoftLayer import SoftLayerAPIError, TransportError
 
 from babelfish.common.error_handling import (
     bad_request, not_found, compute_fault, unauthorized)
@@ -42,6 +42,9 @@ def convert_errors(handler):
                                     details=e.faultString)
 
             traceback.print_exc(file=sys.stderr)
+            return compute_fault(
+                resp, message=e.faultCode, details=e.faultString)
+        except TransportError as e:
             return compute_fault(
                 resp, message=e.faultCode, details=e.faultString)
 

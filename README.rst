@@ -6,7 +6,6 @@ This is a library which acts as translation layer to convert incoming OpenStack 
 Installation
 ------------
 
-
 Download source and run:
 
 .. code-block:: bash
