@@ -82,7 +82,7 @@ class ServerActionV2(object):
                 disks.append(disk)
 
             try:
-                result = vg_client.createArchiveTransaction(
+                vg_client.createArchiveTransaction(
                     image_name,
                     disks,
                     "Auto-created by OpenStack compatibility layer",
