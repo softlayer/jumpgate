@@ -1,24 +1,24 @@
 from babelfish.image import image_dispatcher
-from .endpoints.images import (SLImageV1Image, SLImageV1Images,
-                               SLImageV2SchemaImage, SLImageV2SchemaImages,
-                               SLImageV2Images)
+from .endpoints.images import (ImageV1, ImagesV1,
+                               SchemaImageV2, SchemaImagesV2,
+                               ImagesV2)
 
 # Set handlers for the routes we support
 
 # V2 Routes
-image_dispatcher.set_handler('v2_image', SLImageV1Image())
-image_dispatcher.set_handler('v2_images', SLImageV2Images())
-image_dispatcher.set_handler('v2_images_detail', SLImageV2Images())
-image_dispatcher.set_handler('v2_schema_image', SLImageV2SchemaImage())
-image_dispatcher.set_handler('v2_schema_images', SLImageV2SchemaImages())
-image_dispatcher.set_handler('v2_tenant_image', SLImageV1Image())
-image_dispatcher.set_handler('v2_tenant_images', SLImageV2Images())
-image_dispatcher.set_handler('v2_tenant_images_detail', SLImageV2Images())
+image_dispatcher.set_handler('v2_image', ImageV1())
+image_dispatcher.set_handler('v2_images', ImagesV2())
+image_dispatcher.set_handler('v2_images_detail', ImagesV2())
+image_dispatcher.set_handler('v2_schema_image', SchemaImageV2())
+image_dispatcher.set_handler('v2_schema_images', SchemaImagesV2())
+image_dispatcher.set_handler('v2_tenant_image', ImageV1())
+image_dispatcher.set_handler('v2_tenant_images', ImagesV2())
+image_dispatcher.set_handler('v2_tenant_images_detail', ImagesV2())
 
 # V1 Routes
-image_dispatcher.set_handler('v1_image', SLImageV1Image())
-image_dispatcher.set_handler('v1_images', SLImageV1Images())
-image_dispatcher.set_handler('v1_images_detail', SLImageV1Images())
+image_dispatcher.set_handler('v1_image', ImageV1())
+image_dispatcher.set_handler('v1_images', ImagesV1())
+image_dispatcher.set_handler('v1_images_detail', ImagesV1())
 
 # Don't forget to import the routes or else nothing will happen.
 image_dispatcher.import_routes()

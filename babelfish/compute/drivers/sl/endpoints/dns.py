@@ -8,7 +8,7 @@ from SoftLayer import DNSManager
 from babelfish.common.nested_dict import lookup
 
 
-class SLComputeV2DNSDomains(object):
+class DNSDomainsV2(object):
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
         mgr = DNSManager(client)
@@ -26,7 +26,7 @@ class SLComputeV2DNSDomains(object):
         resp.body = {'domain_entries': results}
 
 
-class SLComputeV2DNSDomainEntry(object):
+class DNSDomainEntryV2(object):
     def on_delete(self, req, resp, tenant_id, domain, entry):
         client = req.env['sl_client']
         mgr = DNSManager(client)

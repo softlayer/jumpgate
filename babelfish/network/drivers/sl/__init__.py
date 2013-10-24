@@ -1,12 +1,12 @@
 from babelfish.network import network_dispatcher
-from .endpoints.subnets import SLNetworkV2Subnets
-from .endpoints.networks import SLNetworkV2Networks
+from .endpoints.subnets import SubnetsV2
+from .endpoints.networks import NetworksV2
 
 # Set handlers for the routes we support
 
 # V2 Routes
-network_dispatcher.set_handler('v2_networks', SLNetworkV2Networks())
-network_dispatcher.set_handler('v2_subnets', SLNetworkV2Subnets())
+network_dispatcher.set_handler('v2_networks', NetworksV2())
+network_dispatcher.set_handler('v2_subnets', SubnetsV2())
 
 # Don't forget to import the routes or else nothing will happen.
 network_dispatcher.import_routes()

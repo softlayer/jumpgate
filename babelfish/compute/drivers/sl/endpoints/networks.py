@@ -1,6 +1,6 @@
 
 
-class SLComputeV2OSNetworks(object):
+class OSNetworksV2(object):
     def on_get(self, req, resp, tenant_id):
         networks = []
         client = req.env['sl_client']
@@ -11,7 +11,7 @@ class SLComputeV2OSNetworks(object):
         resp.body = {'networks': networks}
 
 
-class SLComputeV2OSNetwork(object):
+class OSNetworkV2(object):
     def on_get(self, req, resp, tenant_id, network_id):
         client = req.env['sl_client']
         sl_network = client['Network_Subnet'].getObject(

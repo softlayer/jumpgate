@@ -1,12 +1,12 @@
-from babelfish.identity import identity_dispatcher
+from babelfish.compute import compute_dispatcher
 
 
-class SLIdentityV2Index(object):
+class IndexV2(object):
     def on_get(self, req, resp):
         versions = [{
             'id': 'v2.0',
             'links': [{
-                'href': identity_dispatcher.get_endpoint_url(req, 'v2_index'),
+                'href': compute_dispatcher.get_endpoint_url(req, 'v2_index'),
                 'rel': 'self'
             }],
             'status': 'CURRENT',
@@ -19,7 +19,7 @@ class SLIdentityV2Index(object):
         }, {
             'id': 'v1.0',
             'links': [{
-                'href': identity_dispatcher.get_endpoint_url(req, 'v1_index'),
+                'href': compute_dispatcher.get_endpoint_url(req, 'v1_index'),
                 'rel': 'self'
             }],
             'status': 'ACTIVE',

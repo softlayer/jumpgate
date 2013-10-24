@@ -1,4 +1,3 @@
-import datetime
 import json
 import falcon
 import uuid
@@ -9,7 +8,7 @@ from babelfish.common.error_handling import not_found
 from babelfish.image import image_dispatcher as disp
 
 
-class SLImageV2SchemaImages(object):
+class SchemaImagesV2(object):
     # TODO - This needs to be updated for our specifications
     def on_get(self, req, resp):
         resp.body = {
@@ -222,7 +221,7 @@ class SLImageV2SchemaImages(object):
         }
 
 
-class SLImageV2SchemaImage(object):
+class SchemaImageV2(object):
     # TODO - This needs to be updated for our specifications
     def on_get(self, req, resp):
         resp.body = {
@@ -404,7 +403,7 @@ class SLImageV2SchemaImage(object):
         }
 
 
-class SLImageV2Images(object):
+class ImagesV2(object):
     def on_delete(self, req, resp, image_guid=None, tenant_id=None):
         if not image_guid:
             return not_found(resp, 'Image could not be found')
@@ -491,7 +490,7 @@ class SLImageV2Images(object):
                                       key=lambda x: x['name'].lower())}
 
 
-class SLImageV1Image(object):
+class ImageV1(object):
     def on_delete(self, req, resp, image_guid=None, tenant_id=None):
         if not image_guid:
             return not_found(resp, 'Image could not be found')
@@ -549,7 +548,7 @@ class SLImageV1Image(object):
         resp.set_headers(headers)
 
 
-class SLImageV1Images(object):
+class ImagesV1(object):
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)

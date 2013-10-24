@@ -14,7 +14,7 @@ NULL_KEY = "AAAAB3NzaC1yc2EAAAABIwAAAIEArkwv9X8eTVK4F7pMlSt45pWoiakFk" \
     "2WVdBWQM="
 
 
-class SLComputeV2Keypairs(object):
+class KeypairsV2(object):
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
         mgr = SshKeyManager(client)
@@ -55,7 +55,7 @@ class SLComputeV2Keypairs(object):
             raise
 
 
-class SLComputeV2Keypair(object):
+class KeypairV2(object):
     def on_get(self, req, resp, tenant_id, keypair_name):
         client = req.env['sl_client']
         mgr = SshKeyManager(client)

@@ -13,7 +13,7 @@ from babelfish.common.error_handling import not_found
 #    limit=10, filter={'userType': {'operation': 'SYSTEM'}}
 
 
-class SLComputeV2InstanceActions(object):
+class InstanceActionsV2(object):
     def on_get(self, req, resp, tenant_id, server_id):
         try:
             int(server_id)

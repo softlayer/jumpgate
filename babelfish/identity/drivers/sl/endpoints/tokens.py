@@ -10,7 +10,7 @@ from babelfish.identity import identity_dispatcher
 logger = logging.getLogger(__name__)
 
 
-class SLIdentityV2Tokens(object):
+class TokensV2(object):
     @convert_errors
     def on_post(self, req, resp):
         body = req.stream.read().decode()
@@ -107,7 +107,7 @@ class SLIdentityV2Tokens(object):
         resp.body = {'access': access}
 
 
-class SLIdentityV2Token(object):
+class TokenV2(object):
     def on_delete(self, req, resp, token_id):
         # This method is called when OpenStack wants to remove a token's
         # validity, such as when a cookie expires. Our login tokens don't

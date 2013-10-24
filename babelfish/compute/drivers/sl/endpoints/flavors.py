@@ -42,7 +42,7 @@ FLAVORS = {
 FLAVORS[None] = FLAVORS[1]
 
 
-class SLComputeV2Flavor(object):
+class FlavorV2(object):
     def on_get(self, req, resp, flavor_id, tenant_id=None):
         try:
             flavor_id = int(flavor_id)
@@ -56,7 +56,7 @@ class SLComputeV2Flavor(object):
         resp.body = {'flavor': flavor}
 
 
-class SLComputeV2Flavors(object):
+class FlavorsV2(object):
     def on_get(self, req, resp, tenant_id=None):
         flavor_refs = filter_flavor_refs(req, resp, get_listing_flavors())
         if flavor_refs is None:
@@ -65,7 +65,7 @@ class SLComputeV2Flavors(object):
         resp.body = {'flavors': flavors}
 
 
-class SLComputeV2FlavorsDetail(object):
+class FlavorsDetailV2(object):
     def on_get(self, req, resp, tenant_id=None):
         flavor_refs = [flavor for flavor_id, flavor in FLAVORS.items()]
         flavor_refs = filter_flavor_refs(req, resp, flavor_refs)

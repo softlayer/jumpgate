@@ -15,7 +15,7 @@ setup(
     packages=find_packages(exclude=['*.tests']),
     include_package_data=True,
     zip_safe=False,
-    install_requires=['falcon'],
+    install_requires=['falcon', 'requests'],
     setup_requires=[],
     test_suite='nose.collector',
 )

@@ -1,7 +1,7 @@
 import falcon
 
 
-class SLComputeV2Limits(object):
+class LimitsV2(object):
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
 

@@ -1,8 +1,8 @@
 
 
-class SLComputeV2OSQuotaSets(object):
+class OSQuotaSetsV2(object):
     def on_get(self, req, resp, tenant_id, account_id=None):
-        # TODO - This is hardcoded nonsense
+        # TODO - This is hardcoded and needs changed
         qs = {
             "cores": 200,
             "floating_ips": 100,

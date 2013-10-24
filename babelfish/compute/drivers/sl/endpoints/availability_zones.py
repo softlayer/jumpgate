@@ -4,7 +4,7 @@ from SoftLayer import CCIManager
 from babelfish.common.nested_dict import lookup
 
 
-class SLComputeV2AvailabilityZones(object):
+class AvailabilityZonesV2(object):
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
         cci = CCIManager(client)

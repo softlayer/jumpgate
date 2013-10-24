@@ -1,6 +1,6 @@
 
 
-class SLNetworkV2Networks(object):
+class NetworksV2(object):
     def on_get(self, req, resp, format=None):
         networks = [
             {

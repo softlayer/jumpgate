@@ -1,6 +1,6 @@
 
 
-class SLComputeV2Extensions(object):
+class ExtensionsV2(object):
     def on_get(self, req, resp, tenant_id):
         resp.body = {'extensions': [
             {

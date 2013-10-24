@@ -62,8 +62,8 @@ def load_modules(api):
     driver_config.read('driver.conf')
     api.config['driver_config'] = driver_config
 
-    for service in ['shared', 'identity', 'compute', 'image', 'block_storage',
-                    'network']:
+    for service in ['openstack', 'shared', 'identity', 'compute', 'image',
+                    'block_storage', 'network']:
         if service in config:
             importlib.import_module(config[service].get('driver'))
             api.config['installed_modules'][service] = True

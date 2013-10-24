@@ -5,7 +5,7 @@ from SoftLayer import CCIManager
 from .servers import get_virtual_guest_mask
 
 
-class SLComputeV2Usage(object):
+class UsageV2(object):
     def on_get(self, req, resp, tenant_id, target_id):
         client = req.env['sl_client']
         cci = CCIManager(client)

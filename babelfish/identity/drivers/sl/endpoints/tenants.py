@@ -1,6 +1,6 @@
 
 
-class SLIdentityV2Tenants(object):
+class TenantsV2(object):
     def on_get(self, req, resp):
         client = req.env['sl_client']
         account = client['Account'].getObject()

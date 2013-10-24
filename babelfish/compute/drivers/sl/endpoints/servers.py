@@ -25,7 +25,7 @@ OPENSTACK_POWER_MAP = {
 }
 
 
-class SLComputeV2ServerAction(object):
+class ServerActionV2(object):
     @convert_errors
     def on_post(self, req, resp, tenant_id, instance_id):
         body = json.loads(req.stream.read().decode())
@@ -111,7 +111,7 @@ class SLComputeV2ServerAction(object):
                            list(body.keys()), code=400)
 
 
-class SLComputeV2Servers(object):
+class ServersV2(object):
     @convert_errors
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
@@ -271,7 +271,7 @@ def get_list_params(req):
     }
 
 
-class SLComputeV2ServersDetail(object):
+class ServersDetailV2(object):
     @convert_errors
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
@@ -291,7 +291,7 @@ class SLComputeV2ServersDetail(object):
         resp.body = {'servers': results}
 
 
-class SLComputeV2Server(object):
+class ServerV2(object):
     @convert_errors
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
