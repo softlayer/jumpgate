@@ -1,5 +1,4 @@
 import json
-import falcon
 
 from SoftLayer import CCIManager, SshKeyManager, SoftLayerAPIError
 
@@ -50,11 +49,11 @@ class ServerActionV2(object):
                 if 'Unable to pause instance' in e.faultString:
                     return duplicate(resp, e.faultString)
                 raise
-            resp.status = falcon.HTTP_202
+            resp.status = 202
             return
         elif 'unpause' in body or 'resume' in body:
             vg_client.resume(id=instance_id)
-            resp.status = falcon.HTTP_202
+            resp.status = 202
             return
         elif 'reboot' in body:
             if body['reboot'].get('type') == 'SOFT':
@@ -63,15 +62,15 @@ class ServerActionV2(object):
                 vg_client.rebootHard(id=instance_id)
             else:
                 vg_client.rebootDefault(id=instance_id)
-            resp.status = falcon.HTTP_202
+            resp.status = 202
             return
         elif 'os-stop' in body:
             vg_client.powerOff(id=instance_id)
-            resp.status = falcon.HTTP_202
+            resp.status = 202
             return
         elif 'os-start' in body:
             vg_client.powerOn(id=instance_id)
-            resp.status = falcon.HTTP_202
+            resp.status = 202
             return
         elif 'createImage' in body:
             image_name = body['createImage']['name']
@@ -97,13 +96,13 @@ class ServerActionV2(object):
                 url = img_disp.get_endpoint_url(req, 'v2_image',
                                                 image_guid=image_guid)
 
-                resp.status = falcon.HTTP_202
+                resp.status = 202
                 resp.set_header('location', url)
             except SoftLayerAPIError as e:
                 compute_fault(resp, e.faultString)
             return
         elif 'os-getConsoleOutput' in body:
-            resp.status = falcon.HTTP_501
+            resp.status = 501
             return
 
         return bad_request(resp,
@@ -137,7 +136,7 @@ class ServersV2(object):
                 'name': instance['hostname'],
             })
 
-        resp.status = falcon.HTTP_200
+        resp.status = 200
         resp.body = {'servers': results}
 
     @convert_errors
@@ -201,7 +200,7 @@ class ServersV2(object):
             return bad_request(resp, message=str(e))
 
         resp.set_header('x-compute-request-id', 'create')
-        resp.status = falcon.HTTP_202
+        resp.status = 202
         resp.body = {'server': {
             'id': new_instance['id'],
             'links': [{
@@ -287,7 +286,7 @@ class ServersDetailV2(object):
         for instance in sl_instances:
             results.append(get_server_details_dict(req, instance))
 
-        resp.status = falcon.HTTP_200
+        resp.status = 200
         resp.body = {'servers': results}
 
 
@@ -318,7 +317,7 @@ class ServerV2(object):
                     message='Can not cancel an instance when there is already'
                     ' an active transaction', code=409)
             raise
-        resp.status = falcon.HTTP_204
+        resp.status = 204
 
     @convert_errors
     def on_put(self, req, resp, tenant_id, server_id):

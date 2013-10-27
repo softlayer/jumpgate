@@ -1,7 +1,5 @@
 import requests
 
-import falcon
-
 from core import api
 
 
@@ -40,7 +38,7 @@ class OpenStackResponder(object):
         if req.method == 'GET' and req.query_string:
             url += '?' + req.query_string
 
-        result_code = falcon.HTTP_200
+        result_code = 200
         body = ''
 
         try:

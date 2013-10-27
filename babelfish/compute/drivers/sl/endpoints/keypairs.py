@@ -1,4 +1,3 @@
-import falcon
 import json
 import random
 import string
@@ -76,7 +75,7 @@ class KeypairV2(object):
             return not_found(resp, 'KeyPair not Found')
 
         mgr.delete_key(keys[0]['id'])
-        resp.status = falcon.HTTP_202
+        resp.status = 202
 
 
 def format_keypair(keypair):

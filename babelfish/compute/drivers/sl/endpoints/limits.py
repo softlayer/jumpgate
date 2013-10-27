@@ -1,4 +1,3 @@
-import falcon
 
 
 class LimitsV2(object):
@@ -30,5 +29,4 @@ class LimitsV2(object):
             }
         }
 
-        resp.status = falcon.HTTP_200
         resp.body = {'limits': limits}

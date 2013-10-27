@@ -1,6 +1,4 @@
 import json
-
-import falcon
 import urllib.parse
 
 from SoftLayer import DNSManager
@@ -39,7 +37,7 @@ class DNSDomainEntryV2(object):
 
         mgr.delete_record(record['id'])
 
-        resp.status = falcon.HTTP_204
+        resp.status = 204
 
     def on_get(self, req, resp, tenant_id, domain, entry=None):
         client = req.env['sl_client']

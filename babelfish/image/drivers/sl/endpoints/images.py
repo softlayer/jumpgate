@@ -1,5 +1,4 @@
 import json
-import falcon
 import uuid
 
 from SoftLayer.utils import query_filter
@@ -416,7 +415,7 @@ class ImagesV2(object):
             return not_found(resp, 'Image could not be found')
 
         # TODO - What should this do?
-        resp.status = falcon.HTTP_204
+        resp.status = 204
 
     def on_post(self, req, resp, tenant_id=None):
         body = json.loads(req.stream.read().decode())
@@ -503,7 +502,7 @@ class ImageV1(object):
             return not_found(resp, 'Image could not be found')
 
         # TODO - What should this do?
-        resp.status = falcon.HTTP_204
+        resp.status = 204
 
     def on_get(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
@@ -513,7 +512,6 @@ class ImageV1(object):
         if not results:
             return not_found(resp, 'Image could not be found')
 
-        resp.status = falcon.HTTP_200
         resp.body = {'image': get_v1_image_details_dict(req, results)}
 
     def on_head(self, req, resp, image_guid, tenant_id=None):
@@ -544,7 +542,6 @@ class ImageV1(object):
             'x-image-meta-disk_format': results['disk_format'],
         }
 
-        resp.status = falcon.HTTP_200
         resp.set_headers(headers)
 
 

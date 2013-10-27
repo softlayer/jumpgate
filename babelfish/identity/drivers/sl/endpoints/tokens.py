@@ -1,5 +1,4 @@
 import datetime
-import falcon
 import logging
 from SoftLayer import Client
 
@@ -112,5 +111,5 @@ class TokenV2(object):
         # This method is called when OpenStack wants to remove a token's
         # validity, such as when a cookie expires. Our login tokens don't
         # expire, so this does nothing.
-        resp.status = falcon.HTTP_202
+        resp.status = 202
         resp.body = ''
