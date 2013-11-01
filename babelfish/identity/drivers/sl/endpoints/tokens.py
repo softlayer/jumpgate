@@ -5,6 +5,7 @@ from SoftLayer import Client
 from babelfish.shared.drivers.sl.errors import convert_errors
 from babelfish.shared.drivers.sl.auth import get_auth
 from babelfish.identity import identity_dispatcher
+from babelfish.openstack import openstack_dispatcher
 
 logger = logging.getLogger(__name__)
 
@@ -22,14 +23,16 @@ class TokensV2(object):
         account = user['account']
 
         index_url = identity_dispatcher.get_endpoint_url(req, 'v2_auth_index')
+        v2_url = openstack_dispatcher.get_endpoint_url(req, 'v2_index')
+
         service_catalog = [{
             'endpoint_links': [],
             'endpoints': [{
                 'region': 'RegionOne',
-                'publicURL': 'http://localhost:5000/v2/%s' % account['id'],
-                'privateURL': 'http://localhost:5000/v2/%s' % account['id'],
-                'adminURL': 'http://localhost:5000/v2/%s' % account['id'],
-                'internalURL': 'http://localhost:5000/v2/%s' % account['id'],
+                'publicURL': v2_url + '/%s' % account['id'],
+                'privateURL': v2_url + '/v2/%s' % account['id'],
+                'adminURL': v2_url + '/v2/%s' % account['id'],
+                'internalURL': v2_url + '/v2/%s' % account['id'],
                 'id': 1,
             }],
             'type': 'compute',
