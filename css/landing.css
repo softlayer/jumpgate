@@ -30,9 +30,9 @@ width:100%;
 -o-background-size:cover;
 -webkit-background-size:cover;
 background-color:#222;
-background: -webkit-linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
-background: -moz-linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
-background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background: -webkit-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background: -moz-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
 background-repeat: no-repeat; 
 background-size: cover; 
 }
@@ -70,7 +70,7 @@ vertical-align:middle;
 
 .vert-text h1 {
 font-family:helvetica, arial, sans-serif;
-font-size:100px;
+font-size:80px;
 font-weight:700;
 letter-spacing:-4px;
 line-height:1.2;

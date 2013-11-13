@@ -31,7 +31,7 @@ The first step is to create your driver. You can do this anywhere, as long as it
 
 .. code-block:: bash
 
-	$ mkdir babelfish/index/drivers/my_driver
+  $ mkdir babelfish/index/drivers/my_driver
 
 Next we're going to create an __init__.py within that directory. This is the file that the compatibility layer is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your __init__.py file:
 
@@ -65,7 +65,7 @@ To start, let's create the endpoints directory we imported from earlier:
 
 .. code-block:: bash
 
-	$ mkdir babelfish/index/drivers/my_driver/endpoints
+  $ mkdir babelfish/index/drivers/my_driver/endpoints
 
 Now within that, create the index.py where our IndexV2 class will reside. (Note - Since this is Python 3.3, we don't need an __init__.py file within the directory.) Start by putting the following within the index.py file:
 
