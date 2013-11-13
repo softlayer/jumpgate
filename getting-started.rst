@@ -126,93 +126,159 @@ not going to worry about v3 support and we're going to add in v1 support
 
 To start, let's create the endpoints directory we imported from earlier:
 
-.. code-block:: bash
+~~~~ {.sourceCode .bash}
+$ mkdir babelfish/index/drivers/my_driver/endpoints
+~~~~
 
-  $ mkdir babelfish/index/drivers/my_driver/endpoints
+Now within that, create the index.py where our IndexV2 class will
+reside. (Note - Since this is Python 3.3, we don't need an
+\_\_init\_\_.py file within the directory.) Start by putting the
+following within the index.py file:
 
-Now within that, create the index.py where our IndexV2 class will reside. (Note - Since this is Python 3.3, we don't need an __init__.py file within the directory.) Start by putting the following within the index.py file:
-
-.. code-block:: python
-
-   from babelfish.compute import compute_dispatcher
+~~~~ {.sourceCode .python}
+from babelfish.compute import compute_dispatcher
 
 
-   class IndexV2(object):
-       def on_get(self, req, resp):
-           versions = [{
-               'id': 'v2.0',
-               'links': [{
-                   'href': compute_dispatcher.get_endpoint_url(req, 'v2_index'),
-                   'rel': 'self'
-               }],
-               'status': 'CURRENT',
-               'media-types': [
-                   {
-                       'base': 'application/json',
-                       'type': 'application/vnd.openstack.compute.v1.0+json',
-                   }
-               ],
-            }, {
-                'id': 'v1.0',
-                'links': [{
-                    'href': compute_dispatcher.get_endpoint_url(req, 'v1_index'),
-                    'rel': 'self'
-                }],
-                'status': 'ACTIVE',
-                'media-types': [
-                    {
-                        'base': 'application/json',
-                        'type': 'application/vnd.openstack.compute.v1.0+json',
-                    }
-                ],
-            }]
+class IndexV2(object):
+    def on_get(self, req, resp):
+        versions = [{
+            'id': 'v2.0',
+            'links': [{
+                'href': compute_dispatcher.get_endpoint_url(req, 'v2_index'),
+                'rel': 'self'
+            }],
+            'status': 'CURRENT',
+            'media-types': [
+                {
+                    'base': 'application/json',
+                    'type': 'application/vnd.openstack.compute.v1.0+json',
+                }
+            ],
+         }, {
+             'id': 'v1.0',
+             'links': [{
+                 'href': compute_dispatcher.get_endpoint_url(req, 'v1_index'),
+                 'rel': 'self'
+             }],
+             'status': 'ACTIVE',
+             'media-types': [
+                 {
+                     'base': 'application/json',
+                     'type': 'application/vnd.openstack.compute.v1.0+json',
+                 }
+             ],
+         }]
 
-            resp.body = {'versions': versions}
+         resp.body = {'versions': versions}
+~~~~
 
-As with the driver above, we import a dispatcher, but notice that we're importing the compute_dispatcher (for Nova) and not the generic OpenStack one. We'll see why in a moment.
+As with the driver above, we import a dispatcher, but notice that we're
+importing the compute\_dispatcher (for Nova) and not the generic
+OpenStack one. We'll see why in a moment.
 
-Next, we start the class itself. Response handlers are plain objects and don't need to inherit from any particular class or interface. Per the `Compute API`_ documentation, we know that this endpoint handles the GET verb, so we create an on_get() function. This is how the `Falcon framework`_ handles responses. The contents of the function are what we're going to do to serve this endpoint. This should look very similar to the sample within the API docs, though you'll see we've added the v1 support as we discussed and we're not hardcoding URLs.
+Next, we start the class itself. Response handlers are plain objects and
+don't need to inherit from any particular class or interface. Per the
+Compute API\_ documentation, we know that this endpoint handles the GET
+verb, so we create an on\_get() function. This is how the
+Falcon framework\_ handles responses. The contents of the function are
+what we're going to do to serve this endpoint. This should look very
+similar to the sample within the API docs, though you'll see we've added
+the v1 support as we discussed and we're not hardcoding URLs.
 
-Because dispatchers handle endpoints, they also know how to build URLs. This is handy because it provides a level of abstraction between your driver and the OpenStack API itself so that if something changed in the future or the compatibility layer switched hosts, you shouldn't need to change any of your driver code. To get the URL for a particular endpoint, call the get_endpoint_url() method on the appropriate dispatcher and pass in the Falcon request object and the identifier for the endpoint. If the endpoint's URL has variables within it (as a lot of the Nova compute endpoints do), you pass them in as keyword arguments. The only exception to this is the tenant ID, which we'll discuss later. Each dispatcher only knows about its own endpoints (they're contained as properties of the object), so you need to use the appropriate one when building your endpoint URL.
+Because dispatchers handle endpoints, they also know how to build URLs.
+This is handy because it provides a level of abstraction between your
+driver and the OpenStack API itself so that if something changed in the
+future or the compatibility layer switched hosts, you shouldn't need to
+change any of your driver code. To get the URL for a particular
+endpoint, call the get\_endpoint\_url() method on the appropriate
+dispatcher and pass in the Falcon request object and the identifier for
+the endpoint. If the endpoint's URL has variables within it (as a lot of
+the Nova compute endpoints do), you pass them in as keyword arguments.
+The only exception to this is the tenant ID, which we'll discuss later. Each dispatcher only knows about its own endpoints (they're contained as properties of the object), so you need to use the appropriate one when building your endpoint URL.
 
-The very last thing the function does is assign a body to the response object. This should confrom to the expected format within the OpenStack API documentation. Assuming you provide a valid Python dictionary, the compatibility layer will automatically JSON encode it for you. Note that the default status code is 200. If you need to assign a different status code, you should refer to the Falcon docs or look at the examples within the SoftLayer driver.
-
+The very last thing the function does is assign a body to the response
+object. This should confrom to the expected format within the OpenStack
+API documentation. Assuming you provide a valid Python dictionary, the
+compatibility layer will automatically JSON encode it for you. Note that
+the default status code is 200. If you need to assign a different status
+code, you should refer to the Falcon docs or look at the examples within
+the SoftLayer driver.
 
 The Tokens Endpoint
-~~~~~~~~~~~~~~~~~~~
-The other endpoint example we're going to provide is the v2_tokens endpoint within the Keystone Identity API. This endpoint is important because every OpenStack tool will first try to authenticate to Keystone before doing anything else, so if you don't have this, you may have problems. It also has several other interesting examples for a driver that make it worth discussing even if you're not planning on using Keystone.
+===================
 
-As with the index driver, we first need to create a few things. We'll do it in a larger batch this time:
+The other endpoint example we're going to provide is the v2\_tokens
+endpoint within the Keystone Identity API. This endpoint is important
+because every OpenStack tool will first try to authenticate to Keystone
+before doing anything else, so if you don't have this, you may have
+problems. It also has several other interesting examples for a driver
+that make it worth discussing even if you're not planning on using
+Keystone.
 
-.. code-block:: bash
+As with the index driver, we first need to create a few things. We'll do
+it in a larger batch this time:
 
-   $ mkdir babelfish/identity/drivers/my_driver
-   $ mkdir babelfish/identity/drivers/my_driver/endpoints
+~~~~ {.sourceCode .bash}
+$ mkdir babelfish/identity/drivers/my_driver
+$ mkdir babelfish/identity/drivers/my_driver/endpoints
+~~~~
 
-Create the __init__.py file
+Create the \_\_init\_\_.py file
 
-.. code-block:: python
+~~~~ {.sourceCode .python}
+from babelfish.identity import identity_dispatcher
+from .endpoints.tokens import TokensV2
 
-    from babelfish.identity import identity_dispatcher
-    from .endpoints.tokens import TokensV2
+identity_dispatcher.set_handler('v2_tokens', TokensV2())
 
-    identity_dispatcher.set_handler('v2_tokens', TokensV2())
+identity_dispatcher.import_routes()
+~~~~
 
-    identity_dispatcher.import_routes()
+This should look familiar to you from the index example earlier. Next,
+create the tokens.py file where the TokensV2 class will live.
 
-This should look familiar to you from the index example earlier. Next, create the tokens.py file where the TokensV2 class will live.
+~~~~ {.sourceCode .python}
+from datetime import datetime
+from babelfish.identity import identity_dispatcher
+from babelfish.openstack import openstack_dispatcher
 
-.. code-block:: python
+class TokensV2(object):
+    def on_post(self, req, resp):
+        body = req.stream.read().decode()
+~~~~
 
-    from datetime import datetime
-    from babelfish.identity import identity_dispatcher
-    from babelfish.openstack import openstack_dispatcher
+This is the starting point for the driver. If you refer to the Identity
+API documentation, you'll see that the /v2.0/tokens endpoint responds to
+POST, so we've created an on\_post() method. Next, we pull the body out
+of the request stream. After that, we should authenticate the user. The
+implementation of this is going to be specific to your API, but
+hopefully you know how to authenticate someone. We're going to assume
+that you've successfully authenticated the person and put information
+about him into a dictionary called *user* and information about his
+tenant account into a dictionary called *account*. From there, we just
+need to build the response body based upon what the driver supports and
+what the API expects.
 
-    class TokensV2(object):
-        def on_post(self, req, resp):
-            body = req.stream.read().decode()
+The Tokens Endpoint
+===================
 
-This is the starting point for the driver. If you refer to the Identity API documentation, you'll see that the /v2.0/tokens endpoint responds to POST, so we've created an on_post() method. Next, we pull the body out of the request stream. After that, we should authenticate the user. The implementation of this is going to be specific to your API, but hopefully you know how to authenticate someone. We're going to assume that you've successfully authenticated the person and put information about him into a dictionary called *user* and information about his tenant account into a dictionary called *account*. From there, we just need to build the response body based upon what the driver supports and what the API expects.
+The other endpoint example we're going to provide is the v2\_tokens
+endpoint within the Keystone Identity API. This endpoint is important
+because every OpenStack tool will first try to authenticate to Keystone
+before doing anything else, so if you don't have this, you may have
+problems. It also has several other interesting examples for a driver
+that make it worth discussing even if you're not planning on using
+Keystone.
+
+As with the index driver, we first need to create a few things. We'll do
+it in a larger batch this time:
+
+~~~~ {.sourceCode .bash}
+$ mkdir babelfish/identity/drivers/my_driver
+$ mkdir babelfish/identity/drivers/my_driver/endpoints
+~~~~
+
+Create the \_\_init\_\_.py file
 
 .. code-block:: python
 

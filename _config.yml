@@ -7,6 +7,7 @@ repo: https://github.com/softlayer/slapi-stack
 license: https://github.com/softlayer/slapi-stack/blob/master/LICENSE
 open_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=open
 closed_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=closed
+drivers: https://github.com/softlayer/slapi-stack/blob/master/DRIVERS.rst
 
 #Company Links
 www: http://www.softlayer.com
