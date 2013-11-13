@@ -8,8 +8,8 @@
   Location: Dallas, TX
 
 /* SITE */
-  Last update: 2013/11/14
+  Last update: 2013/11/13
   Language: English
   Standards: HTML5, CSS3
-  Components: Modernizr, jQuery
-  Software: Sublime Text, Git, Jekyll
+  Components: LESS, jQuery, node.js
+  Software: Sublime Text 3, Git, Jekyll, Sinatra

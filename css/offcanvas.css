@@ -1,0 +1,5 @@
+/*-- Disables Overflow on mobile --*/
+@media all and (max-width: 767px) { 
+  html { overflow-x: hidden; }
+  body.off-canvas { padding: 0; margin: 0; overflow-x: hidden; }
+}
