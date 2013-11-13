@@ -1,65 +1,128 @@
+---
+layout: pages
+slug: getting-started
+baseurl: "../"
+---
+
 Developing Drivers
 ==================
 
-
 Introduction
 ------------
-The primary purpose of the this project is to provide an easy way to add OpenStack API compatibility to existing cloud products. This is accomplished through a series of drivers that are specific to each cloud provider. If you're reading this document, it is assumed that you are interested in using this project to add OpenStack API compatibility via drivers.
 
+The primary purpose of the this project is to provide an easy way to add
+OpenStack API compatibility to existing cloud products. This is
+accomplished through a series of drivers that are specific to each cloud
+provider. If you're reading this document, it is assumed that you are
+interested in using this project to add OpenStack API compatibility via
+drivers.
 
 Getting Started
 ---------------
-When creating a new driver, there are only a few things you need to understand:
 
-1. The compatibility layer has been written primarily for Python 3.3 and assumes your drivers will use this version as well.
-2. Drivers are built as a series of objects for the `Falcon framework`_. You should be familiar with both Falcon and REST APIs in general.
-3. You need to be familar with the expected `OpenStack API`_ JSON. The compatibility layer will provide the endpoint mappings for you, but does not handle building valid responses.
+When creating a new driver, there are only a few things you need to
+understand:
+
+1.  The compatibility layer has been written primarily for Python 3.3
+    and assumes your drivers will use this version as well.
+2.  Drivers are built as a series of objects for the Falcon framework\_.
+    You should be familiar with both Falcon and REST APIs in general.
+3.  You need to be familar with the expected OpenStack API\_ JSON. The
+    compatibility layer will provide the endpoint mappings for you, but
+    does not handle building valid responses.
 
 Once you have these things, you are ready to begin building your driver.
 
-
 Your First Driver
 -----------------
-There are many places where you could begin building your first driver, but we've generally found starting with the index and the Identity driver (Keystone) to be the easiest. We're going to cover how to build out a couple endpoints to give you an idea. From there, you can use the SoftLayer driver that ships with this project as a further example of other endpoints, should you need it.
 
-Note that there are no restrictions on how you build your driver as long as you make it work with the Falcon framework. You are free to use whatever libraries, tools, and folder layout you are most comfortable with. This document will use the same style as the SoftLayer driver for consistency, but you are not required to do this for your driver.
+There are many places where you could begin building your first driver,
+but we've generally found starting with the index and the Identity
+driver (Keystone) to be the easiest. We're going to cover how to build
+out a couple endpoints to give you an idea. From there, you can use the
+SoftLayer driver that ships with this project as a further example of
+other endpoints, should you need it.
 
+Note that there are no restrictions on how you build your driver as long
+as you make it work with the Falcon framework. You are free to use
+whatever libraries, tools, and folder layout you are most comfortable
+with. This document will use the same style as the SoftLayer driver for
+consistency, but you are not required to do this for your driver.
 
-Create Your Driver
-~~~~~~~~~~~~~~~~~~
-The first step is to create your driver. You can do this anywhere, as long as its within your Python path and the compatibility layer can load it. We're going to do it within the 'drivers' directory for identity. We'll start with the index driver.
+### Create Your Driver
 
-.. code-block:: bash
+The first step is to create your driver. You can do this anywhere, as
+long as its within your Python path and the compatibility layer can load
+it. We're going to do it within the 'drivers' directory for identity.
+We'll start with the index driver.
 
-  $ mkdir babelfish/index/drivers/my_driver
+~~~~ {.sourceCode .bash}
+$ mkdir babelfish/index/drivers/my_driver
+~~~~
 
-Next we're going to create an __init__.py within that directory. This is the file that the compatibility layer is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your __init__.py file:
+Next we're going to create an \_\_init\_\_.py within that directory.
+This is the file that the compatibility layer is going to load. We could
+jam all of our code into it, but that's going to get extremely large for
+some projects, such as Nova Compute. So instead, we're going to use this
+as a module to load other modules based upon functional area. To start,
+make this the contents of your \_\_init\_\_.py file:
 
-.. code-block:: python
+~~~~ {.sourceCode .python}
+from babelfish.openstack import openstack_dispatcher
+from .endpoints.index import IndexV2
 
-   from babelfish.openstack import openstack_dispatcher
-   from .endpoints.index import IndexV2
+openstack_dispatcher.set_handler('v2_index', IndexV2())
 
-   openstack_dispatcher.set_handler('v2_index', IndexV2())
+openstack_dispatcher.import_routes()
+~~~~
 
-   openstack_dispatcher.import_routes()
+Let's look at each section. The first thing we import is the
+openstack\_dispatcher. Each area of the API has a dispatcher that knows
+about the routes/endpoints that OpenStack has. The compatibility layer creates these dispatcher objects for you and
+uses them to determine which endpoints your driver supports and doesn't
+expose any functionality you haven't created.
 
-Let's look at each section. The first thing we import is the openstack_dispatcher. Each area of the API has a dispatcher that knows about the routes/endpoints that OpenStack has. The compatibility layer creates these dispatcher objects for you and uses them to determine which endpoints your driver supports and doesn't expose any functionality you haven't created.
+The next import pulls in the IndexV2 class. This is the actual driver
+class we'll be developing for the /v2 endpoint. We'll cover it in a
+moment.
 
-The next import pulls in the IndexV2 class. This is the actual driver class we'll be developing for the /v2 endpoint. We'll cover it in a moment.
+Next, we see a call to the set\_handler() method. This is how we tell
+the dispatcher object that we're going to expose a particular endpoint.
+The set\_handler() method takes two arguments: The endpoint variable and
+the responder object for to handle that endpoint. Each endpoint that
+OpenStack supports has a unique variable name so that you can refer to
+it without having to know exactly what the URL is. You can either open
+up the dispatcher to get a list of all of the endpoint variables or
+check out our docs on GitHub to get a list there. The handler is the
+IndexV2() object we imported earlier.
 
-Next, we see a call to the set_handler() method. This is how we tell the dispatcher object that we're going to expose a particular endpoint. The set_handler() method takes two arguments: The endpoint variable and the responder object for to handle that endpoint. Each endpoint that OpenStack supports has a unique variable name so that you can refer to it without having to know exactly what the URL is. You can either open up the dispatcher to get a list of all of the endpoint variables or check out our docs on GitHub to get a list there. The handler is the IndexV2() object we imported earlier.
-
-The last thing in the file is a call to import_routes(). This call tells the dispatcher that you've finished assigning handlers and that it should import the routes into Falcon's routes table. If you don't make this call, your endpoints won't be exposed and your driver won't do anything!
+The last thing in the file is a call to import\_routes(). This call
+tells the dispatcher that you've finished assigning handlers and that it
+should import the routes into Falcon's routes table. If you don't make
+this call, your endpoints won't be exposed and your driver won't do
+anything!
 
 The Index Endpoint
-~~~~~~~~~~~~~~~~~~
-Now that the driver has been created, we need to build a response handler. As noted above, we're starting with the v2_index endpoint, which corresponds to the /v2 path. If you refer to the `OpenStack API`_ docs, you'll find a /v2 endpoint for multiple APIs. The one we're going to concern ourselves with right now is within the `Compute API`_. If you read the details for the section, you'll find out that it doesn't need a request body and the response JSON is straightforward. We could copy the document from the docs exactly and have a valid response, but there are a couple problems with this:
+==================
 
-1. It has URLs in it
-2. It doesn't represent the functionality our driver actually supports.
+Now that the driver has been created, we need to build a response
+handler. As noted above, we're starting with the v2\_index endpoint,
+which corresponds to the /v2 path. If you refer to the OpenStack API\_
+docs, you'll find a /v2 endpoint for multiple APIs. The one we're going
+to concern ourselves with right now is within the Compute API\_. If you
+read the details for the section, you'll find out that it doesn't need a
+request body and the response JSON is straightforward. We could copy the
+document from the docs exactly and have a valid response, but there are
+a couple problems with this:
 
-When implementing things like the index endpoint (and the tokens endpoint later), it's extremely important to remember that the output is dependent upon what your driver *actually* supports. In this case, we're not going to worry about v3 support and we're going to add in v1 support (to make using Horizon easier).
+1.  It has URLs in it
+2.  It doesn't represent the functionality our driver actually supports.
+
+When implementing things like the index endpoint (and the tokens
+endpoint later), it's extremely important to remember that the output is
+dependent upon what your driver *actually* supports. In this case, we're
+not going to worry about v3 support and we're going to add in v1 support
+(to make using Horizon easier).
 
 To start, let's create the endpoints directory we imported from earlier:
 

@@ -22,7 +22,9 @@ Keep track of development and community news.
 
 ## Troubleshooting
 
-1. Some consoles may throw a "Liquid Exception: incompatible character encodings: UTF-8 and IBM437 in index.html" error when you run `jekyll serve`. This means the console does not use UTF-8 by default. To get around this, run these commands first (especially if you use Git for Windows).
+### Liquid Exception
+
+Some consoles may throw a "Liquid Exception: incompatible character encodings: UTF-8 and IBM437 in index.html" error when you run `jekyll serve`. This means the console does not use UTF-8 by default. To get around this, run these commands first (especially if you use Git for Windows).
 
     $ cmd
     $ chcp 65001
