@@ -30,9 +30,9 @@ width:100%;
 -o-background-size:cover;
 -webkit-background-size:cover;
 background-color:#222;
-background: -webkit-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/snpw1gysn/bg2.jpg');
-background: -moz-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/snpw1gysn/bg2.jpg');
-background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/snpw1gysn/bg2.jpg');
+background: -webkit-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s7.postimg.org/yub5cvbvf/image.jpg');
+background: -moz-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s7.postimg.org/yub5cvbvf/image.jpg');
+background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s7.postimg.org/yub5cvbvf/image.jpg');
 background-repeat: no-repeat; 
 background-size: cover; 
 }
@@ -70,7 +70,7 @@ vertical-align:middle;
 
 .vert-text h1 {
 font-family:helvetica, arial, sans-serif;
-font-size:80px;
+font-size:90px;
 font-weight:700;
 letter-spacing:-4px;
 line-height:1.2;
@@ -94,7 +94,7 @@ text-transform: uppercase;
 -ms-transition:all .4s ease 0;
 -o-transition:all .4s ease 0;
 -webkit-transition:all .4s ease 0;
-background:none repeat scroll 0 0 #222;
+background:none repeat scroll 0 0 #666;
 height:100%;
 margin-right:-250px;
 overflow-y:auto;
