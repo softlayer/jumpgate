@@ -43,6 +43,10 @@ box-shadow:none;
 height:74px;
 }
 
+.masthead, main {
+background: transparent;
+}
+
 .masthead-links {
 margin:2px 0;
 }

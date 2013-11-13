@@ -1,5 +1,6 @@
 ---
 layout: pages
+title: Getting Started
 slug: getting-started
 baseurl: "../"
 ---
@@ -19,8 +20,7 @@ When creating a new driver, there are only a few things you need to
 understand:
 
 1.  The compatibility layer has been written primarily for Python 3.3 and assumes your drivers will use this version as well.
-2.  Drivers are built as a series of objects for the 
-3.  . You should be familiar with both Falcon and REST APIs in general.
+2.  Drivers are built as a series of objects for the [Falcon framework](http://falconframework.org). You should be familiar with both Falcon and REST APIs in general.
 3.  You need to be familiar with the expected [OpenStack API](http://api.openstack.org/api-ref.html) JSON. The compatibility layer will provide the endpoint mappings for you, but does not handle building valid responses.
 
 Once you have these things, you are ready to begin building your driver.
@@ -377,3 +377,897 @@ Building any compatibility driver is going to be a large amount of work for any 
 * Within the babelfish.common directory, there are several libraries for providing common, reusable functionality for things like error handling, formatting, and nested dictionary management. If you find yourself using something else repeatedly, please let us know so that we can include it in the common toolset.
 * The dispatcher includes a full set of before and after request hooks that allow you to perform common actions immediately prior to or after acting upon a request. This can allow you to centralize some common functionality. For example, the SoftLayer driver uses it to automatically set the tenant_id variable on routes that need it. All you have to do is set the tenant_id property within the request's environment dictionary and the dispatcher will automatically include it.
 * The dispatcher objects include a method called get_unused_endpoints() that will provide a list of all endpoints the dispatcher knows about that you haven't attached handlers to. If you want to get an idea of your coverage, you can run that command after calling import_routes().
+
+## Additional Documentation
+
+*   [OpenStack <span class="caps">API</span>](http://docs.openstack.org/api/api-specs.html)
+*   [OpenStack <span class="caps">API</span> Quick Reference](http://api.openstack.org/api-ref.html)
+*   [SoftLayer <span class="caps">API</span>](http://sldn.softlayer.com/reference/softlayerapi)
+
+# Compatibility
+
+Each section below includes compatibility references for the following components.
+
+* Identity (Keystone)
+* Compute (Nova)
+* Images (Glance)
+* Block Storage (Cinder)
+
+## Identity
+
+This table includes compatibility references for Identity (Keystone).
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Verb</th>
+
+        <th>Endpoint</th>
+
+        <th>Available</th>
+
+        <th>Notes</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/extensions</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/extensions/{alias}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2.0/tokens</td>
+
+        <td>Partial</td>
+
+        <td>The endpoints that are returned are currently hardcoded</td>
+      </tr>
+
+      <tr>
+        <td>HEAD</td>
+
+        <td>v2.0/tokens/{tokenId}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/tokens/tenants</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/users/</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/users/{user_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/users/{user_id}/roles</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/tenants</td>
+
+        <td>Yes</td>
+
+        <td>The return values need to be expanded a bit, but basic data is accurate.</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/tenants/{tenantId}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2.0/tenants/{tenantId}/users/{userId}/roles</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## Compute
+
+This table includes compatibility references for Compute (Nova).
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Verb</th>
+
+        <th>Endpoint</th>
+
+        <th>Available</th>
+
+        <th>Notes</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>GET</td>
+
+        <td>v2</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/extensions</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/extensions/{alias}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/limits</td>
+
+        <td>Mocked</td>
+
+        <td>Hardcoded to garbage data. This needs major discussion because it doesn't match our business model. This would effect Horizon's
+        neat graphical displays.</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers</td>
+
+        <td>Yes</td>
+
+        <td>Missing: public network only, direct IP allocation</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/servers</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers/detail</td>
+
+        <td>Yes</td>
+
+        <td>Only some of the optional response parameters are supported</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}/metadata</td>
+
+        <td>No</td>
+
+        <td>First implementation on 'metadata' branch</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}/metadata</td>
+
+        <td>No</td>
+
+        <td>First implementation on 'metadata' branch</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}/metadata</td>
+
+        <td>No</td>
+
+        <td>First implementation on 'metadata' branch</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}/metadata/{key}</td>
+
+        <td>No</td>
+
+        <td>First implementation on 'metadata' branch</td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}/metadata/{key}</td>
+
+        <td>No</td>
+
+        <td>First implementation on 'metadata' branch</td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}/metadata/{key}</td>
+
+        <td>No</td>
+
+        <td>First implementation on 'metadata' branch</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/servers/{server_id}/action</td>
+
+        <td>Yes</td>
+
+        <td>Missing: suspend/unsuspend/console log/change password/resize/confirmResize/revertResize/createImage</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers/ips</td>
+
+        <td>No</td>
+
+        <td>???</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers/ips/{network_id}</td>
+
+        <td>No</td>
+
+        <td>???</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/images</td>
+
+        <td>Yes</td>
+
+        <td>How we handle images needs to be better determined</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/images/detail</td>
+
+        <td>Yes</td>
+
+        <td>How we handle images needs to be better determined</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/images/{image_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/images/{image_id}</td>
+
+        <td>No</td>
+
+        <td>Missing: Importing images</td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/{tenant_id}/images/{image_id}/metadata</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/images/{image_id}/metadata</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/images/{image_id}/metadata</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/images/{image_id}/metadata/{key}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/images/{image_id}/metadata/{key}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/{tenant_id}/images/{image_id}/metadata/{key}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/flavors</td>
+
+        <td>Mocked</td>
+
+        <td>This is currently hardcoded until we determine how we're going to support flavors.</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/flavors/detail</td>
+
+        <td>Mocked</td>
+
+        <td>This is currently hardcoded until we determine how we're going to support flavors.</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/flavors/{flavor_id}</td>
+
+        <td>Mocked</td>
+
+        <td>This is currently hardcoded until we determine how we're going to support flavors.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## Images
+
+This table includes compatibility references for Images (Glance).
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Verb</th>
+
+        <th>Endpoint</th>
+
+        <th>Available</th>
+
+        <th>Notes</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>GET</td>
+
+        <td>v2/schemas/images</td>
+
+        <td>Mocked</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/schemas/image</td>
+
+        <td>Mocked</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/images</td>
+
+        <td>Yes</td>
+
+        <td>Need to understand how this differs from /v2/{tenant_id}/images</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/images</td>
+
+        <td>No</td>
+
+        <td>Mocked, but not even remotely functional</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/images/{image_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PATCH</td>
+
+        <td>v2/images/{image_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/images/{image_id}</td>
+
+        <td>No</td>
+
+        <td>Mocked, but does nothing</td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/images/{image_id}/file</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/images/{image_id}/file</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/images/{image_id}/tags/{tag}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/images/{image_id}/tags/{tag}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/images</td>
+
+        <td>Yes</td>
+
+        <td>Simple to implement based on /v1/images/detail</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v1/images</td>
+
+        <td>No</td>
+
+        <td>Mocked, but not functional</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/images/detail</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/images/{image_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v1/images/{image_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v1/images/{image_id}</td>
+
+        <td>No</td>
+
+        <td>Mocked, but does nothing</td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v1/images/{image_id}/members</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v1/images/{image_id}/members/{owner}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v1/images/{image_id}/members/{owner}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/shared-images/{owner}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## Block Storage
+
+This table includes compatibility references for Block Storage (Cinder).
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Verb</th>
+
+        <th>Endpoint</th>
+
+        <th>Available</th>
+
+        <th>Notes</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/volumes</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/volumes</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/volumes/detail</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/volumes/{volume_id</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/{tenant_id}/volumes/{volume_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/{tenant_id}/volumes/{volume_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/types</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/types/{volume_type_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/snapshots</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/snapshots</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/snapshots/detail</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/snapshots/{snapshot_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/{tenant_id}/snapshots/{snapshot_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/{tenant_id}/snapshots/{snapshot_id}</td>
+
+        <td>No</td>
+
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

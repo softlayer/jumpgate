@@ -1,10 +1,11 @@
 ---
 layout: pages
+title: Contributing
 slug: contributing
 baseurl: "../"
 ---
 
-# Become a Contributor
+# Contributing
 
 Looking to be a contributor? Here's how you can help.
 
