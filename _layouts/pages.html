@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      
+    {% include header.html %}
+  
+  </head>
+  <body>
+    <a class="sr-only" href="#content">Skip to main content</a>
+      
+    {% include main-pages.html %}
+
+    <div class="header" id="content">
+      <div class="container">
+      </div>
+    </div>
+
+    <div class="container docs-container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="sidebar hidden-print" role="complementary">
+            <ul class="nav sidenav">
+              
+              {% if page.slug == "release-notes" %}
+                {% include nav-release-notes.html %}
+              {% elsif page.slug == "contributing" %}
+                {% include nav-contributing.html %}
+              {% elsif page.slug == "getting-havana" %}
+                {% include nav-getting-started.html %}
+              {% elsif page.slug == "getting-grizzly" %}
+                {% include nav-getting-started.html %}
+              {% endif %}
+            
+            </ul>
+          </div>
+
+        {% if page.slug == "getting-grizzly" %}
+          <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" id="version-selector" data-toggle="dropdown">
+              Pick a different OpenStack version 
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="version-selector">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ page.baseurl }}getting-havana">Havana</a></li>
+              <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1" href="{{ page.baseurl }}getting-grizzly">Grizzly</a></li>
+            </ul>
+          </div>
+
+        {% elsif page.slug == "getting-havana" %}
+          <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" id="version-selector" data-toggle="dropdown">
+              Pick a different OpenStack version
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="version-selector">
+              <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1" href="{{ page.baseurl }}getting-havana">Havana</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ page.baseurl }}getting-grizzly">Grizzly</a></li>
+            </ul>
+          </div>
+        {% endif %}
+
+        </div>
+        <div class="col-md-9" role="main">
+          
+        {{ content }}
+          
+        </div>
+      </div>
+    </div>
+    <footer class="footer" role="contentinfo">
+      <div class="container">
+        
+      {% include footer.html %}
+      
+      </div>
+    </footer>
+  </body>
+</html>

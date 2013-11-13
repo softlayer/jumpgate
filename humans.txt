@@ -1,0 +1,15 @@
+/* OpenStack Compatibility API is the creation of SoftLayer, a global cloud infrastructure provider based in Dallas, TX */
+/* softlayer.com */
+/* humanstxt.org */
+
+/* TEAM */
+  Product Manager: Michael O'Rourke
+  Twitter: @caleorourke
+  Location: Dallas, TX
+
+/* SITE */
+  Last update: 2013/11/14
+  Language: English
+  Standards: HTML5, CSS3
+  Components: Modernizr, jQuery
+  Software: Sublime Text, Git, Jekyll

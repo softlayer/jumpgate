@@ -1,0 +1,69 @@
+<div class="masthead-links">
+
+<li><a href="{{ site.www }}" target="_blank">© 2013 SoftLayer, an IBM Company</a></li>
+<li><a href="{{ site.license }}" target="_blank">License</a></li>
+<li><a href="{{ site.sldn }}" target="_blank">Development Network</a></li> 
+<li><a href="{{ site.portal }}" target="_blank">Portal</a></li>
+<span class="pull-right hidden-sm">
+<li><a href="{{ site.repo }}" target="_blank" id="github-icon"><i class="fa fa-github fa-2x"></i></a></li>
+<li><a href="{{ site.twitter }}" target="_blank" id="twitter-icon"><i class="fa fa-twitter fa-2x"></i></a></li>
+</span>
+</div>
+
+<!-- Core JS -->
+<script src="{{ page.baseurl }}js/jquery.min.js"></script>
+<script src="{{ page.baseurl }}js/bootstrap.min.js"></script>
+<script src="{{ page.baseurl }}js/modernizr.min.js"></script>
+<script src="{{ page.baseurl }}js/holder.min.js"></script>
+<script src="{{ page.baseurl }}js/scrollspy.js"></script>
+<script src="{{ page.baseurl }}js/application.js"></script>
+<script src="{{ page.baseurl }}js/affix.js"></script>
+
+
+<!-- Typekit Fonts -->
+<script type="text/javascript" src="//use.typekit.net/lzt3exy.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+<!-- Side Menu -->
+<script>
+  $("#menu-close").click(function(e) {
+    e.preventDefault();
+      $("#sidebar-wrapper").toggleClass("active");
+    });
+</script>
+<script>
+  $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+      $("#sidebar-wrapper").toggleClass("active");
+    });
+</script>
+<script>
+  $(function() {
+    $('a[href*=#]:not([href=#])').click(function() {
+      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') 
+        || location.hostname == this.hostname) {
+
+      var target = $(this.hash);
+          target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+            if (target.length) {
+              $('html,body').animate({
+                scrollTop: target.offset().top
+              }, 1000);
+              return false;
+            }
+          }
+      });
+    });
+</script>
+
+<!-- Google Analytics -->
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40037365-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>

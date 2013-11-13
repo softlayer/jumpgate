@@ -1,0 +1,262 @@
+/*-- Basic --*/
+
+html,body {
+height:100%;
+width:100%;
+}
+
+a,
+a:hover,
+a:focus {
+color:#fff;
+}
+
+/*-- Nav --*/
+
+.container {
+margin-top:-40px;
+text-align:center;
+}
+
+.header {
+display:table;
+height:85%;
+position:relative;
+width:100%;
+}
+
+.docs-home {
+-moz-background-size:cover;
+-o-background-size:cover;
+-webkit-background-size:cover;
+background-color:#222;
+background: -webkit-linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background: -moz-linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background-repeat: no-repeat; 
+background-size: cover; 
+}
+
+.docs-nav {
+border:none medium;
+box-shadow:none;
+height:74px;
+}
+
+.masthead-links {
+margin:2px 0;
+}
+
+.docs-home .masthead-links {
+margin-left: 0;
+}
+
+footer {
+padding:50px 0 0;
+}
+
+/*-- Headings --*/
+
+h1,.h1 {
+border-bottom:none;
+margin-top:40px;
+}
+
+.vert-text {
+display:table-cell;
+text-align:center;
+vertical-align:middle;
+}
+
+.vert-text h1 {
+font-family:helvetica, arial, sans-serif;
+font-size:100px;
+font-weight:700;
+letter-spacing:-4px;
+line-height:1.2;
+margin:0 0 60px 0;
+padding:0;
+text-transform:none;
+}
+
+.vert-text .lead {
+font-family:"nimbus-sans", helvetica, arial, sans-serif;
+font-size:15px;
+margin-bottom:0px;
+letter-spacing: 2px;
+text-transform: uppercase;
+}
+
+/*-- Sidebar --*/
+
+#sidebar-wrapper {
+-moz-transition:all .4s ease 0;
+-ms-transition:all .4s ease 0;
+-o-transition:all .4s ease 0;
+-webkit-transition:all .4s ease 0;
+background:none repeat scroll 0 0 #666;
+height:100%;
+margin-right:-250px;
+overflow-y:auto;
+position:fixed;
+right:0;
+transition:all .4s ease 0;
+width:250px;
+z-index:1000;
+opacity: 0.6;
+}
+
+#sidebar-wrapper.active {
+-moz-transition:all .4s ease 0;
+-ms-transition:all .4s ease 0;
+-o-transition:all .4s ease 0;
+-webkit-transition:all .4s ease 0;
+right:250px;
+transition:all .4s ease 0;
+width:250px;
+}
+
+.sidebar-nav {
+list-style:none;
+margin:0;
+padding:0;
+position:absolute;
+top:0;
+width:250px;
+}
+
+.sidebar-nav li {
+line-height:43px;
+margin-top:6px;
+text-indent:20px;
+}
+
+.sidebar-nav li a {
+color:#fff;
+display:block;
+text-decoration:none;
+}
+
+.sidebar-nav li a:hover {
+background:rgba(255,255,255,0.2);
+color:#fff;
+text-decoration:none;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+text-decoration:none;
+}
+
+.sidebar-nav > .sidebar-brand {
+font-size:14px;
+height:40px;
+line-height:40px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+color:#ccc;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+color:#fff;
+}
+
+/*-- Buttons --*/
+
+.btn-info {
+background-color:#fff;
+background-image:none;
+border:1px solid #fff;
+border-radius:20px;
+box-shadow:none;
+color:#222;
+font-size:16px;
+margin-bottom:20px;
+margin-right:14px;
+text-shadow:none;
+width:160px;
+}
+
+.btn-info:hover,
+.btn-info:focus {
+background-color:#fff;
+background-image:none;
+border:1px solid #fff;
+border-radius:20px;
+color:#ccc;
+margin-bottom:20px;
+margin-right:14px;
+opacity:.9;
+width:160px;
+}
+
+.btn-primary {
+background-color:transparent;
+border-color:transparent;
+color:transparent;
+padding: 3px 3px;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+background-color:transparent;
+border:1px solid #aaa;
+color:transparent;
+}
+
+div.buttons {
+margin-top:30px;
+text-align:center;
+}
+
+/*-- Toggle --*/
+
+#menu-toggle {
+position:fixed;
+right:0;
+top:0;
+z-index:1;
+}
+
+.toggle {
+margin:5px 5px 0 0;
+}
+
+/*-- Services --*/
+
+.services {
+background:#7fbbda;
+color:#fff;
+padding:50px 0;
+}
+
+.service-item {
+margin-bottom:15px;
+}
+
+i.service-icon {
+border:3px solid #fff;
+border-radius:50%;
+display:inline-block;
+font-size:56px;
+height:140px;
+line-height:136px;
+text-align:center;
+vertical-align:middle;
+width:140px;
+}
+
+i.service-icon:hover {
+font-size:68px;
+}
+
+/*-- Image --*/
+
+img.navbar-brand {
+margin-right:50px;
+margin-top:-57px;
+}

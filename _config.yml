@@ -1,0 +1,19 @@
+# Project Name
+project: OpenStack Compatibility API
+lead: "Insert clever headline here"
+
+# GitHub Links
+repo: https://github.com/softlayer/slapi-stack
+license: https://github.com/softlayer/slapi-stack/blob/master/LICENSE
+open_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=open
+closed_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=closed
+
+#Company Links
+www: http://www.softlayer.com
+sldn: http://sldn.softlayer.com
+portal: http://manage.softlayer.com
+twitter: http://twitter.com/softlayerdevs
+
+# Server
+permalink: pretty
+exclude: [".gitignore", "LICENSE", "README.md", "humans.txt"]
