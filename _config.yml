@@ -1,7 +1,7 @@
 # Project
 project: Jumpgate
 lead: "Because Landreth just had to ruin it for everybody"
-public_url: http://softlayer.github.io/jumgate
+public_url: http://softlayer.github.io/jumpgate
 
 # Versions
 version: 0.0.1
@@ -25,4 +25,4 @@ twitter: http://twitter.com/softlayerdevs
 
 # Server
 permalink: pretty
-exclude: [".gitignore", "LICENSE", "README.md", "humans.txt"]
+exclude: [".gitignore", "LICENSE", "README.md", "humans.txt", "TODO.md"]

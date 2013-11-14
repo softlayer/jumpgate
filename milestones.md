@@ -7,21 +7,21 @@ baseurl: "../"
 
 # Summary
 
-The purpose of this milestones roadmap is to set the expectations, elicit acceptance, and gain acknowledgment for approaching releases.
+The purpose of these milestones is to set the expectations and gain acknowledgment for approaching releases.
 
-  > The content here is subject to change. It contains forward-looking statements that may change over time. Check back for the latest information.
+> The content here is subject to change. It contains forward-looking statements that may change over time. Check back for the latest information.
 
-# Releases per Quarter
+# Milestones
 
-Each release add additional features and workflow enhancements to improve marketability over previous releases. Fixes for reported issues will also be included.
+Each milestone includes additional features and workflow enhancements to improve functionality over previous releases. Fixes for reported issues will also be included.
 
 ## Q4 2013: Chef-OpenStack
 
-Our initial OpenStack release, [Chef-OpenStack]({{ page.baseurl }}release-notes), was released on November 4, 2013.
+Our initial OpenStack release, [Chef-OpenStack](http://softlayer.github.com/.chef-openstack), was released on November 4, 2013.
 
-### Information
+### Background
 
-Details regarding the project are below.
+The details regarding the project are below.
 
 <div class="table-responsive" id="component-table">
   <table class="table table-hover" id="no-borders">
@@ -33,20 +33,20 @@ Details regarding the project are below.
     </thead>
     <tbody>
       <tr>
-        <td>Project Phase:</td>
+        <td>Release Phase</td>
         <td>Phase 1</td>
       </tr>
       <tr>
-        <td>Project Version:</td>
-        <td>N/A</td>
+        <td>Release Version (Havana)</td>
+        <td>v0.3.3</td>
       </tr>
       <tr>
-        <td>Product Line:</td>
-        <td>Jumpgate</td>
+        <td>Release Version (Grizzly)</td>
+        <td>v0.2.0</td>
       </tr>
       <tr>
-        <td>Marketing Reference</td>
-        <td>N/A</td>
+        <td>Product Line</td>
+        <td>OpenStack Compatibility API</td>
       </tr>
     </tbody>
   </table>
@@ -54,7 +54,7 @@ Details regarding the project are below.
 
 ### Milestones
 
-Details regarding the milestones are below.
+The key milestones for this project are outlined below.
 
 <div class="table-responsive" id="component-table">
   <table class="table table-hover" id="no-borders">
@@ -66,15 +66,15 @@ Details regarding the milestones are below.
     </thead>
     <tbody>
       <tr>
-        <td>Kickoff:</td>
+        <td>Kickoff</td>
         <td>September 18, 2013</td>
       </tr>
       <tr>
-        <td>Dev Complete:</td>
+        <td>Dev Complete</td>
         <td>October 31, 2013</td>
       </tr>
       <tr>
-        <td>Public Release:</td>
+        <td>Public Unveiling</td>
         <td>November 4, 2013</td>
       </tr>
     </tbody>
@@ -85,9 +85,9 @@ Details regarding the milestones are below.
 
 Our next release is slated for release in the first quarter of 2014.
 
-### Information
+### Background
 
-Details regarding the project are below.
+The details regarding the project are below.
 
 <div class="table-responsive" id="component-table">
   <table class="table table-hover" id="no-borders">
@@ -120,7 +120,7 @@ Details regarding the project are below.
 
 ### Milestones
 
-Details regarding the milestones are below.
+The key milestones for this project are outlined below.
 
 <div class="table-responsive" id="component-table">
   <table class="table table-hover" id="no-borders">
@@ -149,11 +149,11 @@ Details regarding the milestones are below.
 
 ## Q2 2014: Icehouse
 
-This project includes the upgrade process for the Icehouse release. It's slated for release in April-May 2014.
+This project includes the upgrade process for the Icehouse release. According to the [OpenStack Roadmap](http://www.openstack.org/software/roadmap), the release from them is slated for April 2014.
 
-### Information
+### Background
 
-Details regarding the project are below.
+The details regarding the project are below.
 
 <div class="table-responsive" id="component-table">
   <table class="table table-hover" id="no-borders">
@@ -186,7 +186,7 @@ Details regarding the project are below.
 
 ### Milestones
 
-Details regarding the milestones are below.
+The key milestones for this project are outlined below.
 
 <div class="table-responsive" id="component-table">
   <table class="table table-hover" id="no-borders">
@@ -213,6 +213,6 @@ Details regarding the milestones are below.
   </table>
 </div>
 
-## Forward-Looking Planning
+# Forward-Looking Planning
 
 As the number of OpenStack projects grow, more and more releases will be added to our roadmap. Stay tuned.

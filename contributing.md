@@ -33,5 +33,4 @@ Our docs are treated like our code.
 * Our web resources for [{{ site.project }}]({{ site.public_url }}) are managed under the `gh-pages` branch.
 
 {% include community.md %}
-
 {% include copyright.md %}
