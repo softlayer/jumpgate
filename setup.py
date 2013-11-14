@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='babelfish',
+    name='jumpgate',
     version='0.1',
     description='OpenStack Transation Layer for cloud providers',
     # long_description=open('README.rst', 'r').read(),

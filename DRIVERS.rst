@@ -31,13 +31,13 @@ The first step is to create your driver. You can do this anywhere, as long as it
 
 .. code-block:: bash
 
-	$ mkdir babelfish/index/drivers/my_driver
+	$ mkdir jumpgate/index/drivers/my_driver
 
 Next we're going to create an __init__.py within that directory. This is the file that the compatibility layer is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your __init__.py file:
 
 .. code-block:: python
 
-   from babelfish.openstack import openstack_dispatcher
+   from jumpgate.openstack import openstack_dispatcher
    from .endpoints.index import IndexV2
 
    openstack_dispatcher.set_handler('v2_index', IndexV2())
@@ -65,13 +65,13 @@ To start, let's create the endpoints directory we imported from earlier:
 
 .. code-block:: bash
 
-	$ mkdir babelfish/index/drivers/my_driver/endpoints
+	$ mkdir jumpgate/index/drivers/my_driver/endpoints
 
 Now within that, create the index.py where our IndexV2 class will reside. (Note - Since this is Python 3.3, we don't need an __init__.py file within the directory.) Start by putting the following within the index.py file:
 
 .. code-block:: python
 
-   from babelfish.compute import compute_dispatcher
+   from jumpgate.compute import compute_dispatcher
 
 
    class IndexV2(object):
@@ -123,14 +123,14 @@ As with the index driver, we first need to create a few things. We'll do it in a
 
 .. code-block:: bash
 
-   $ mkdir babelfish/identity/drivers/my_driver
-   $ mkdir babelfish/identity/drivers/my_driver/endpoints
+   $ mkdir jumpgate/identity/drivers/my_driver
+   $ mkdir jumpgate/identity/drivers/my_driver/endpoints
 
 Create the __init__.py file
 
 .. code-block:: python
 
-    from babelfish.identity import identity_dispatcher
+    from jumpgate.identity import identity_dispatcher
     from .endpoints.tokens import TokensV2
 
     identity_dispatcher.set_handler('v2_tokens', TokensV2())
@@ -142,8 +142,8 @@ This should look familiar to you from the index example earlier. Next, create th
 .. code-block:: python
 
     from datetime import datetime
-    from babelfish.identity import identity_dispatcher
-    from babelfish.openstack import openstack_dispatcher
+    from jumpgate.identity import identity_dispatcher
+    from jumpgate.openstack import openstack_dispatcher
 
     class TokensV2(object):
         def on_post(self, req, resp):
@@ -216,30 +216,30 @@ You'll notice that this is a lot smaller than what you get back from a native Op
 
 Configuring
 ~~~~~~~~~~~
-Now that we've built a couple drivers, we need to tell the compatibility layer to use them. This is done by modifying the babelfish.conf file in the root of the installation directory. By default, the compatibility layer uses the OpenStack passthrough drivers. What we want to do instead is use our drivers for the index and identity. Open up the babelfish.conf file and it should look something like this:
+Now that we've built a couple drivers, we need to tell the compatibility layer to use them. This is done by modifying the jumpgate.conf file in the root of the installation directory. By default, the compatibility layer uses the OpenStack passthrough drivers. What we want to do instead is use our drivers for the index and identity. Open up the jumpgate.conf file and it should look something like this:
 
 .. code-block:: python
 
     [identity]
-    driver=babelfish.identity.drivers.openstack.identity
+    driver=jumpgate.identity.drivers.openstack.identity
 
     [compute]
-    driver=babelfish.compute.drivers.openstack.compute
+    driver=jumpgate.compute.drivers.openstack.compute
 
     [image]
-    driver=babelfish.image.drivers.openstack.image
+    driver=jumpgate.image.drivers.openstack.image
 
     [block_storage]
-    driver=babelfish.block_storage.drivers.openstack.block_storage
+    driver=jumpgate.block_storage.drivers.openstack.block_storage
 
     [openstack]
-    driver=babelfish.openstack.drivers.openstack.core
+    driver=jumpgate.openstack.drivers.openstack.core
 
     [network]
-    driver=babelfish.network.drivers.openstack.network
+    driver=jumpgate.network.drivers.openstack.network
 
     [shared]
-    driver=babelfish.shared.drivers.openstack.network
+    driver=jumpgate.shared.drivers.openstack.network
 
 
 The file is in standard ConfigParser_ format and should be easy to follow. All we need to do is replace the driver line for both openstack and identity so that it uses the module path for our drivers instead.
@@ -247,25 +247,25 @@ The file is in standard ConfigParser_ format and should be easy to follow. All w
 .. code-block:: python
 
     [identity]
-    driver=babelfish.identity.drivers.my_driver
+    driver=jumpgate.identity.drivers.my_driver
 
     [compute]
-    driver=babelfish.compute.drivers.openstack.compute
+    driver=jumpgate.compute.drivers.openstack.compute
 
     [image]
-    driver=babelfish.image.drivers.openstack.image
+    driver=jumpgate.image.drivers.openstack.image
 
     [block_storage]
-    driver=babelfish.block_storage.drivers.openstack.block_storage
+    driver=jumpgate.block_storage.drivers.openstack.block_storage
 
     [openstack]
-    driver=babelfish.openstack.drivers.my_driver
+    driver=jumpgate.openstack.drivers.my_driver
 
     [network]
-    driver=babelfish.network.drivers.openstack.network
+    driver=jumpgate.network.drivers.openstack.network
 
     [shared]
-    driver=babelfish.shared.drivers.openstack.network
+    driver=jumpgate.shared.drivers.openstack.network
 
 
 Next Steps
@@ -280,7 +280,7 @@ Useful Tools
 ============
 Building any compatibility driver is going to be a large amount of work for any provider, so we've included a few things to hopefully make the process easier.
 
-* Within the babelfish.common directory, there are several libraries for providing common, reusable functionality for things like error handling, formatting, and nested dictionary management. If you find yourself using something else repeatedly, please let us know so that we can include it in the common toolset.
+* Within the jumpgate.common directory, there are several libraries for providing common, reusable functionality for things like error handling, formatting, and nested dictionary management. If you find yourself using something else repeatedly, please let us know so that we can include it in the common toolset.
 * The dispatcher includes a full set of before and after request hooks that allow you to perform common actions immediately prior to or after acting upon a request. This can allow you to centralize some common functionality. For example, the SoftLayer driver uses it to automatically set the tenant_id variable on routes that need it. All you have to do is set the tenant_id property within the request's environment disctionary and the dispatcher will automatically include it.
 * The dispatcher objects include a method called get_unused_endpoints() that will provide a list of all endpoints the dispatcher knows about that you haven't attached handlers to. If you want to get an idea of your coverage, you can run that command after calling import_routes().
 
