@@ -7,7 +7,7 @@ baseurl: "../"
 
 # Overview
 
-The release for Chef-OpenStack is now available on [GitHub]({{ site.repo }}). Browse the sections below to read more about what’s available.
+The release for {{ site.project }} is now available on [GitHub]({{ site.repo }}). Browse the sections below to read more about what’s available.
 
 ## Summary
 
@@ -24,15 +24,11 @@ The details regarding the project are below.
     <tbody>
       <tr>
         <td>Release Phase</td>
-        <td>Phase 1</td>
+        <td>Phase 2</td>
       </tr>
       <tr>
-        <td>Release Version (Havana)</td>
-        <td>v0.3.3</td>
-      </tr>
-      <tr>
-        <td>Release Version (Grizzly)</td>
-        <td>v0.2.0</td>
+        <td>Release Version</td>
+        <td>v0.0.1</td>
       </tr>
       <tr>
         <td>Product Line</td>
@@ -61,11 +57,11 @@ The key milestones for this project are outlined below.
       </tr>
       <tr>
         <td>Dev Complete</td>
-        <td>October 31, 2013</td>
+        <td>TBD</td>
       </tr>
       <tr>
         <td>Public Unveiling</td>
-        <td>November 4, 2013</td>
+        <td>TBD</td>
       </tr>
     </tbody>
   </table>
@@ -73,7 +69,7 @@ The key milestones for this project are outlined below.
 
 # Features
 
-The first public version is generally available as an open source project. It includes four OpenStack components:
+This second public version is available as an open source project. It includes four OpenStack components:
 
 * Keystone (authentication)
 * Nova (compute)
@@ -88,11 +84,11 @@ All known open issues are listed on [our GitHub public repo]({{ site.open_issues
 
 Two download options are available.
 
-*   [Download the latest release](https://github.com/softlayer/chef-openstack/archive/master.zip)
+*   [Download the latest release]({{ site.repo }}/archive/master.zip)
 *   Clone the repo: `git clone https://github.com/softlayer/chef-openstack.git`
 
 # Install
 
-Our [Getting Started Guide]({{ page.baseurl }}getting-havana) provides an overview for installing, configuring, deploying, and supporting OpenStack and Chef.
+Our [Getting Started Guide]({{ page.baseurl }}getting-started) provides an overview for installing, configuring, deploying, and supporting the OpenStack Compatibility API.
 
 {% include community.md %}

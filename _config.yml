@@ -1,10 +1,15 @@
 # Project Name
 project: OpenStack Compatibility API
 lead: "Insert clever headline here"
+public: http://softlayer.github.io/slapi-stack
 
 # GitHub Links
 repo: https://github.com/softlayer/slapi-stack
 license: https://github.com/softlayer/slapi-stack/blob/master/LICENSE
+fork: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=slapi-stack&amp;type=fork&amp;count=true
+star: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=slapi-stack&amp;type=watch&amp;count=true
+
+# Issue Management
 open_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=open
 closed_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=closed
 
