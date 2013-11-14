@@ -14,7 +14,8 @@ a
 a:hover,
 a:focus 
 {
-  color:#34495e;
+/*  color:#34495e; */
+  color: #7f8c8d;
   text-decoration:none;
 }
 

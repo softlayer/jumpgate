@@ -30,7 +30,7 @@ When contributing to a driver, your changes should not break any currently passi
 Our docs are treated like our code. 
 
 * We publish our public-facing content on [GitHub Pages](http://pages.github.com) and use GitHub to track and manage changes.
-* Our web resources for [OpenStack Compatibility API](http://softlayer.guthub.io/slapi-stack) are managed under the `gh-pages` [branch](https://github.com/softlayer/slapi-stack/tree/gh-pages).
+* Our web resources for [{{ site.project }}]({{ site.public_url }}) are managed under the `gh-pages` branch.
 
 {% include community.md %}
 

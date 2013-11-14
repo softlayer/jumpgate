@@ -1,22 +1,26 @@
-# Project Name
-project: OpenStack Compatibility API
-lead: "Insert clever headline here"
-public: http://softlayer.github.io/slapi-stack
+# Project
+project: Jumpgate
+lead: "Because Landreth just had to ruin it for everybody"
+public_url: http://softlayer.github.io/jumgate
 
-# GitHub Links
-repo: https://github.com/softlayer/slapi-stack
-license: https://github.com/softlayer/slapi-stack/blob/master/LICENSE
-fork: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=slapi-stack&amp;type=fork&amp;count=true
-star: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=slapi-stack&amp;type=watch&amp;count=true
+# Versions
+version: 0.0.1
 
-# Issue Management
-open_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=open
-closed_issues: http://github.com/softlayer/slapi-stack/issues?milestone=1;state=closed
+# GitHub
+repo: https://github.com/softlayer/jumpgate
+fork: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=jumpgate&amp;type=fork&amp;count=true
+star: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=jumpgate&amp;type=watch&amp;count=true
+open_issues: http://github.com/softlayer/jumpgate/issues?milestone=1;state=open
+closed_issues: http://github.com/softlayer/jumpgate/issues?milestone=1;state=closed
 
-#Company Links
+# Company
 www: http://www.softlayer.com
+license: https://github.com/softlayer/jumpgate/blob/master/LICENSE
 sldn: http://sldn.softlayer.com
 portal: http://manage.softlayer.com
+
+# Social
+github: http://github.com/softlayer
 twitter: http://twitter.com/softlayerdevs
 
 # Server

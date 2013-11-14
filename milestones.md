@@ -42,7 +42,7 @@ Details regarding the project are below.
       </tr>
       <tr>
         <td>Product Line:</td>
-        <td>OpenStack Compatibility API</td>
+        <td>Jumpgate</td>
       </tr>
       <tr>
         <td>Marketing Reference</td>
@@ -81,7 +81,7 @@ Details regarding the milestones are below.
   </table>
 </div>
 
-## Q1 2014: OpenStack Compatibility API (?)
+## Q1 2014: Jumpgate
 
 Our next release is slated for release in the first quarter of 2014.
 
@@ -99,15 +99,15 @@ Details regarding the project are below.
     </thead>
     <tbody>
       <tr>
-        <td>Project Phase:</td>
+        <td>Release Phase</td>
         <td>Phase 2</td>
       </tr>
       <tr>
-        <td>Project Version:</td>
+        <td>Release Version</td>
         <td>N/A</td>
       </tr>
       <tr>
-        <td>Product Line:</td>
+        <td>Global Product Line</td>
         <td>OpenStack Compatibility API</td>
       </tr>
       <tr>
@@ -132,15 +132,15 @@ Details regarding the milestones are below.
     </thead>
     <tbody>
       <tr>
-        <td>Kickoff:</td>
+        <td>Kickoff</td>
         <td>September 18, 2013</td>
       </tr>
       <tr>
-        <td>Dev Complete:</td>
+        <td>Dev Complete</td>
         <td>TBD</td>
       </tr>
       <tr>
-        <td>Public Release:</td>
+        <td>Public Release</td>
         <td>Q1 2014</td>
       </tr>
     </tbody>
@@ -165,15 +165,15 @@ Details regarding the project are below.
     </thead>
     <tbody>
       <tr>
-        <td>Project Phase:</td>
+        <td>Release Phase</td>
         <td>Phase 3</td>
       </tr>
       <tr>
-        <td>Project Version:</td>
+        <td>Release Version</td>
         <td>N/A</td>
       </tr>
       <tr>
-        <td>Product Line:</td>
+        <td>Global Product Line</td>
         <td>OpenStack Compatibility API</td>
       </tr>
       <tr>
@@ -198,16 +198,16 @@ Details regarding the milestones are below.
     </thead>
     <tbody>
       <tr>
-        <td>Kickoff:</td>
+        <td>Kickoff</td>
         <td>TBD</td>
       </tr>
       <tr>
-        <td>Dev Complete:</td>
+        <td>Dev Complete</td>
         <td>TBD</td>
       </tr>
       <tr>
         <td>Public Release:</td>
-        <td>April-May 2013</td>
+        <td>Q2 2014</td>
       </tr>
     </tbody>
   </table>

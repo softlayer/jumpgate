@@ -13,16 +13,11 @@ These requests fall under the general definition of incomplete, confusing, or un
 Requests here are not mission-critical, but do add clarity and usability.
 
 * [@morourke](https://github.com/caleorourke) Add less to minify css output and easier coding
-* [@morourke](https://github.com/caleorourke) Show the latest release versions on the landing page (ex. http://getbootstrap.com)
-* [@morourke](https://github.com/caleorourke) Show when the last update was committed to GitHub on the landing page (ex. http://foundation.zurb.com)
-* [@morourke](https://github.com/caleorourke) Promote that we use Python whereas others do not, especially considering its popular use
-
 
 ## No Priority
 
 Priorities have not been defined yet for these request. Most are likely to be open-ended requests that need vetting first.
 
-* Update social.html in _includes (all repos)
 * Update resources.md in _root (all repos)
 * Add stackedit editor to each repo for quick local editing
 
@@ -33,6 +28,9 @@ Priorities have not been defined yet for these request. Most are likely to be op
 # In-Flight
 
 * [@morourke](https://github.com/caleorourke) Find out why responsiveness on mobile devices isn't complying with the viewport settings.
+* [@morourke](https://github.com/caleorourke) Show the latest release versions on the landing page (ex. http://getbootstrap.com)
+* [@morourke](https://github.com/caleorourke) Show when the last update was committed to GitHub on the landing page (ex. http://foundation.zurb.com)
+* [@morourke](https://github.com/caleorourke) Promote that we use Python whereas others do not, especially considering its popular use
 
 # Done
 

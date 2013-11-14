@@ -31,7 +31,7 @@ The details regarding the project are below.
         <td>v0.0.1</td>
       </tr>
       <tr>
-        <td>Product Line</td>
+        <td>Global Product Line</td>
         <td>OpenStack Compatibility API</td>
       </tr>
     </tbody>
@@ -85,10 +85,10 @@ All known open issues are listed on [our GitHub public repo]({{ site.open_issues
 Two download options are available.
 
 *   [Download the latest release]({{ site.repo }}/archive/master.zip)
-*   Clone the repo: `git clone https://github.com/softlayer/chef-openstack.git`
+*   Clone the repo: `git clone https://github.com/softlayer/jumpgate.git`
 
 # Install
 
-Our [Getting Started Guide]({{ page.baseurl }}getting-started) provides an overview for installing, configuring, deploying, and supporting the OpenStack Compatibility API.
+Our [Getting Started Guide]({{ page.baseurl }}getting-started) provides an overview for installing, configuring, deploying, and supporting Jumpgate.
 
 {% include community.md %}

@@ -1,4 +1,4 @@
-/* OpenStack Compatibility API is the creation of SoftLayer, a global cloud infrastructure provider based in Dallas, TX */
+/* Jumpgate is the creation of SoftLayer, a global cloud infrastructure provider based in Dallas, TX */
 /* softlayer.com */
 /* humanstxt.org */
 
@@ -8,7 +8,7 @@
   Location: Dallas, TX
 
 /* SITE */
-  Last update: 2013/11/13
+  Last update: 2013/11/14
   Language: English
   Standards: HTML5, CSS3
   Components: LESS, jQuery, node.js
