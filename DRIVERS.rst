@@ -11,9 +11,9 @@ Getting Started
 ---------------
 When creating a new driver, there are only a few things you need to understand:
 
-1. The compatibility layer has been written primarily for Python 3.3 and assumes your drivers will use this version as well.
+1. Jumpgate has been written primarily for Python 3.3 and assumes your drivers will use this version as well.
 2. Drivers are built as a series of objects for the `Falcon framework`_. You should be familiar with both Falcon and REST APIs in general.
-3. You need to be familar with the expected `OpenStack API`_ JSON. The compatibility layer will provide the endpoint mappings for you, but does not handle building valid responses.
+3. You need to be familar with the expected `OpenStack API`_ JSON. Jumpgate will provide the endpoint mappings for you, but does not handle building valid responses.
 
 Once you have these things, you are ready to begin building your driver.
 
@@ -27,13 +27,13 @@ Note that there are no restrictions on how you build your driver as long as you 
 
 Create Your Driver
 ~~~~~~~~~~~~~~~~~~
-The first step is to create your driver. You can do this anywhere, as long as its within your Python path and the compatibility layer can load it. We're going to do it within the 'drivers' directory for identity. We'll start with the index driver.
+The first step is to create your driver. You can do this anywhere, as long as its within your Python path and Jumpgate can load it. We're going to do it within the 'drivers' directory for identity. We'll start with the index driver.
 
 .. code-block:: bash
 
 	$ mkdir jumpgate/index/drivers/my_driver
 
-Next we're going to create an __init__.py within that directory. This is the file that the compatibility layer is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your __init__.py file:
+Next we're going to create an __init__.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your __init__.py file:
 
 .. code-block:: python
 
@@ -44,7 +44,7 @@ Next we're going to create an __init__.py within that directory. This is the fil
 
    openstack_dispatcher.import_routes()
 
-Let's look at each section. The first thing we import is the openstack_dispatcher. Each area of the API has a dispatcher that knows about the routes/endpoints that OpenStack has. The compatibility layer creates these dispatcher objects for you and uses them to determine which endpoints your driver supports and doesn't expose any functionality you haven't created.
+Let's look at each section. The first thing we import is the openstack_dispatcher. Each area of the API has a dispatcher that knows about the routes/endpoints that OpenStack has. Jumpgate creates these dispatcher objects for you and uses them to determine which endpoints your driver supports and doesn't expose any functionality you haven't created.
 
 The next import pulls in the IndexV2 class. This is the actual driver class we'll be developing for the /v2 endpoint. We'll cover it in a moment.
 
@@ -110,9 +110,9 @@ As with the driver above, we import a dispatcher, but notice that we're importin
 
 Next, we start the class itself. Response handlers are plain objects and don't need to inherit from any particular class or interface. Per the `Compute API`_ documentation, we know that this endpoint handles the GET verb, so we create an on_get() function. This is how the `Falcon framework`_ handles responses. The contents of the function are what we're going to do to serve this endpoint. This should look very similar to the sample within the API docs, though you'll see we've added the v1 support as we discussed and we're not hardcoding URLs.
 
-Because dispatchers handle endpoints, they also know how to build URLs. This is handy because it provides a level of abstraction between your driver and the OpenStack API itself so that if something changed in the future or the compatibility layer switched hosts, you shouldn't need to change any of your driver code. To get the URL for a particular endpoint, call the get_endpoint_url() method on the appropriate dispatcher and pass in the Falcon request object and the identifier for the endpoint. If the endpoint's URL has variables within it (as a lot of the Nova compute endpoints do), you pass them in as keyword arguments. The only exception to this is the tenant ID, which we'll discuss later. Each dispatcher only knows about its own endpoints (they're contained as properties of the object), so you need to use the appropriate one when building your endpoint URL.
+Because dispatchers handle endpoints, they also know how to build URLs. This is handy because it provides a level of abstraction between your driver and the OpenStack API itself so that if something changed in the future or Jumpgate switched hosts, you shouldn't need to change any of your driver code. To get the URL for a particular endpoint, call the get_endpoint_url() method on the appropriate dispatcher and pass in the Falcon request object and the identifier for the endpoint. If the endpoint's URL has variables within it (as a lot of the Nova compute endpoints do), you pass them in as keyword arguments. The only exception to this is the tenant ID, which we'll discuss later. Each dispatcher only knows about its own endpoints (they're contained as properties of the object), so you need to use the appropriate one when building your endpoint URL.
 
-The very last thing the function does is assign a body to the response object. This should confrom to the expected format within the OpenStack API documentation. Assuming you provide a valid Python dictionary, the compatibility layer will automatically JSON encode it for you. Note that the default status code is 200. If you need to assign a different status code, you should refer to the Falcon docs or look at the examples within the SoftLayer driver.
+The very last thing the function does is assign a body to the response object. This should confrom to the expected format within the OpenStack API documentation. Assuming you provide a valid Python dictionary, Jumpgate will automatically JSON encode it for you. Note that the default status code is 200. If you need to assign a different status code, you should refer to the Falcon docs or look at the examples within the SoftLayer driver.
 
 
 The Tokens Endpoint
@@ -216,7 +216,7 @@ You'll notice that this is a lot smaller than what you get back from a native Op
 
 Configuring
 ~~~~~~~~~~~
-Now that we've built a couple drivers, we need to tell the compatibility layer to use them. This is done by modifying the jumpgate.conf file in the root of the installation directory. By default, the compatibility layer uses the OpenStack passthrough drivers. What we want to do instead is use our drivers for the index and identity. Open up the jumpgate.conf file and it should look something like this:
+Now that we've built a couple drivers, we need to tell Jumpgate to use them. This is done by modifying the jumpgate.conf file in the root of the installation directory. By default, Jumpgate uses the OpenStack passthrough drivers. What we want to do instead is use our drivers for the index and identity. Open up the jumpgate.conf file and it should look something like this:
 
 .. code-block:: python
 

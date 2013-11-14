@@ -678,7 +678,6 @@ def get_image_mask():
 
 
 class SLImages(object):
-    __public_images = None
     image_mask = ('id,accountId,name,globalIdentifier,blockDevices,parentId,'
                   'createDate')
 
@@ -703,7 +702,6 @@ class SLImages(object):
             mask=self.image_mask, filter=_filter, limit=1)
         if matching_image:
             matching_image['visibility'] = 'private'
-            print(matching_image)
             return matching_image
 
         return matching_image

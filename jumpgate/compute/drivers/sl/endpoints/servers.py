@@ -5,10 +5,9 @@ from SoftLayer import CCIManager, SshKeyManager, SoftLayerAPIError
 from jumpgate.common.nested_dict import lookup
 from jumpgate.shared.drivers.sl.errors import convert_errors
 from jumpgate.common.error_handling import (bad_request, duplicate,
-                                             compute_fault, not_found)
+                                            compute_fault, not_found)
 from jumpgate.compute import compute_dispatcher as disp
 from jumpgate.image import image_dispatcher as img_disp
-from jumpgate.image.drivers.sl.endpoints.images import SLImages
 from .flavors import FLAVORS
 
 # This comes from Horizon. I wonder if there's a better place to get it.
@@ -87,10 +86,22 @@ class ServerActionV2(object):
                     "Auto-created by OpenStack compatibility layer",
                     id=instance_id,
                 )
+                # Workaround for not having an image guid until the image is
+                # fully created. TODO: Fix this
                 cci.wait_for_transaction(instance_id, 300)
-                image_obj = SLImages(req.env['sl_client'])
-                image = image_obj.get_image(name=image_name)
-                image_guid = image.get('globalIdentifier')
+                _filter = {
+                    'privateBlockDeviceTemplateGroups': {
+                        'name': {'operation': image_name},
+                        'createDate': {
+                            'operation': 'orderBy',
+                            'options': [{'name': 'sort', 'value': ['DESC']}],
+                        }
+                    }}
+
+                acct = req.env['sl_client']['Account']
+                matching_image = acct.getPrivateBlockDeviceTemplateGroups(
+                    mask='id, globalIdentifier', filter=_filter, limit=1)
+                image_guid = matching_image.get('globalIdentifier')
 
                 url = img_disp.get_endpoint_url(req, 'v2_image',
                                                 image_guid=image_guid)
