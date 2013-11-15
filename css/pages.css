@@ -41,14 +41,16 @@ aside,
 details, 
 figcaption, 
 figure, 
-hgroup, 
-main, 
+hgroup,
 section, 
 summary, 
-.docs-home, 
-.masthead 
+.docs-home
 {
   background-color:#222;
+}
+
+.masthead, main {
+  background: transparent;
 }
 
 /*-- Nav --*/
@@ -277,7 +279,7 @@ footer
   padding: 0 65px 0 0;
   text-align:left;
   text-transform: none;
-  letter-spacing: 0px;
+  letter-spacing: 0;
 }
 
 .masthead .lead 
@@ -370,14 +372,12 @@ pre.nowrap
   padding-top: 10px;
   padding-bottom: 10px;
   background:#f4f4f4;
-  float:left;
   font-family:helvetica, arial, sans-serif;
   font-size:14px;
   margin-bottom: 30px;
-  margin-top: 0;
-  min-width:260px;
-  text-shadow:none;
-  width:25%;
+  margin-top: 30px;
+  min-width:250px;
+  text-shadow:0px 1px 0px rgb(255, 255, 255); 
 }
 
 .sidenav ul 
@@ -448,8 +448,7 @@ pre.nowrap
 .sidebar.affix 
 {
   position: fixed;
-  top: 123px;
-  width: 260px;
+  top: 94px;
 }
 
 .sidebar.affix-bottom 
@@ -683,7 +682,7 @@ button#version-selector.btn.dropdown-toggle {
   font-size: 13.5px;
   color: #fff;
   background-color:#222;
-  width: 260px;
+  width: 250px;
   padding: 5px 20px;
 }
 

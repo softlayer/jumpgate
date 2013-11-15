@@ -15,7 +15,7 @@ color:#fff;
 
 .container {
 margin-top:-40px;
-text-align:center;
+text-align:left;
 }
 
 .header {
@@ -30,9 +30,9 @@ width:100%;
 -o-background-size:cover;
 -webkit-background-size:cover;
 background-color:#222;
-background: -webkit-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s7.postimg.org/yub5cvbvf/image.jpg');
-background: -moz-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s7.postimg.org/yub5cvbvf/image.jpg');
-background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s7.postimg.org/yub5cvbvf/image.jpg');
+background: -webkit-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background: -moz-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
+background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
 background-repeat: no-repeat; 
 background-size: cover; 
 }
@@ -41,10 +41,6 @@ background-size: cover;
 border:none medium;
 box-shadow:none;
 height:74px;
-}
-
-.masthead, main {
-background: transparent;
 }
 
 .masthead-links {
@@ -66,29 +62,24 @@ border-bottom:none;
 margin-top:40px;
 }
 
-.vert-text {
-display:table-cell;
-text-align:center;
-vertical-align:middle;
-}
-
-.vert-text h1 {
+.masthead h1 {
 font-family:helvetica, arial, sans-serif;
-font-size:90px;
+font-size:100px;
 font-weight:700;
 letter-spacing:-4px;
-line-height:1.2;
-margin:0 0 60px 0;
+line-height:1.1;
+margin:50px 0 0 0;
 padding:0;
 text-transform:none;
 }
 
-.vert-text .lead {
+.masthead .lead {
 font-family:"nimbus-sans", helvetica, arial, sans-serif;
-font-size:15px;
-margin-bottom:0px;
-letter-spacing: 2px;
-text-transform: uppercase;
+font-size:36px;
+line-height: 1.1;
+margin-bottom:0;
+letter-spacing: 0;
+margin-right: 20%;
 }
 
 /*-- Sidebar --*/
@@ -172,13 +163,14 @@ color:#fff;
 background-color:#fff;
 background-image:none;
 border:1px solid #fff;
-border-radius:20px;
+border-radius:50px;
 box-shadow:none;
 color:#222;
-font-size:16px;
+font-size:14px;
 margin-bottom:20px;
-margin-right:14px;
+margin-right:20px;
 text-shadow:none;
+text-transform: uppercase;
 width:160px;
 }
 
@@ -187,11 +179,10 @@ width:160px;
 background-color:#fff;
 background-image:none;
 border:1px solid #fff;
-border-radius:20px;
-color:#ccc;
+border-radius:50px;
+color:#aaa;
 margin-bottom:20px;
-margin-right:14px;
-opacity:.9;
+margin-right:20px;
 width:160px;
 }
 
@@ -214,7 +205,7 @@ color:transparent;
 
 div.buttons {
 margin-top:30px;
-text-align:center;
+text-align:left;
 }
 
 /*-- Toggle --*/

@@ -1,9 +1,10 @@
 <div class="masthead-links">
 
-<a href="{{ site.www }}" target="_blank">© 2013 SoftLayer, an IBM Company</a> &middot; 
-<a href="{{ site.license }}" target="_blank">License</a> &middot; 
-<a href="{{ site.sldn }}" target="_blank">Development Network</a> &middot;  
-<a href="{{ site.portal }}" target="_blank">Portal</a>
+<li><a href="{{ site.www }}" target="_blank">© 2013 SoftLayer, an IBM Company</a></li>
+<li><a href="{{ site.license }}" target="_blank">License</a></li>
+<li><a href="{{ site.sldn }}" target="_blank">Development Network</a></li>
+<li><a href="{{ site.kb }}" target="_blank">KnowledgeLayer</a></li>
+<li><a href="{{ site.portal }}" target="_blank">Portal</a></li>
 <span class="pull-right hidden-sm">
 <li><a href="{{ site.repo }}" target="_blank" id="github-icon"><i class="fa fa-github fa-2x"></i></a></li>
 <li><a href="{{ site.twitter }}" target="_blank" id="twitter-icon"><i class="fa fa-twitter fa-2x"></i></a></li>
@@ -13,17 +14,16 @@
 <!-- Core JS -->
 <script src="{{ page.baseurl }}js/jquery.min.js"></script>
 <script src="{{ page.baseurl }}js/bootstrap.min.js"></script>
-<script src="{{ page.baseurl }}js/modernizr.min.js"></script>
 <script src="{{ page.baseurl }}js/holder.min.js"></script>
-<script src="{{ page.baseurl }}js/scrollspy.js"></script>
 <script src="{{ page.baseurl }}js/application.js"></script>
+<script src="{{ page.baseurl }}js/sidemenu.js"></script>
+<!-- Evaluate load time 
+<script src="{{ page.baseurl }}js/modernizr.min.js"></script>
+<script src="{{ page.baseurl }}js/scrollspy.js"></script>
 <script src="{{ page.baseurl }}js/affix.js"></script>
+-->
 
-<!-- Typekit Fonts -->
-<script type="text/javascript" src="//use.typekit.net/lzt3exy.js"></script>
-<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-
-<!-- Side Menu -->
+<!-- Side Menu
 <script>
   $("#menu-close").click(function(e) {
     e.preventDefault();
@@ -54,6 +54,7 @@
       });
     });
 </script>
+-->
 
 <!-- Google Analytics -->
 <script>
