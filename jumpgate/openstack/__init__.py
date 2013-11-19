@@ -1,9 +1,11 @@
 from jumpgate.common.dispatcher import Dispatcher
-from jumpgate.api import app
 
-openstack_dispatcher = Dispatcher(app)
 
-openstack_dispatcher.add_endpoint('main_index', '/')
+def get_dispatcher(app):
+    disp = Dispatcher(app)
 
-openstack_dispatcher.add_endpoint('v3_index', '/v3')
-openstack_dispatcher.add_endpoint('v2_index', '/v2')
+    disp.add_endpoint('main_index', '/')
+
+    disp.add_endpoint('v3_index', '/v3')
+    disp.add_endpoint('v2_index', '/v2')
+    return disp

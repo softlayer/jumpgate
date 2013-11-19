@@ -1,10 +1,12 @@
 from jumpgate.common.dispatcher import Dispatcher
-from jumpgate.api import app
 
-network_dispatcher = Dispatcher(app)
 
-# V2 API - http://api.openstack.org/api-ref-networking.html
+def get_dispatcher(app):
+    disp = Dispatcher(app)
 
-network_dispatcher.add_endpoint('v2_networks', '/v2.0/networks.json')
-network_dispatcher.add_endpoint('v2_subnets', '/v2.0/subnets.json')
-network_dispatcher.add_endpoint('v2_subnet', '/v2.0/subnets/{subnet_id}')
+    # V2 API - http://api.openstack.org/api-ref-networking.html
+
+    disp.add_endpoint('v2_networks', '/v2.0/networks.json')
+    disp.add_endpoint('v2_subnets', '/v2.0/subnets.json')
+    disp.add_endpoint('v2_subnet', '/v2.0/subnets/{subnet_id}')
+    return disp

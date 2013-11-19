@@ -6,8 +6,6 @@ from jumpgate.common.nested_dict import lookup
 from jumpgate.shared.drivers.sl.errors import convert_errors
 from jumpgate.common.error_handling import (bad_request, duplicate,
                                             compute_fault, not_found)
-from jumpgate.compute import compute_dispatcher as disp
-from jumpgate.image import image_dispatcher as img_disp
 from .flavors import FLAVORS
 
 # This comes from Horizon. I wonder if there's a better place to get it.
@@ -24,6 +22,9 @@ OPENSTACK_POWER_MAP = {
 
 
 class ServerActionV2(object):
+    def __init__(self, app):
+        self.app = app
+
     @convert_errors
     def on_post(self, req, resp, tenant_id, instance_id):
         body = json.loads(req.stream.read().decode())
@@ -103,7 +104,7 @@ class ServerActionV2(object):
                     mask='id, globalIdentifier', filter=_filter, limit=1)
                 image_guid = matching_image.get('globalIdentifier')
 
-                url = img_disp.get_endpoint_url(req, 'v2_image',
+                url = self.app.get_endpoint_url('image', req, 'v2_image',
                                                 image_guid=image_guid)
 
                 resp.status = 202
@@ -121,6 +122,9 @@ class ServerActionV2(object):
 
 
 class ServersV2(object):
+    def __init__(self, app):
+        self.app = app
+
     @convert_errors
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
@@ -138,8 +142,8 @@ class ServersV2(object):
                 'id': instance['id'],
                 'links': [
                     {
-                        'href': disp.get_endpoint_url(req, 'v2_server',
-                                                      server_id=id),
+                        'href': self.app.get_endpoint_url(
+                            'compute', req, 'v2_server', server_id=id),
                         'rel': 'self',
                     }
                 ],
@@ -214,8 +218,9 @@ class ServersV2(object):
         resp.body = {'server': {
             'id': new_instance['id'],
             'links': [{
-                'href': disp.get_endpoint_url(req, 'v2_server',
-                                              instance_id=new_instance['id']),
+                'href': self.app.get_endpoint_url(
+                    'compute', req, 'v2_server',
+                    instance_id=new_instance['id']),
                 'rel': 'self'}],
             'adminPass': '',
         }}
@@ -281,6 +286,9 @@ def get_list_params(req):
 
 
 class ServersDetailV2(object):
+    def __init__(self, app):
+        self.app = app
+
     @convert_errors
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
@@ -294,13 +302,16 @@ class ServersDetailV2(object):
 
         results = []
         for instance in sl_instances:
-            results.append(get_server_details_dict(req, instance))
+            results.append(get_server_details_dict(self.app, req, instance))
 
         resp.status = 200
         resp.body = {'servers': results}
 
 
 class ServerV2(object):
+    def __init__(self, app):
+        self.app = app
+
     @convert_errors
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
@@ -309,7 +320,7 @@ class ServerV2(object):
         instance = cci.get_instance(id=server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(req, instance)
+        results = get_server_details_dict(self.app, req, instance)
 
         resp.body = {'server': results}
 
@@ -344,18 +355,19 @@ class ServerV2(object):
         instance = cci.get_instance(id=server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(req, instance)
+        results = get_server_details_dict(self.app, req, instance)
         resp.body = {'server': results}
 
 
-def get_server_details_dict(req, instance):
+def get_server_details_dict(app, req, instance):
     image_id = lookup(instance, 'blockDeviceTemplateGroup', 'globalIdentifier')
     tenant_id = instance['accountId']
 
     # TODO - Don't hardcode this flavor ID
-    flavor_url = disp.get_endpoint_url(req, 'v2_flavor', flavor_id=1)
-    server_url = disp.get_endpoint_url(req, 'v2_server',
-                                       server_id=instance['id'])
+    flavor_url = app.get_endpoint_url(
+        'compute', req, 'v2_flavor', flavor_id=1)
+    server_url = app.get_endpoint_url(
+        'compute', req, 'v2_server', server_id=instance['id'])
 
     task_state = None
     transaction = lookup(
@@ -451,8 +463,8 @@ def get_server_details_dict(req, instance):
             'id': image_id,
             'links': [
                 {
-                    'href': disp.get_endpoint_url(req, 'v2_image',
-                                                  image_id=image_id),
+                    'href': app.get_endpoint_url(
+                        'compute', req, 'v2_image', image_id=image_id),
                     'rel': 'self',
                 },
             ],

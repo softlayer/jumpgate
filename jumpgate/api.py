@@ -1,5 +1,6 @@
 import configparser
 import importlib
+import logging
 import uuid
 
 from falcon import API
@@ -7,69 +8,103 @@ from falcon import API
 from jumpgate.common.nyi import NYI
 from jumpgate.common.format import format_hook
 
+LOG = logging.getLogger(__name__)
+SUPPORTED_SERVICES = [
+    'openstack',
+    'block_storage',
+    'shared',
+    'identity',
+    'compute',
+    'image',
+    'network',
+    'baremetal'
+]
 
-class Jumpgate(API):
-    """ Class docs go here. """
 
-    before_hooks = []
-    after_hooks = []
-
-    config = {
-        'installed_modules': {},
-    }
-
-
-def before_request(req, resp, kwargs):
+def hook_set_uuid(req, resp, kwargs):
     req.env['REQUEST_ID'] = str(uuid.uuid1())
-    for hook in Jumpgate.before_hooks:
-        hook(req, resp, kwargs)
 
 
-def after_request(req, resp):
-    for hook in Jumpgate.after_hooks:
-        hook(req, resp)
-
-    format_hook(req, resp)
-
-    print(req.method,
-          req.path,
-          req.query_string,
-          resp.status,
-          '[ReqId: %s]' % req.env['REQUEST_ID'])
+def hook_log_request(req, resp):
+    LOG.info('%s %s %s %s [ReqId: %s]',
+             req.method,
+             req.path,
+             req.query_string,
+             resp.status,
+             req.env['REQUEST_ID'])
 
 
-def make_app():
+class Jumpgate(object):
+
+    def __init__(self, config):
+        self.config = config
+        self.installed_modules = {}
+
+        self.before_hooks = [hook_set_uuid]
+        self.after_hooks = [format_hook, hook_log_request]
+
+        self._routes = []
+        self._dispatchers = {}
+
+    def make_api(self):
+        api = API(before=self.before_hooks, after=self.after_hooks)
+        # An easy class that can be used to implement endpoints that are
+        # not yet implemented.
+        nyi = NYI()
+
+        # Set the default route to the NYI object
+        api.set_default_route(nyi)
+
+        # Add all the routes collected thus far
+        for uri_template, resource in self._routes:
+            api.add_route(uri_template, resource)
+
+        return api
+
+    def add_route(self, uri_template, resource):
+        self._routes.append((uri_template, resource))
+
+    def add_dispatcher(self, service, dispatcher):
+        self._dispatchers[service] = dispatcher
+
+    def get_dispatcher(self, service):
+        return self._dispatcher[service]
+
+    def get_endpoint_url(self, service, *args, **kwargs):
+        dispatcher = self._dispatchers.get(service)
+        return dispatcher.get_endpoint_url(*args, **kwargs)
+
+
+def make_api():
+    # If there is a jumpgate config file, we should read that too.
+    conf = configparser.ConfigParser()
+    conf.read('jumpgate.conf')
+
     # The core application of the translation layer
-    api = Jumpgate(before=[before_request],
-                   after=[after_request])
+    app = Jumpgate(conf)
 
-    # An easy class that can be used to implement endpoints that are
-    # Not Yet Implemented.
-    nyi = NYI()
-
-    # Set the default route to the NYI object
-    api.set_default_route(nyi)
-    return api
-
-
-def load_modules(api):
-    # Load the config file to determine which modules are available
-    config = configparser.ConfigParser()
-    config.read('jumpgate.conf')
-
-    # If there is a driver config file, we should read that too.
+    # Load the driver config file to determine which modules are available
     driver_config = configparser.ConfigParser()
     driver_config.read('driver.conf')
-    api.config['driver_config'] = driver_config
 
-    for service in ['openstack', 'shared', 'identity', 'compute', 'image',
-                    'block_storage', 'network', 'baremetal']:
-        if service in config:
-            importlib.import_module(config[service].get('driver'))
-            api.config['installed_modules'][service] = True
+    for service in SUPPORTED_SERVICES:
+        if service in driver_config:
+            # Import the dispatcher for the service
+            dispatcher_module = importlib.import_module('jumpgate.' + service)
+            if hasattr(dispatcher_module, 'get_dispatcher'):
+                dispatcher = dispatcher_module.get_dispatcher(app)
+                app.add_dispatcher(service, dispatcher)
+
+            # Import the configured driver for the service
+            module = importlib.import_module(driver_config[service]['driver'])
+            if hasattr(module, 'setup'):
+                module.setup(app, dispatcher)
+
+            app.installed_modules[service] = True
         else:
-            api.config['installed_modules'][service] = False
+            app.installed_modules[service] = False
 
-app = make_app()
-# Modules need a reference to the global app instance.
-load_modules(app)
+    return app.make_api()
+
+
+api = make_api()

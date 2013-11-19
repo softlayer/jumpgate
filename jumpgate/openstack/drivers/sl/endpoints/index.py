@@ -1,12 +1,14 @@
-from jumpgate.compute import compute_dispatcher
 
 
 class IndexV2(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_get(self, req, resp):
         versions = [{
             'id': 'v2.0',
             'links': [{
-                'href': compute_dispatcher.get_endpoint_url(req, 'v2_index'),
+                'href': self.app.get_endpoint_url('compute', req, 'v2_index'),
                 'rel': 'self'
             }],
             'status': 'CURRENT',
@@ -19,7 +21,7 @@ class IndexV2(object):
         }, {
             'id': 'v1.0',
             'links': [{
-                'href': compute_dispatcher.get_endpoint_url(req, 'v1_index'),
+                'href': self.app.get_endpoint_url('compute', req, 'v1_index'),
                 'rel': 'self'
             }],
             'status': 'ACTIVE',

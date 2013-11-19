@@ -1,5 +1,4 @@
 from jumpgate.common.error_handling import bad_request, not_found
-from jumpgate.compute import compute_dispatcher as disp
 
 FLAVORS = {
     1: {
@@ -43,6 +42,9 @@ FLAVORS[None] = FLAVORS[1]
 
 
 class FlavorV2(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_get(self, req, resp, flavor_id, tenant_id=None):
         try:
             flavor_id = int(flavor_id)
@@ -52,26 +54,34 @@ class FlavorV2(object):
         if flavor_id not in FLAVORS:
             return not_found(resp, 'Flavor could not be found')
 
-        flavor = get_flavor_details(req, FLAVORS[flavor_id], detail=True)
+        flavor = get_flavor_details(self.app, req, FLAVORS[flavor_id],
+                                    detail=True)
         resp.body = {'flavor': flavor}
 
 
 class FlavorsV2(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_get(self, req, resp, tenant_id=None):
         flavor_refs = filter_flavor_refs(req, resp, get_listing_flavors())
         if flavor_refs is None:
             return
-        flavors = [get_flavor_details(req, flavor) for flavor in flavor_refs]
+        flavors = [get_flavor_details(self.app, req, flavor)
+                   for flavor in flavor_refs]
         resp.body = {'flavors': flavors}
 
 
 class FlavorsDetailV2(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_get(self, req, resp, tenant_id=None):
         flavor_refs = [flavor for flavor_id, flavor in FLAVORS.items()]
         flavor_refs = filter_flavor_refs(req, resp, flavor_refs)
         if flavor_refs is None:
             return
-        flavors = [get_flavor_details(req, flavor, detail=True)
+        flavors = [get_flavor_details(self.app, req, flavor, detail=True)
                    for flavor in flavor_refs]
         resp.body = {'flavors': flavors}
 
@@ -113,14 +123,13 @@ def filter_flavor_refs(req, resp, flavor_refs):
     return flavor_refs
 
 
-def get_flavor_details(req, flavor_ref, detail=False):
+def get_flavor_details(app, req, flavor_ref, detail=False):
     flavor = {
         'id': flavor_ref['id'],
         'links': [
             {
-                'href': disp.get_endpoint_url(req,
-                                              'v2_flavor',
-                                              flavor_id=flavor_ref['id']),
+                'href': app.get_endpoint_url('compute', req, 'v2_flavor',
+                                             flavor_id=flavor_ref['id']),
                 'rel': 'self',
             }
         ],

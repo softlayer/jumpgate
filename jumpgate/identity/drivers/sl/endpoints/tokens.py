@@ -4,13 +4,14 @@ from SoftLayer import Client
 
 from jumpgate.shared.drivers.sl.errors import convert_errors
 from jumpgate.shared.drivers.sl.auth import get_auth
-from jumpgate.identity import identity_dispatcher
-from jumpgate.openstack import openstack_dispatcher
 
 logger = logging.getLogger(__name__)
 
 
 class TokensV2(object):
+    def __init__(self, app):
+        self.app = app
+
     @convert_errors
     def on_post(self, req, resp):
         body = req.stream.read().decode()
@@ -22,8 +23,8 @@ class TokensV2(object):
         user = client['Account'].getCurrentUser(mask='id, account, username')
         account = user['account']
 
-        index_url = identity_dispatcher.get_endpoint_url(req, 'v2_auth_index')
-        v2_url = openstack_dispatcher.get_endpoint_url(req, 'v2_index')
+        index_url = self.app.get_endpoint_url('identity', req, 'v2_auth_index')
+        v2_url = self.app.get_endpoint_url('openstack', req, 'v2_index')
 
         service_catalog = [{
             'endpoint_links': [],
@@ -79,22 +80,7 @@ class TokensV2(object):
             ],
             'type': 'baremetal',
             'name': 'ironic',
-        }, #{
-        #     'endpoint_links': [],
-        #     'endpoints': [
-        #         {
-        #             'region': 'RegionOne',
-        #             'publicURL': 'http://localhost:5000',
-        #             'privateURL': 'http://localhost:5000',
-        #             'adminURL': 'http://localhost:5000',
-        #             'internalURL': 'http://localhost:5000',
-        #             'id': 1,
-        #         },
-        #     ],
-        #     'type': 'network',
-        #     'name': 'neutron',
-        # }
-        ]
+        }]
 
         expiration = datetime.datetime.now() + datetime.timedelta(days=1)
         access = {

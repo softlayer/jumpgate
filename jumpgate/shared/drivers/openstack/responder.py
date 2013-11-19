@@ -3,8 +3,15 @@ import requests
 from core import api
 
 
+def setup_responder(app, disp):
+    responder = OpenStackResponder()
+
+    for endpoint in disp.get_unused_endpoints():
+        disp.set_handler(endpoint, responder)
+
+
 class OpenStackResponder(object):
-    def __init__(self):
+    def __init__(self, app):
         config = api.config['driver_config']
         self.endpoint = config['openstack'].get('default_endpoint')
 

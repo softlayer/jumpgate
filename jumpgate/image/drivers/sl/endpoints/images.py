@@ -4,7 +4,6 @@ import uuid
 from SoftLayer.utils import query_filter
 
 from jumpgate.common.error_handling import not_found
-from jumpgate.image import image_dispatcher as disp
 
 
 class SchemaImagesV2(object):
@@ -403,6 +402,9 @@ class SchemaImageV2(object):
 
 
 class ImagesV2(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_delete(self, req, resp, image_guid=None, tenant_id=None):
         if not image_guid:
             return not_found(resp, 'Image could not be found')
@@ -431,9 +433,11 @@ class ImagesV2(object):
             'tags': [],
             'created_at': '2012-08-11T17:15:52Z',
             'updated_at': '2012-08-11T17:15:52Z',
-            'self': disp.get_endpoint_url(req, 'v2_image', image_guid=id),
-            'file': disp.get_endpoint_url(req, 'v2_image_file', image_guid=id),
-            'schema': disp.get_endpoint_url(req, 'v2_schema_image'),
+            'self': self.app.get_endpoint_url(
+                'image', req, 'v2_image', image_guid=id),
+            'file': self.app.get_endpoint_url(
+                'image', req, 'v2_image_file', image_guid=id),
+            'schema': self.app.get_endpoint_url('image', req, 'v2_schema_image'),
         }
 
     def on_get(self, req, resp, tenant_id=None):
@@ -479,7 +483,7 @@ class ImagesV2(object):
         for image in results:
             if not image:  # or 'parentId' not in image:
                 continue
-            formatted_image = get_v2_image_details_dict(req, image)
+            formatted_image = get_v2_image_details_dict(self.app, req, image)
 
             if formatted_image:
                 formatted_image['visibility'] = 'private'
@@ -490,6 +494,9 @@ class ImagesV2(object):
 
 
 class ImageV1(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_delete(self, req, resp, image_guid=None, tenant_id=None):
         if not image_guid:
             return not_found(resp, 'Image could not be found')
@@ -512,13 +519,14 @@ class ImageV1(object):
         if not results:
             return not_found(resp, 'Image could not be found')
 
-        resp.body = {'image': get_v1_image_details_dict(req, results)}
+        resp.body = {
+            'image': get_v1_image_details_dict(self.app, req, results)}
 
     def on_head(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)
         results = get_v1_image_details_dict(
-            req, image_obj.get_image(image_guid))
+            self.app, req, image_obj.get_image(image_guid))
 
         if not results:
             return not_found(resp, 'Image could not be found')
@@ -532,8 +540,8 @@ class ImageV1(object):
             'x-image-meta-created_at': results['created'],
             'x-image-meta-min_ram': results['minRam'],
             'x-image-meta-updated_at': results['updated'],
-            'location': disp.get_endpoint_url(req, 'v1_image',
-                                              image_guid=image_guid),
+            'location': self.app.get_endpoint_url('image', req, 'v1_image',
+                                                  image_guid=image_guid),
             'x-image-meta-deleted': False,
             'x-image-meta-protected': results['protected'],
             'x-image-meta-min_disk': results['minDisk'],
@@ -546,6 +554,9 @@ class ImageV1(object):
 
 
 class ImagesV1(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
         image_obj = SLImages(client)
@@ -556,7 +567,7 @@ class ImagesV1(object):
             if not image:  # or 'parentId' not in image:
                 continue
             image['visibility'] = 'public'
-            formatted_image = get_v1_image_details_dict(req, image)
+            formatted_image = get_v1_image_details_dict(self.app, req, image)
 
             if formatted_image:
                 results.append(formatted_image)
@@ -598,11 +609,13 @@ class ImagesV1(object):
 
         resp.body = {'image': {
             'id': id,
-            'location': disp.get_endpoint_url(req, 'v1_image', image_guid=id),
+            'location': self.app.get_endpoint_url(
+                'image', req, 'v1_image', image_guid=id),
         }}
 
 
-def get_v2_image_details_dict(req, image, tenant_id=None):
+def get_v2_image_details_dict(app, req, image, tenant_id=None):
+
     if not image or not image.get('globalIdentifier'):
         return {}
 
@@ -617,16 +630,16 @@ def get_v2_image_details_dict(req, image, tenant_id=None):
         'tags': [],
         'updated': image.get('createDate'),
         'created': image.get('createDate'),
-        'self': disp.get_endpoint_url(req, 'v2_image', image_guid=image['id']),
-        'file': disp.get_endpoint_url(req, 'v2_image_file',
-                                      image_guid=image['id']),
-        'schema': disp.get_endpoint_url(req, 'v2_schema_image'),
+        'self': app.get_endpoint_url('image', req, 'v2_image', image_guid=image['id']),
+        'file': app.get_endpoint_url('image', req, 'v2_image_file',
+                                     image_guid=image['id']),
+        'schema': app.get_endpoint_url('image', req, 'v2_schema_image'),
     }
 
     return results
 
 
-def get_v1_image_details_dict(req, image, tenant_id=None):
+def get_v1_image_details_dict(app, req, image, tenant_id=None):
     if not image or not image.get('globalIdentifier'):
         return {}
 
@@ -650,13 +663,13 @@ def get_v1_image_details_dict(req, image, tenant_id=None):
         'name': image['name'],
         'links': [
             {
-                'href': disp.get_endpoint_url(req, 'v1_image',
-                                              image_guid=image['id']),
+                'href': app.get_endpoint_url('image', req, 'v1_image',
+                                             image_guid=image['id']),
                 'rel': 'self',
             },
             {
-                'href': disp.get_endpoint_url(req, 'v1_image',
-                                              image_guid=image['id']),
+                'href': app.get_endpoint_url('image', req, 'v1_image',
+                                             image_guid=image['id']),
                 'rel': 'bookmark',
             }
         ],
