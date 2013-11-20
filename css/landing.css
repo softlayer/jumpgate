@@ -1,196 +1,211 @@
 /*-- Basic --*/
 
-html,body {
-height:100%;
-width:100%;
+html,
+body {
+  width: 100%;
+  height: 100%;
 }
 
 a,
 a:hover,
 a:focus {
-color:#fff;
+  color: #fff;
 }
 
 /*-- Nav --*/
 
 .container {
-margin-top:-40px;
-text-align:left;
+  margin-top: 0;
+  text-align: left;
 }
 
 .header {
-display:table;
-height:85%;
-position:relative;
-width:100%;
+  position: relative;
+  display: table;
+  width: 100%;
+  height: 85%;
 }
 
 .docs-home {
--moz-background-size:cover;
--o-background-size:cover;
--webkit-background-size:cover;
-background-color:#222;
-background: -webkit-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
-background: -moz-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
-background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('http://s21.postimg.org/cliptsx7r/image.jpg');
-background-repeat: no-repeat; 
-background-size: cover; 
+  background: -webkit-linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
+  background: -moz-linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
+  background-color: #222;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+     -moz-background-size: cover;
+       -o-background-size: cover;
+          background-size: cover;
 }
 
 .docs-nav {
-border:none medium;
-box-shadow:none;
-height:74px;
+  height: 74px;
+  border: none medium;
+  box-shadow: none;
 }
 
 .masthead-links {
-margin:2px 0;
+  margin: 2px 0;
 }
 
 .docs-home .masthead-links {
-margin-left: 0;
+  margin-top: 250px;
+  margin-left: 0;
 }
 
 footer {
-padding:50px 0 0;
+  padding: 50px 0 0;
 }
 
 /*-- Headings --*/
 
-h1,.h1 {
-border-bottom:none;
-margin-top:40px;
+h1,
+.h1 {
+  margin-top: 40px;
+  border-bottom: none;
 }
 
 .masthead h1 {
-font-family:helvetica, arial, sans-serif;
-font-size:100px;
-font-weight:700;
-letter-spacing:-4px;
-line-height:1.1;
-margin:50px 0 0 0;
-padding:0;
-text-transform:none;
+  padding: 0;
+  margin-right: 0;
+  margin-right: 15%;
+  margin-left: 0;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 94px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -4px;
+  text-transform: none;
 }
 
 .masthead .lead {
-font-family:"nimbus-sans", helvetica, arial, sans-serif;
-font-size:36px;
-line-height: 1.1;
-margin-bottom:0;
-letter-spacing: 0;
-margin-right: 20%;
+  margin-right: 25%;
+  margin-bottom: 0;
+  margin-bottom: 60px;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 38px;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
 }
 
 /*-- Sidebar --*/
 
 #sidebar-wrapper {
--moz-transition:all .4s ease 0;
--ms-transition:all .4s ease 0;
--o-transition:all .4s ease 0;
--webkit-transition:all .4s ease 0;
-background:none repeat scroll 0 0 #666;
-height:100%;
-margin-right:-250px;
-overflow-y:auto;
-position:fixed;
-right:0;
-transition:all .4s ease 0;
-width:250px;
-z-index:1000;
-opacity: 0.6;
+  position: fixed;
+  right: 0;
+  z-index: 1000;
+  width: 250px;
+  height: 100%;
+  margin-top: 7px;
+  margin-right: -250px;
+  overflow-y: auto;
+  background: none repeat scroll 0 0 #222;
+  -webkit-transition: all .4s ease 0;
+     -moz-transition: all .4s ease 0;
+      -ms-transition: all .4s ease 0;
+       -o-transition: all .4s ease 0;
+          transition: all .4s ease 0;
 }
 
 #sidebar-wrapper.active {
--moz-transition:all .4s ease 0;
--ms-transition:all .4s ease 0;
--o-transition:all .4s ease 0;
--webkit-transition:all .4s ease 0;
-right:250px;
-transition:all .4s ease 0;
-width:250px;
+  right: 250px;
+  width: 250px;
+  -webkit-transition: all .4s ease 0;
+     -moz-transition: all .4s ease 0;
+      -ms-transition: all .4s ease 0;
+       -o-transition: all .4s ease 0;
+          transition: all .4s ease 0;
 }
 
 .sidebar-nav {
-list-style:none;
-margin:0;
-padding:0;
-position:absolute;
-top:0;
-width:250px;
+  position: absolute;
+  top: 0;
+  width: 250px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
 .sidebar-nav li {
-line-height:43px;
-margin-top:6px;
-text-indent:20px;
+  margin-top: 6px;
+  line-height: 43px;
+  text-indent: 20px;
 }
 
 .sidebar-nav li a {
-color:#fff;
-display:block;
-text-decoration:none;
+  display: block;
+  color: #fff;
+  text-decoration: none;
 }
 
 .sidebar-nav li a:hover {
-background:rgba(255,255,255,0.2);
-color:#fff;
-text-decoration:none;
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-nav li a:active,
 .sidebar-nav li a:focus {
-text-decoration:none;
+  text-decoration: none;
 }
 
 .sidebar-nav > .sidebar-brand {
-font-size:14px;
-height:40px;
-line-height:40px;
+  height: 40px;
+  font-size: 14px;
+  line-height: 40px;
 }
 
 .sidebar-nav > .sidebar-brand a {
-color:#ccc;
+  color: #ccc;
 }
 
 .sidebar-nav > .sidebar-brand a:hover {
-color:#fff;
+  color: #fff;
 }
 
 /*-- Buttons --*/
 
 .btn-info {
-background-color:#fff;
-background-image:none;
-border:1px solid #fff;
-border-radius:50px;
-box-shadow:none;
-color:#222;
-font-size:14px;
-margin-bottom:20px;
-margin-right:20px;
-text-shadow:none;
-text-transform: uppercase;
-width:160px;
+  width: 170px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 14px;
+  color: #222;
+  text-shadow: none;
+  text-transform: uppercase;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 14px;
 }
 
 .btn-info:hover,
-.btn-info:focus {
-background-color:#fff;
-background-image:none;
-border:1px solid #fff;
-border-radius:50px;
-color:#aaa;
-margin-bottom:20px;
-margin-right:20px;
-width:160px;
+.btn-info:focus,
+.btn-info:active {
+  width: 170px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 14px;
+  color: #222;
+  text-shadow: none;
+  text-transform: uppercase;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 14px;
 }
 
 .btn-primary {
-background-color:transparent;
-border-color:transparent;
-color:transparent;
-padding: 3px 3px;
+  padding: 3px 3px;
+  color: transparent;
+  background-color: transparent;
+  border-color: transparent;
 }
 
 .btn-primary:hover,
@@ -198,60 +213,69 @@ padding: 3px 3px;
 .btn-primary:active,
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
-background-color:transparent;
-border:1px solid #aaa;
-color:transparent;
+  color: #222;
+  background-color: #fff;
+  border: 1px solid #aaa;
 }
 
-div.buttons {
-margin-top:30px;
-text-align:left;
+a#get-started.btn.btn-info.btn-lg {
+  width: 170px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  text-shadow: none;
+  text-transform: uppercase;
+  background-color: #c75a48;
+  background-image: none;
+  border: 1px solid #a0483a;
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 14px;
 }
 
 /*-- Toggle --*/
 
+.navbar-brand {
+  margin-top: -45px;
+}
+
 #menu-toggle {
-position:fixed;
-right:0;
-top:0;
-z-index:1;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1;
 }
 
 .toggle {
-margin:5px 5px 0 0;
+  margin: 5px 5px 0 0;
 }
 
 /*-- Services --*/
 
 .services {
-background:#7fbbda;
-color:#fff;
-padding:50px 0;
+  padding: 50px 0;
+  color: #fff;
+  background: #7fbbda;
 }
 
 .service-item {
-margin-bottom:15px;
+  margin-bottom: 15px;
 }
 
 i.service-icon {
-border:3px solid #fff;
-border-radius:50%;
-display:inline-block;
-font-size:56px;
-height:140px;
-line-height:136px;
-text-align:center;
-vertical-align:middle;
-width:140px;
+  display: inline-block;
+  width: 140px;
+  height: 140px;
+  font-size: 56px;
+  line-height: 136px;
+  text-align: center;
+  vertical-align: middle;
+  border: 3px solid #fff;
+  border-radius: 50%;
 }
 
 i.service-icon:hover {
-font-size:68px;
-}
-
-/*-- Image --*/
-
-img.navbar-brand {
-margin-right:50px;
-margin-top:-57px;
+  font-size: 68px;
 }

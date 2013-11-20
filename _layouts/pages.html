@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
       
-    {% include header.html %}
+      {% include header.html %}
   
   </head>
   <body>
     <a class="sr-only" href="#content">Skip to main content</a>
       
-    {% include main-pages.html %}
+      {% include main-pages.html %}
 
     <div class="header" id="content">
       <div class="container">
@@ -23,8 +23,8 @@
               
               {% if page.slug == "release-notes" %}
                 {% include nav-release-notes.html %}
-              {% elsif page.slug == "contributing" %}
-                {% include nav-contributing.html %}
+              {% elsif page.slug == "learn-more" %}
+                {% include nav-learn-more.html %}
               {% elsif page.slug == "getting-started" %}
                 {% include nav-getting-started.html %}
               {% endif %}
@@ -34,7 +34,7 @@
         </div>
         <div class="col-md-9" role="main">
           
-        {{ content }}
+              {{ content }}
           
         </div>
       </div>
@@ -42,7 +42,7 @@
     <footer class="footer" role="contentinfo">
       <div class="container">
         
-      {% include footer.html %}
+              {% include footer.html %}
       
       </div>
     </footer>
