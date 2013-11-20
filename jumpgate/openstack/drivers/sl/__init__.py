@@ -1,4 +1,5 @@
 from .index import IndexV2
+from jumpgate.common.sl import add_hooks
 
 
 def setup_driver(app, disp):
@@ -8,3 +9,5 @@ def setup_driver(app, disp):
     # V2 Routes
     disp.set_handler('main_index', IndexV2(app))
     disp.set_handler('v2_index', IndexV2(app))
+
+    add_hooks(app)

@@ -1,8 +1,8 @@
 from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher(app):
-    disp = Dispatcher(app)
+def get_dispatcher():
+    disp = Dispatcher()
 
     # V2 API - http://docs.openstack.org/developer/ironic/dev/api-spec-v1.html
 

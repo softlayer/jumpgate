@@ -6,11 +6,9 @@ from jumpgate.common.dispatcher import Dispatcher
 
 class TestDispatcher(unittest.TestCase):
     def setUp(self):
-        self.app = MagicMock()
-        self.disp = Dispatcher(self.app)
+        self.disp = Dispatcher()
 
     def test_init(self):
-        self.assertEquals(self.disp._app, self.app)
         self.assertEquals(self.disp._endpoints, {})
 
     def test_add_endpoint(self):
@@ -44,8 +42,7 @@ class TestDispatcher(unittest.TestCase):
 
 class TestDispatcherUrls(unittest.TestCase):
     def setUp(self):
-        self.app = MagicMock()
-        self.disp = Dispatcher(self.app)
+        self.disp = Dispatcher()
 
         self.disp.add_endpoint('user_page', '/path/to/{tenant_id}')
         self.disp.add_endpoint('instance_detail',

@@ -1,8 +1,8 @@
 from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher(app):
-    disp = Dispatcher(app)
+def get_dispatcher():
+    disp = Dispatcher()
 
     # V2 API - http://api.openstack.org/api-ref-networking.html
 

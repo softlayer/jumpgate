@@ -13,7 +13,7 @@ ERRORS = [
 ]
 
 
-class TestErorrHandlers(unittest.TestCase):
+class TestErrorHandlers(unittest.TestCase):
     def setUp(self):
         self.resp = MagicMock()
 

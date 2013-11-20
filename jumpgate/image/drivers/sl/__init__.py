@@ -1,4 +1,5 @@
 from .images import ImageV1, ImagesV1, SchemaImageV2, SchemaImagesV2, ImagesV2
+from jumpgate.common.sl import add_hooks
 
 
 def setup_driver(app, disp):
@@ -16,3 +17,5 @@ def setup_driver(app, disp):
     disp.set_handler('v1_image', ImageV1(app))
     disp.set_handler('v1_images', ImagesV1(app))
     disp.set_handler('v1_images_detail', ImagesV1(app))
+
+    add_hooks(app)

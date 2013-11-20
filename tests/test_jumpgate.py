@@ -25,7 +25,6 @@ class TestJumpgateInit(unittest.TestCase):
         self.assertEqual(app.before_hooks, [hook_set_uuid])
         self.assertEqual(app.after_hooks, [hook_format, hook_log_request])
 
-        self.assertEqual(app._routes, [])
         self.assertEqual(app._dispatchers, {})
 
 
@@ -34,26 +33,15 @@ class TestJumpgate(unittest.TestCase):
         self.config = MagicMock()
         self.app = Jumpgate(self.config)
 
-    def test_add_single_route(self):
-        resource = MagicMock()
-        self.app.add_route('/this/is/a/{test}', resource)
-
-        self.assertEqual(self.app._routes, [('/this/is/a/{test}', resource)])
-
-    def test_route_order(self):
-        resources = [MagicMock() for i in range(10)]
-        for i, resource in enumerate(resources):
-            self.app.add_route('/this/is/a/test/{%s}' % i, resource)
-
-        self.assertEqual(len(self.app._routes), 10)
-        for i, resource in enumerate(resources):
-            self.assertEqual(self.app._routes[i],
-                             ('/this/is/a/test/{%s}' % i, resource))
-
     def test_make_api(self):
+        # Populate a dispatcher with some resources
+        disp = Dispatcher()
         resources = [StubResource() for i in range(10)]
         for i, resource in enumerate(resources):
-            self.app.add_route('/this/is/a/test/{%s}' % i, resource)
+            disp.add_endpoint('test_%s' % i, '/path/to/%s' % i)
+            disp.set_handler('test_%s' % i, resource)
+
+        self.app.add_dispatcher('SERVICE', disp)
 
         api = self.app.make_api()
         self.assertTrue(hasattr(api, '__call__'))
@@ -61,7 +49,10 @@ class TestJumpgate(unittest.TestCase):
         self.assertEqual(len(api._routes), 10)
 
     def test_add_get_dispatcher(self):
-        disp = Dispatcher(self.app)
+        disp = Dispatcher()
         self.app.add_dispatcher('SERVICE', disp)
 
         self.assertEqual(self.app._dispatchers, {'SERVICE': disp})
+
+        disp_return = self.app.get_dispatcher('SERVICE')
+        self.assertEqual(disp_return, disp)

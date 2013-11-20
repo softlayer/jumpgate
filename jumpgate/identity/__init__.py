@@ -1,8 +1,8 @@
 from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher(app):
-    disp = Dispatcher(app)
+def get_dispatcher():
+    disp = Dispatcher()
 
     # V3 API - http://api.openstack.org/api-ref-identity.html#identity-v3
 

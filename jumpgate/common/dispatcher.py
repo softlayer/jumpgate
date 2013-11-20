@@ -4,8 +4,7 @@ logger = logging.getLogger(__name__)
 
 
 class Dispatcher(object):
-    def __init__(self, app):
-        self._app = app
+    def __init__(self):
         self._endpoints = OrderedDict()
 
     def add_endpoint(self, nickname, endpoint):
@@ -47,4 +46,6 @@ class Dispatcher(object):
         endpoint, _ = self._endpoints[nickname]
 
         self._endpoints[nickname] = (endpoint, handler)
-        self._app.add_route(endpoint, handler)
+
+    def get_routes(self):
+        return [(endpoint, h) for endpoint, h in self._endpoints.values()]

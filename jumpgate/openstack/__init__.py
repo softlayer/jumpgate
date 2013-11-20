@@ -1,8 +1,8 @@
 from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher(app):
-    disp = Dispatcher(app)
+def get_dispatcher():
+    disp = Dispatcher()
 
     disp.add_endpoint('main_index', '/')
 

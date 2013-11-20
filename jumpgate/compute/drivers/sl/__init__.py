@@ -14,6 +14,8 @@ from .volumes import OSVolumeAttachmentsV2
 from .networks import OSNetworksV2, OSNetworkV2
 from .instance_actions import InstanceActionsV2
 
+from jumpgate.common.sl import add_hooks
+
 
 def setup_driver(app, disp):
     # V2 Routes
@@ -66,3 +68,5 @@ def setup_driver(app, disp):
     disp.set_handler('v2_tenant_flavors_detail', flavors_detail)
 
     disp.set_handler('v2_tenant_usage', UsageV2())
+
+    add_hooks(app)

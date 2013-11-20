@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_client(req, resp, kwargs):
+def hook_get_client(req, resp, kwargs):
     client = Client()
     client.auth = None
     req.env['tenant_id'] = None
@@ -23,5 +23,6 @@ def get_client(req, resp, kwargs):
     req.env['sl_client'] = client
 
 
-def setup_driver(app, disp):
-    app.before_hooks.append(get_client)
+def add_hooks(app):
+    if hook_get_client not in app.before_hooks:
+        app.before_hooks.append(hook_get_client)
