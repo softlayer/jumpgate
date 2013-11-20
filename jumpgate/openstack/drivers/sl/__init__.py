@@ -1,7 +1,7 @@
-from .endpoints.index import IndexV2
+from .index import IndexV2
 
 
-def setup(app, disp):
+def setup_driver(app, disp):
     # V3 Routes
     # None currently supported
 

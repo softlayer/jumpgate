@@ -2,8 +2,8 @@ import json
 
 from SoftLayer import CCIManager, SshKeyManager, SoftLayerAPIError
 
-from jumpgate.common.nested_dict import lookup
-from jumpgate.shared.drivers.sl.errors import convert_errors
+from jumpgate.common.utils import lookup
+from jumpgate.common.sl.errors import convert_errors
 from jumpgate.common.error_handling import (bad_request, duplicate,
                                             compute_fault, not_found)
 from .flavors import FLAVORS

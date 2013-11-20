@@ -1,5 +1,5 @@
-from jumpgate.shared.drivers.openstack.responder import setup_responder
+from jumpgate.shared.drivers.responder import setup_responder
 
 
-def setup(app, disp):
+def setup_driver(app, disp):
     return setup_responder(app, disp)

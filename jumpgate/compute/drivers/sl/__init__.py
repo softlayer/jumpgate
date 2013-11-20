@@ -1,24 +1,21 @@
-from .endpoints.availability_zones import AvailabilityZonesV2
-from .endpoints.extensions import ExtensionsV2
-from .endpoints.extra_specs import ExtraSpecsFlavorV2
-from .endpoints.dns import DNSDomainsV2, DNSDomainEntryV2
-from .endpoints.flavors import (
-    FlavorV2, FlavorsV2, FlavorsDetailV2)
-from .endpoints.floating_ips import OSFloatingIpsV2
-from .endpoints.keypairs import KeypairsV2, KeypairV2
-from .endpoints.limits import LimitsV2
-from .endpoints.quota_sets import OSQuotaSetsV2
-from .endpoints.servers import (ServerV2, ServersV2,
-                                ServersDetailV2,
-                                ServerActionV2)
-from .endpoints.security_groups import OSSecurityGroupsV2
-from .endpoints.usage import UsageV2
-from .endpoints.volumes import OSVolumeAttachmentsV2
-from .endpoints.networks import OSNetworksV2, OSNetworkV2
-from .endpoints.instance_actions import InstanceActionsV2
+from .availability_zones import AvailabilityZonesV2
+from .extensions import ExtensionsV2
+from .extra_specs import ExtraSpecsFlavorV2
+from .dns import DNSDomainsV2, DNSDomainEntryV2
+from .flavors import FlavorV2, FlavorsV2, FlavorsDetailV2
+from .floating_ips import OSFloatingIpsV2
+from .keypairs import KeypairsV2, KeypairV2
+from .limits import LimitsV2
+from .quota_sets import OSQuotaSetsV2
+from .servers import ServerV2, ServersV2, ServersDetailV2, ServerActionV2
+from .security_groups import OSSecurityGroupsV2
+from .usage import UsageV2
+from .volumes import OSVolumeAttachmentsV2
+from .networks import OSNetworksV2, OSNetworkV2
+from .instance_actions import InstanceActionsV2
 
 
-def setup(app, disp):
+def setup_driver(app, disp):
     # V2 Routes
     flavor = FlavorV2(app)
     flavors = FlavorsV2(app)

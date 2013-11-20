@@ -1,37 +1,21 @@
-import configparser
+from six.moves import configparser
 import importlib
-import logging
-import uuid
 
 from falcon import API
 
 from jumpgate.common.nyi import NYI
-from jumpgate.common.format import format_hook
+from jumpgate.common.hooks import hook_format, hook_set_uuid, hook_log_request
 
-LOG = logging.getLogger(__name__)
+
 SUPPORTED_SERVICES = [
     'openstack',
     'block_storage',
-    'shared',
     'identity',
     'compute',
     'image',
     'network',
     'baremetal'
 ]
-
-
-def hook_set_uuid(req, resp, kwargs):
-    req.env['REQUEST_ID'] = str(uuid.uuid1())
-
-
-def hook_log_request(req, resp):
-    LOG.info('%s %s %s %s [ReqId: %s]',
-             req.method,
-             req.path,
-             req.query_string,
-             resp.status,
-             req.env['REQUEST_ID'])
 
 
 class Jumpgate(object):
@@ -41,19 +25,13 @@ class Jumpgate(object):
         self.installed_modules = {}
 
         self.before_hooks = [hook_set_uuid]
-        self.after_hooks = [format_hook, hook_log_request]
+        self.after_hooks = [hook_format, hook_log_request]
 
         self._routes = []
         self._dispatchers = {}
 
     def make_api(self):
         api = API(before=self.before_hooks, after=self.after_hooks)
-        # An easy class that can be used to implement endpoints that are
-        # not yet implemented.
-        nyi = NYI()
-
-        # Set the default route to the NYI object
-        api.set_default_route(nyi)
 
         # Add all the routes collected thus far
         for uri_template, resource in self._routes:
@@ -77,18 +55,18 @@ class Jumpgate(object):
 
 def make_api():
     # If there is a jumpgate config file, we should read that too.
+    driver_config = configparser.ConfigParser()
+    driver_config.read('driver.conf')
+
+    # Load the driver config file to determine which modules are available
     conf = configparser.ConfigParser()
     conf.read('jumpgate.conf')
 
     # The core application of the translation layer
     app = Jumpgate(conf)
 
-    # Load the driver config file to determine which modules are available
-    driver_config = configparser.ConfigParser()
-    driver_config.read('driver.conf')
-
     for service in SUPPORTED_SERVICES:
-        if service in driver_config:
+        if service in conf:
             # Import the dispatcher for the service
             dispatcher_module = importlib.import_module('jumpgate.' + service)
             if hasattr(dispatcher_module, 'get_dispatcher'):
@@ -96,15 +74,20 @@ def make_api():
                 app.add_dispatcher(service, dispatcher)
 
             # Import the configured driver for the service
-            module = importlib.import_module(driver_config[service]['driver'])
-            if hasattr(module, 'setup'):
-                module.setup(app, dispatcher)
+            module = importlib.import_module(conf[service]['driver'])
+            if hasattr(module, 'setup_driver'):
+                module.setup_driver(app, dispatcher)
 
             app.installed_modules[service] = True
         else:
             app.installed_modules[service] = False
 
-    return app.make_api()
+    api = app.make_api()
 
+    # An easy class that can be used to implement endpoints that are
+    # not yet implemented.
+    nyi = NYI()
 
-api = make_api()
+    # Set the default route to the NYI object
+    api.set_default_route(nyi)
+    return api

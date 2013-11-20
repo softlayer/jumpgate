@@ -1,7 +1,7 @@
 
 from SoftLayer import CCIManager
 
-from jumpgate.common.nested_dict import lookup
+from jumpgate.common.utils import lookup
 
 
 class AvailabilityZonesV2(object):

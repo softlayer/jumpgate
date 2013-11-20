@@ -4,8 +4,8 @@ logger = logging.getLogger(__name__)
 
 
 class Dispatcher(object):
-    def __init__(self, api):
-        self._app = api
+    def __init__(self, app):
+        self._app = app
         self._endpoints = OrderedDict()
 
     def add_endpoint(self, nickname, endpoint):
@@ -17,9 +17,8 @@ class Dispatcher(object):
             path = self._endpoints[nickname][0]
 
         if '{tenant_id}' in path:
-            if req.env.get('tenant_id'):
-                tenant_id = req.env['tenant_id']
-                path = path.replace('{tenant_id}', tenant_id)
+            tenant_id = req.env['tenant_id']
+            path = path.replace('{tenant_id}', tenant_id)
 
         for var, value in kwargs.items():
             if '{%s}' % var in path:

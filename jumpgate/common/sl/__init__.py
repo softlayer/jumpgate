@@ -1,6 +1,6 @@
 from SoftLayer import Client
 
-from jumpgate.shared.drivers.sl.auth import get_auth
+from jumpgate.common.sl.auth import get_auth
 import logging
 logger = logging.getLogger(__name__)
 
@@ -23,5 +23,5 @@ def get_client(req, resp, kwargs):
     req.env['sl_client'] = client
 
 
-def setup(app, disp):
+def setup_driver(app, disp):
     app.before_hooks.append(get_client)

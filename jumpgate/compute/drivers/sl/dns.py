@@ -1,9 +1,9 @@
 import json
-import urllib.parse
+from six.moves.urllib.parse import unquote_plus
 
 from SoftLayer import DNSManager
 
-from jumpgate.common.nested_dict import lookup
+from jumpgate.common.utils import lookup
 
 
 class DNSDomainsV2(object):
@@ -43,7 +43,7 @@ class DNSDomainEntryV2(object):
         client = req.env['sl_client']
         mgr = DNSManager(client)
 
-        domain = urllib.parse.unquote_plus(domain)
+        domain = unquote_plus(domain)
 
         zone_id = mgr._get_zone_id_from_name(domain)[0]
 
@@ -68,7 +68,7 @@ class DNSDomainEntryV2(object):
         if not record_type:
             record_type = 'A'
 
-        domain = urllib.parse.unquote_plus(domain)
+        domain = unquote_plus(domain)
 
         zone_id = mgr._get_zone_id_from_name(domain)[0]
 

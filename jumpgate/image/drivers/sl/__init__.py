@@ -1,9 +1,7 @@
-from .endpoints.images import (ImageV1, ImagesV1,
-                               SchemaImageV2, SchemaImagesV2,
-                               ImagesV2)
+from .images import ImageV1, ImagesV1, SchemaImageV2, SchemaImagesV2, ImagesV2
 
 
-def setup(app, disp):
+def setup_driver(app, disp):
     # V2 Routes
     disp.set_handler('v2_image', ImageV1(app))
     disp.set_handler('v2_images', ImagesV2(app))

@@ -3,7 +3,7 @@ from SoftLayer import (
     Client, SoftLayerAPIError, TokenAuthentication, BasicAuthentication)
 
 from jumpgate.common.error_handling import unauthorized, compute_fault
-from jumpgate.common.nested_dict import lookup
+from jumpgate.common.utils import lookup
 
 
 def get_password_auth(req, resp, body=None):

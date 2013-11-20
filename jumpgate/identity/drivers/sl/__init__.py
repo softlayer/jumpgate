@@ -1,8 +1,8 @@
-from .endpoints.tenants import TenantsV2
-from .endpoints.tokens import TokensV2, TokenV2
+from .tenants import TenantsV2
+from .tokens import TokensV2, TokenV2
 
 
-def setup(app, disp):
+def setup_driver(app, disp):
     # V3 Routes
     # None currently supported
 

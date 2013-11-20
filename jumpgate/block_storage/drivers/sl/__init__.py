@@ -1,4 +1,4 @@
-from .endpoints.volumes import VolumesV2
+from .volumes import VolumesV2
 
 
 def get_dispatcher(app, disp):

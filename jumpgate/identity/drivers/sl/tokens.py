@@ -2,8 +2,8 @@ import datetime
 import logging
 from SoftLayer import Client
 
-from jumpgate.shared.drivers.sl.errors import convert_errors
-from jumpgate.shared.drivers.sl.auth import get_auth
+from jumpgate.common.sl.errors import convert_errors
+from jumpgate.common.sl.auth import get_auth
 
 logger = logging.getLogger(__name__)
 
