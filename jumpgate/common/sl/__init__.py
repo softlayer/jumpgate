@@ -1,12 +1,18 @@
-from SoftLayer import Client
+from SoftLayer import Client, API_PUBLIC_ENDPOINT
+from oslo.config import cfg
 
 from jumpgate.common.sl.auth import get_auth
-import logging
-logger = logging.getLogger(__name__)
+
+
+opts = [
+    cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
+]
+
+cfg.CONF.register_opts(opts, group='softlayer')
 
 
 def hook_get_client(req, resp, kwargs):
-    client = Client()
+    client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
     client.auth = None
     req.env['tenant_id'] = None
 

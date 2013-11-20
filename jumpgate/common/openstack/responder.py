@@ -1,6 +1,12 @@
 import requests
 
-from core import api
+from oslo.config import cfg
+
+opts = [
+    cfg.StrOpt('default_hostname', default='127.0.0.1'),
+]
+
+cfg.CONF.register_opts(opts, group='openstack')
 
 
 def setup_responder(app, disp):
@@ -12,8 +18,7 @@ def setup_responder(app, disp):
 
 class OpenStackResponder(object):
     def __init__(self, app):
-        config = api.config['driver_config']
-        self.endpoint = config['openstack'].get('default_endpoint')
+        self.endpoint = cfg['openstack']['default_endpoint']
 
     def on_delete(self, req, resp, **kwargs):
         self._standard_responder(req, resp)

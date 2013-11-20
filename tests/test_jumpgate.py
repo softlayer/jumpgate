@@ -1,9 +1,10 @@
 import unittest
-from mock import MagicMock
+from mock import MagicMock, call, patch
 
-from jumpgate.api import Jumpgate
+from jumpgate.api import Jumpgate, make_api
 from jumpgate.common.hooks import hook_format, hook_set_uuid, hook_log_request
 from jumpgate.common.dispatcher import Dispatcher
+from jumpgate.common.nyi import NYI
 
 import falcon
 
@@ -14,10 +15,8 @@ class StubResource(object):
 
 class TestJumpgateInit(unittest.TestCase):
     def test_init(self):
-        config = MagicMock()
-        app = Jumpgate(config)
+        app = Jumpgate()
 
-        self.assertEqual(app.config, config)
         self.assertEqual(app.installed_modules, {})
 
         self.assertIsInstance(app.before_hooks, list)
@@ -31,7 +30,7 @@ class TestJumpgateInit(unittest.TestCase):
 class TestJumpgate(unittest.TestCase):
     def setUp(self):
         self.config = MagicMock()
-        self.app = Jumpgate(self.config)
+        self.app = Jumpgate()
 
     def test_make_api(self):
         # Populate a dispatcher with some resources
@@ -48,6 +47,13 @@ class TestJumpgate(unittest.TestCase):
         self.assertIsInstance(api, falcon.API)
         self.assertEqual(len(api._routes), 10)
 
+        # Make sure the default route is set correctly
+        nyi = NYI()
+        route_map, _ = api._default_route
+        for verb, handler in route_map.items():
+            self.assertEqual(handler.__name__,
+                             getattr(nyi, 'on_' + verb.lower()).__name__)
+
     def test_add_get_dispatcher(self):
         disp = Dispatcher()
         self.app.add_dispatcher('SERVICE', disp)
@@ -56,3 +62,46 @@ class TestJumpgate(unittest.TestCase):
 
         disp_return = self.app.get_dispatcher('SERVICE')
         self.assertEqual(disp_return, disp)
+
+    def test_get_endpoint_url(self):
+        disp = Dispatcher()
+        disp.add_endpoint('user_page0', '/path0/to/{tenant_id}')
+        self.app.add_dispatcher('SERVICE', disp)
+
+        req = MagicMock()
+        req.env = {'tenant_id': '1234'}
+        req.protocol = 'http'
+        req.get_header.return_value = 'some_host'
+        req.app = ''
+
+        url = self.app.get_endpoint_url('SERVICE', req, 'user_page0')
+        self.assertEqual(url, 'http://some_host/path0/to/1234')
+
+    @patch('jumpgate.api.importlib.import_module')
+    def test_load_drivers(self, import_module):
+        cfg = {
+            'compute': {'driver': 'path.to.compute.driver'},
+            'identity': {'driver': 'path.to.identity.driver'},
+        }
+        with patch('jumpgate.api.CONF', cfg):
+            self.app.load_drivers()
+            import_module.assert_has_calls([
+                call('jumpgate.identity'),
+                call().get_dispatcher(),
+                call('path.to.identity.driver'),
+                call().setup_driver(self.app,
+                                    import_module().get_dispatcher()),
+                call('jumpgate.compute'),
+                call().get_dispatcher(),
+                call('path.to.compute.driver'),
+                call().setup_driver(self.app, import_module().get_dispatcher())
+            ])
+
+
+class TestMakeAPI(unittest.TestCase):
+    @patch('jumpgate.api.Jumpgate.load_drivers')
+    def test_make_api(self, load_drivers):
+        api = make_api()
+
+        self.assertTrue(hasattr(api, '__call__'))
+        self.assertIsInstance(api, falcon.API)

@@ -61,5 +61,5 @@ class TestHookSetUUID(unittest.TestCase):
         hook_set_uuid(req, resp, {})
 
         self.assertEquals(len(req.env), 1)
-        self.assertEquals(req.env.keys(), ['REQUEST_ID'])
+        self.assertEquals(list(req.env.keys()), ['REQUEST_ID'])
         self.assertIsNotNone(req.env['REQUEST_ID'])

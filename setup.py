@@ -4,7 +4,7 @@ setup(
     name='jumpgate',
     version='0.1',
     description='OpenStack Transation Layer for cloud providers',
-    # long_description=open('README.rst', 'r').read(),
+    long_description=open('README.rst', 'r').read(),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Programming Language :: Python :: 3.3',
@@ -15,7 +15,12 @@ setup(
     packages=find_packages(exclude=['*.tests']),
     include_package_data=True,
     zip_safe=False,
-    install_requires=['falcon', 'requests'],
+    install_requires=[
+        'falcon',
+        'requests',
+        'six>=1.4.1',
+        'oslo.config>=1.2.0',
+    ],
     setup_requires=[],
     test_suite='nose.collector',
 )
