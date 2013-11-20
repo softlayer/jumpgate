@@ -5,7 +5,7 @@ All of our public content is built from minimal static webpages made using [Boot
 Two download options are available.
 
 * [Download the latest release](https://github.com/softlayer/jumpgate/archive/master.zip)
-* Clone the repo: `git clone https://github.com/softlayer/jumpgate.git gh-pages`
+* Clone the repo: `git clone -b gh-pages https://github.com/softlayer/jumpgate.git`
 
 ## Docs
 
