@@ -8,7 +8,7 @@ baseurl: "./"
   <div class="container">
                 <h1>{{ site.project }}</h1>
     <p class="lead">{{ site.lead }}</p>
-    <a class="btn btn-info btn-lg" id="get-started" href="{{ page.baseurl }}getting-started">Get Started</a>
-    <a class="btn btn-info btn-lg" id="learn-more" href="{{ page.baseurl }}learn-more">Learn More</a>
+    <a class="btn btn-info btn-lg" id="get-started" href="{{ page.baseurl }}getting-started" onclick="_gaq.push(['_trackEvent'])">Get Started</a>
+    <a class="btn btn-info btn-lg" id="learn-more" href="{{ page.baseurl }}learn-more" onclick="_gaq.push(['_trackEvent'])">Learn More</a>
   </div>
 </main>
