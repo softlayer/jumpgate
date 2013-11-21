@@ -12,6 +12,7 @@ fork: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=jumpgate&amp;typ
 star: http://ghbtns.com/github-btn.html?user=softlayer&amp;repo=jumpgate&amp;type=watch&amp;count=true
 open_issues: http://github.com/softlayer/jumpgate/issues?milestone=1;state=open
 closed_issues: http://github.com/softlayer/jumpgate/issues?milestone=1;state=closed
+milestones: https://github.com/softlayer/jumpgate/issues/milestones?state=open
 
 # Company
 www: http://www.softlayer.com
