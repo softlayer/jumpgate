@@ -9,36 +9,7 @@ baseurl: "../"
 
 The release for {{ site.project }} is now available on [GitHub]({{ site.repo }}). Browse the sections below to read more about what’s available.
 
-## Summary
-
-The details regarding the project are below.
-
-<div class="table-responsive" id="component-table">
-  <table class="table table-hover" id="no-borders">
-    <thead>
-      <tr>
-        <th>Reference</th>
-        <th>Details</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Release Phase</td>
-        <td>Phase 2</td>
-      </tr>
-      <tr>
-        <td>Release Version</td>
-        <td>v0.0.1</td>
-      </tr>
-      <tr>
-        <td>Global Product Line</td>
-        <td>OpenStack Compatibility API</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-## Milestones
+# Milestones
 
 The key milestones for this project are outlined below.
 

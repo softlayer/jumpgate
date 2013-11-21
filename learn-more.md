@@ -56,7 +56,7 @@ Create a [new issue on GitHub]({{ site.open_issues }}).
 We treat our docs like we treat our code. And like our code, we invite everyone to join in.
 
 * We publish our Getting Started guide on [GitHub Pages](http://pages.github.com) and use GitHub to track and manage changes.
-* Our web resources for [Jumpgate](http://softlayer.guthub.io/jimpgate) are managed under the `gh-pages` [branch](https://github.com/softlayer/jumpgate/tree/gh-pages).
+* Our web resources for [Jumpgate](http://softlayer.guthub.io/jumpgate) are managed under the `gh-pages` [branch](https://github.com/softlayer/jumpgate/tree/gh-pages).
 
 {% include community.md %}
 {% include copyright.md %}
