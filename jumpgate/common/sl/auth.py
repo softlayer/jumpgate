@@ -6,7 +6,7 @@ from jumpgate.common.error_handling import unauthorized, compute_fault
 from jumpgate.common.utils import lookup
 
 
-def get_password_auth(req, resp, body=None):
+def get_password_auth(req, body=None):
     headers = req.headers
 
     if 'x-auth-token' in headers:
@@ -16,20 +16,8 @@ def get_password_auth(req, resp, body=None):
         username = lookup(body, 'auth', 'passwordCredentials', 'username')
         password = lookup(body, 'auth', 'passwordCredentials', 'password')
 
-        try:
-            client = Client()
-            (userId, hash) = client.authenticate_with_password(username,
-                                                               password)
-        except SoftLayerAPIError as e:
-            if e.faultCode == \
-                    'SoftLayer_Exception_User_Customer_LoginFailed':
-                return None, None, unauthorized(resp,
-                                                message=e.faultCode,
-                                                details=e.faultString)
-
-            return None, None, compute_fault(resp,
-                                             message=e.faultCode,
-                                             details=e.faultString)
+        client = Client()
+        (userId, hash) = client.authenticate_with_password(username, password)
     else:
         return None, None, None
 
@@ -38,7 +26,7 @@ def get_password_auth(req, resp, body=None):
     return auth, token, None
 
 
-def get_api_key_auth(req, resp, body=None):
+def get_api_key_auth(req, body=None):
     headers = req.headers
 
     if 'x-auth-token' in headers:
@@ -58,10 +46,26 @@ def get_api_key_auth(req, resp, body=None):
     return auth, token, None
 
 
-def get_auth(req, resp, body=None):
-    auth, token, err = get_api_key_auth(req, resp, body=body)
-    if any([auth, token, err]):
-        return auth, token, err
+def try_auth(f, req, resp, *args, **kwargs):
+    try:
+        return f(req, *args, **kwargs)
+    except SoftLayerAPIError as e:
+        if e.faultCode == \
+                'SoftLayer_Exception_User_Customer_LoginFailed':
+            return None, None, unauthorized(resp,
+                                            message=e.faultCode,
+                                            details=e.faultString)
 
-    auth, token, err = get_password_auth(req, resp, body=body)
+        return None, None, compute_fault(resp,
+                                         message=e.faultCode,
+                                         details=e.faultString)
+
+
+def get_auth(req, resp, body=None):
+    auth, token, err = None, None, None
+    for method in [get_api_key_auth, get_password_auth]:
+        auth, token, err = try_auth(method, req, resp, body=body)
+        if any([auth, token, err]):
+            return auth, token, err
+
     return auth, token, err

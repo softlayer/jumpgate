@@ -15,7 +15,7 @@ Download source and run:
 
 System Requirements
 -------------------
-* This library has been tested on Python 3.3.
+* This library has been tested on Python 2.7/3.3.
 
 
 Configuring

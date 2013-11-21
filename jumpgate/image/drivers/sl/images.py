@@ -443,51 +443,30 @@ class ImagesV2(object):
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
 
-        filter = {}
-
-        if req.get_param('name'):
-            query = query_filter(req.get_param('name'))
-            if 'blockDeviceTemplateGroups' not in filter:
-                filter['blockDeviceTemplateGroups'] = {}
-            filter['blockDeviceTemplateGroups']['name'] = query
-
-        # filter = {
-        #     'blockDeviceTemplateGroups':
-        #     {
-        #         'parentId': {
-        #             'operation': 'is_null',
-        #         }
-        #     }
-        # }
-        results = []
-
-        params = {}
-        params['mask'] = get_image_mask()
-
-        if filter:
-            params['filter'] = filter
-
-        if req.get_param('limit'):
-            params['limit'] = req.get_param('limit')
-
-        results = client['Account'].getBlockDeviceTemplateGroups(**params)
-
-        if not results:
-            resp.body = {}
-            return
-
-        if not isinstance(results, list):
-            results = [results]
+        image_obj = SLImages(client)
+        params = {
+            'name': req.get_param('name'),
+            'limit': req.get_param('limit')}
 
         output = []
-        for image in results:
-            if not image:  # or 'parentId' not in image:
-                continue
-            formatted_image = get_v2_image_details_dict(self.app, req, image)
+        for visibility, funct in [('public', image_obj.get_public_images),
+                                  ('private', image_obj.get_private_images)]:
+            results = funct(**params)
 
-            if formatted_image:
-                formatted_image['visibility'] = 'private'
-                output.append(formatted_image)
+            if not results:
+                continue
+
+            if not isinstance(results, list):
+                results = [results]
+
+            for image in results:
+                formatted_image = get_v2_image_details_dict(self.app,
+                                                            req,
+                                                            image)
+
+                if formatted_image:
+                    formatted_image['visibility'] = visibility
+                    output.append(formatted_image)
 
         resp.body = {'images': sorted(output,
                                       key=lambda x: x['name'].lower())}
@@ -559,29 +538,33 @@ class ImagesV1(object):
 
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
+
         image_obj = SLImages(client)
+        params = {
+            'name': req.get_param('name'),
+            'limit': req.get_param('limit')}
 
-        results = []
+        output = []
+        for visibility, funct in [('public', image_obj.get_public_images),
+                                  ('private', image_obj.get_private_images)]:
+            results = funct(**params)
 
-        for image in image_obj.get_public_images():
-            if not image:  # or 'parentId' not in image:
+            if not results:
                 continue
-            image['visibility'] = 'public'
-            formatted_image = get_v1_image_details_dict(self.app, req, image)
 
-            if formatted_image:
-                results.append(formatted_image)
+            if not isinstance(results, list):
+                results = [results]
 
-        # for image in image_obj.get_private_images():
-        #     if not image:  # or 'parentId' not in image:
-        #         continue
-        #     image['visibility'] = 'private'
-        #     formatted_image = get_v1_image_details_dict(req, image)
+            for image in results:
+                formatted_image = get_v2_image_details_dict(self.app,
+                                                            req,
+                                                            image)
 
-        #     if formatted_image:
-        #         results.append(formatted_image)
+                if formatted_image:
+                    formatted_image['visibility'] = visibility
+                    output.append(formatted_image)
 
-        resp.body = {'images': sorted(results,
+        resp.body = {'images': sorted(output,
                                       key=lambda x: x['name'].lower())}
 
     def on_post(self, req, resp, tenant_id=None):
@@ -681,48 +664,66 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
     return results
 
 
-def get_image_mask():
-    mask = [
-        'blockDevicesDiskSpaceTotal',
-        'globalIdentifier',
-    ]
-
-    return 'mask[%s]' % ','.join(mask)
-
-
 class SLImages(object):
     image_mask = ('id,accountId,name,globalIdentifier,blockDevices,parentId,'
-                  'createDate')
+                  'createDate,blockDevicesDiskSpaceTotal')
 
     def __init__(self, client):
         self.client = client
 
-    def get_image(self, image_guid):
+    def get_image(self, guid):
         matching_image = None
 
-        _filter = {'globalIdentifier': {'operation': image_guid}}
-        vgbd = self.client['Virtual_Guest_Block_Device_Template_Group']
-        matching_image = vgbd.getPublicImages(
-            mask=self.image_mask, filter=_filter, limit=1)
+        matching_image = self.get_public_images(guid=guid, limit=1)
         if matching_image:
             matching_image['visibility'] = 'public'
             return matching_image
 
-        _filter = {
-            'privateBlockDeviceTemplateGroups': {
-                'globalIdentifier': {'operation': image_guid}}}
-        matching_image = self.client['Account'].getPrivateBlockDeviceTemplateGroups(
-            mask=self.image_mask, filter=_filter, limit=1)
+        matching_image = self.get_private_images(guid=guid, limit=1)
         if matching_image:
             matching_image['visibility'] = 'private'
             return matching_image
 
         return matching_image
 
-    def get_private_images(self):
-        return self.client['Account'].getPrivateBlockDeviceTemplateGroups(
-            mask=self.image_mask)
+    def get_private_images(self, guid=None, name=None, limit=None):
+        _filter = {}
+        if name:
+            _filter['privateBlockDeviceTemplateGroups'] = {
+                'name': query_filter(name)}
 
-    def get_public_images(self):
-        vgbd = self.client['Virtual_Guest_Block_Device_Template_Group']
-        return vgbd.getPublicImages(mask=self.image_mask)
+        if guid:
+            _filter['privateBlockDeviceTemplateGroups'] = {
+                'globalIdentifier': query_filter(guid)}
+
+        params = {}
+        params['mask'] = self.image_mask
+
+        if _filter:
+            params['filter'] = _filter
+
+        if limit:
+            params['limit'] = limit
+
+        account = self.client['Account']
+        return account.getPrivateBlockDeviceTemplateGroups(**params)
+
+    def get_public_images(self, guid=None, name=None, limit=None):
+        _filter = {}
+        if name:
+            _filter['name'] = query_filter(name)
+
+        if guid:
+            _filter['globalIdentifier'] = query_filter(guid)
+
+        params = {}
+        params['mask'] = self.image_mask
+
+        if _filter:
+            params['filter'] = _filter
+
+        if limit:
+            params['limit'] = limit
+
+        vgbdtg = self.client['Virtual_Guest_Block_Device_Template_Group']
+        return vgbdtg.getPublicImages(**params)

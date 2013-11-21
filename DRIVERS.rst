@@ -11,7 +11,7 @@ Getting Started
 ---------------
 When creating a new driver, there are only a few things you need to understand:
 
-1. Jumpgate has been written primarily for Python 3.3 and assumes your drivers will use this version as well.
+1. Jumpgate has been written primarily for Python 2.7/3.3 and assumes your drivers will work with these versions as well.
 2. Drivers are built as a series of objects for the `Falcon framework`_. You should be familiar with both Falcon and REST APIs in general.
 3. You need to be familar with the expected `OpenStack API`_ JSON. Jumpgate will provide the endpoint mappings for you, but does not handle building valid responses.
 
@@ -65,9 +65,9 @@ To start, let's create the endpoints directory we imported from earlier:
 
 .. code-block:: bash
 
-	$ mkdir jumpgate/index/drivers/my_driver/endpoints
+	$ mkdir jumpgate/index/drivers/my_driver
 
-Now within that, create the index.py where our IndexV2 class will reside. (Note - Since this is Python 3.3, we don't need an __init__.py file within the directory.) Start by putting the following within the index.py file:
+Now within that, create the index.py where our IndexV2 class will reside. Start by putting the following within the index.py file:
 
 .. code-block:: python
 
