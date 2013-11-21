@@ -357,9 +357,10 @@ Building any compatibility driver is going to be a large amount of work for any 
 
 ## Additional Documentation
 
-*   [OpenStack <span class="caps">API</span>](http://docs.openstack.org/api/api-specs.html)
-*   [OpenStack <span class="caps">API</span> Quick Reference](http://api.openstack.org/api-ref.html)
-*   [SoftLayer <span class="caps">API</span>](http://sldn.softlayer.com/reference/softlayerapi)
+*   [OpenStack API](http://docs.openstack.org/api/api-specs.html)
+*   [OpenStack API Quick Reference](http://api.openstack.org/api-ref.html)
+*   [SoftLayer API](http://sldn.softlayer.com/reference/softlayerapi)
+*   [Language Binding for Python](http://docs.openstack.org/developer/language-bindings.html)
 
 # Compatibility
 
