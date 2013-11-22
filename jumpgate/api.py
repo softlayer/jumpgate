@@ -1,20 +1,22 @@
 import importlib
+import logging
 
 from falcon import API
 
 from jumpgate.config import CONF
 from jumpgate.common.nyi import NYI
 from jumpgate.common.hooks import hook_format, hook_set_uuid, hook_log_request
+from jumpgate.common.dispatcher import Dispatcher
 
+LOG = logging.getLogger(__name__)
 
 SUPPORTED_SERVICES = [
-    'openstack',
-    'block_storage',
-    'identity',
+    'baremetal',
     'compute',
+    'identity',
     'image',
     'network',
-    'baremetal',
+    'volume',
 ]
 
 
@@ -41,6 +43,7 @@ class Jumpgate(object):
         # Add all the routes collected thus far
         for _, disp in self._dispatchers.items():
             for endpoint, handler in disp.get_routes():
+                LOG.debug("Loading endpoint %s", endpoint)
                 api.add_route(endpoint, handler)
 
         return api
@@ -57,28 +60,29 @@ class Jumpgate(object):
 
     def load_drivers(self):
         for service in SUPPORTED_SERVICES:
-            if service in CONF:
-                self.load_driver(service)
+            enabled_services = CONF['enabled_services']
+            if service in enabled_services:
+                service_module = importlib.import_module('jumpgate.' + service)
+
+                # Import the dispatcher for the service
+                disp = Dispatcher(mount=CONF[service]['mount'])
+                service_module.add_endpoints(disp)
+                self.add_dispatcher(service, disp)
+
+                module = importlib.import_module(CONF[service]['driver'])
+
+                if hasattr(module, 'setup_routes'):
+                    module.setup_routes(self, disp)
+
                 self.installed_modules[service] = True
             else:
                 self.installed_modules[service] = False
 
-    def load_driver(self, service):
-        # Import the dispatcher for the service
-        dispatcher_module = importlib.import_module('jumpgate.' + service)
-        dispatcher = dispatcher_module.get_dispatcher()
-        self.add_dispatcher(service, dispatcher)
-
-        # Import the configured driver for the service
-        module = importlib.import_module(CONF[service]['driver'])
-        if hasattr(module, 'setup_driver'):
-            module.setup_driver(self, dispatcher)
-
 
 def make_api():
-    CONF(project='jumpgate', args=[])
-    CONF.find_file('jumpgate.cfg')
-
+    CONF(project='jumpgate',
+         args=[],  # We don't want CLI arguments to pass through here
+         default_config_files=['etc/jumpgate.conf'])
     app = Jumpgate()
     app.load_drivers()
 

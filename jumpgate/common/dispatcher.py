@@ -1,13 +1,16 @@
 from collections import OrderedDict
 import logging
-logger = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class Dispatcher(object):
-    def __init__(self):
+    def __init__(self, mount=None):
         self._endpoints = OrderedDict()
+        self.mount = mount
 
     def add_endpoint(self, nickname, endpoint):
+        if self.mount:
+            endpoint = self.mount + endpoint
         self._endpoints[nickname] = (endpoint, None)
 
     def get_endpoint_path(self, req, nickname, **kwargs):
@@ -48,4 +51,9 @@ class Dispatcher(object):
         self._endpoints[nickname] = (endpoint, handler)
 
     def get_routes(self):
-        return [(endpoint, h) for endpoint, h in self._endpoints.values()]
+        endpoints = []
+        for endpoint, h in self._endpoints.values():
+            if h:
+                endpoints.append((endpoint, h))
+
+        return endpoints

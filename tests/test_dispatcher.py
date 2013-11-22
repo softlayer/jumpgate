@@ -6,7 +6,7 @@ from jumpgate.common.dispatcher import Dispatcher
 
 class TestDispatcher(unittest.TestCase):
     def setUp(self):
-        self.disp = Dispatcher()
+        self.disp = Dispatcher(mount='/mountpoint')
 
     def test_init(self):
         self.assertEquals(self.disp._endpoints, {})
@@ -16,15 +16,15 @@ class TestDispatcher(unittest.TestCase):
 
         self.assertEquals(len(self.disp._endpoints), 1)
         self.assertEquals(self.disp._endpoints['user_page'],
-                         ('/path/to/{tenant_id}', None))
+                         ('/mountpoint/path/to/{tenant_id}', None))
 
     def test_set_handler(self):
         self.disp.add_endpoint('user_page0', '/path0/to/{tenant_id}')
         handler = MagicMock()
 
         self.disp.set_handler('user_page0', handler)
-        self.assertEquals(self.disp._endpoints,
-                          {'user_page0': ('/path0/to/{tenant_id}', handler)})
+        self.assertEquals(self.disp._endpoints, {
+            'user_page0': ('/mountpoint/path0/to/{tenant_id}', handler)})
 
         self.assertRaises(
             ValueError, self.disp.set_handler, 'unknown', handler)
@@ -38,6 +38,19 @@ class TestDispatcher(unittest.TestCase):
         unused_endpoints = self.disp.get_unused_endpoints()
 
         self.assertEquals(unused_endpoints, ['user_page1', 'user_page2'])
+
+    def test_get_routes(self):
+        self.disp.add_endpoint('user_page0', '/path0/to/{tenant_id}')
+        self.disp.add_endpoint('user_page1', '/path1/to/{tenant_id}')
+        self.disp.add_endpoint('user_page2', '/path2/to/{tenant_id}')
+        handler = MagicMock()
+        self.disp.set_handler('user_page0', handler)
+
+        endpoints = self.disp.get_routes()
+
+        self.assertEquals(endpoints, [
+            ('/mountpoint/path0/to/{tenant_id}', handler),
+        ])
 
 
 class TestDispatcherUrls(unittest.TestCase):

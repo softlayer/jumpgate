@@ -6,6 +6,7 @@ from jumpgate.common.sl.auth import get_auth
 
 opts = [
     cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
+    cfg.StrOpt('catalog_template_file', default='identity.templates'),
 ]
 
 cfg.CONF.register_opts(opts, group='softlayer')

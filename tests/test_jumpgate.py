@@ -80,21 +80,25 @@ class TestJumpgate(unittest.TestCase):
     @patch('jumpgate.api.importlib.import_module')
     def test_load_drivers(self, import_module):
         cfg = {
-            'compute': {'driver': 'path.to.compute.driver'},
-            'identity': {'driver': 'path.to.identity.driver'},
+            'compute': {'driver': 'path.to.compute.driver',
+                        'mount': '/compute'},
+            'identity': {'driver': 'path.to.identity.driver', 'mount': None},
+            'enabled_services': ['compute', 'identity']
         }
         with patch('jumpgate.api.CONF', cfg):
             self.app.load_drivers()
+            compute_disp = self.app.get_dispatcher('compute')
+            identity_disp = self.app.get_dispatcher('identity')
+
             import_module.assert_has_calls([
-                call('jumpgate.identity'),
-                call().get_dispatcher(),
-                call('path.to.identity.driver'),
-                call().setup_driver(self.app,
-                                    import_module().get_dispatcher()),
                 call('jumpgate.compute'),
-                call().get_dispatcher(),
+                call().add_endpoints(compute_disp),
                 call('path.to.compute.driver'),
-                call().setup_driver(self.app, import_module().get_dispatcher())
+                call().setup_routes(self.app, compute_disp),
+                call('jumpgate.identity'),
+                call().add_endpoints(identity_disp),
+                call('path.to.identity.driver'),
+                call().setup_routes(self.app, identity_disp),
             ])
 
 

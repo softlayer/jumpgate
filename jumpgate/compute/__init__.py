@@ -1,10 +1,12 @@
-from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher():
-    disp = Dispatcher()
-
+def add_endpoints(disp):
     # V2 API - http://api.openstack.org/api-ref-compute.html#compute
+
+    disp.add_endpoint('index', '/')
+
+    disp.add_endpoint('v3_index', '/v3')
+    disp.add_endpoint('v2_index', '/v2')
 
     # Extensions
     disp.add_endpoint('v2_extensions', '/v2/{tenant_id}/extensions')
@@ -36,6 +38,11 @@ def get_dispatcher():
     disp.add_endpoint(
         'v2_os_instance_actions',
         '/v2/{tenant_id}/servers/{server_id}/os-instance-actions')
+
+    # Images
+    disp.add_endpoint('v2_image', '/v2/{tenant_id}/images/{image_guid}')
+    disp.add_endpoint('v2_images', '/v2/{tenant_id}/images')
+    disp.add_endpoint('v2_images_detail', '/v2/{tenant_id}/images/detail')
 
     # Flavors
     disp.add_endpoint('v2_flavor', '/v2/flavors/{flavor_id}')
@@ -151,4 +158,3 @@ def get_dispatcher():
     disp.add_endpoint(
         'v2_os_volume_attachments',
         '/v2/{tenant_id}/servers/{instance_id}/os-volume_attachments')
-    return disp

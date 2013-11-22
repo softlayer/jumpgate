@@ -1,9 +1,6 @@
-from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher():
-    disp = Dispatcher()
-
+def add_endpoints(disp):
     # V3 API - http://api.openstack.org/api-ref-identity.html#identity-v3
 
     # Tokens
@@ -108,6 +105,4 @@ def get_dispatcher():
     disp.add_endpoint('v2_tenants', '/v2.0/tenants')
     disp.add_endpoint('v2_tenant', '/v2.0/tenants/{tenant_id}')
     disp.add_endpoint('v2_tenant_user_roles',
-                      '/v2.0/tenants/{tenant_id}/users/{user_id}'
-                      '/roles')
-    return disp
+                      '/v2.0/tenants/{tenant_id}/users/{user_id}/roles')

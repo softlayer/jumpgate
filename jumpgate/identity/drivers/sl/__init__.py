@@ -3,7 +3,7 @@ from .tokens import TokensV2, TokenV2
 from jumpgate.common.sl import add_hooks
 
 
-def setup_driver(app, disp):
+def setup_routes(app, disp):
     # V3 Routes
     # None currently supported
 

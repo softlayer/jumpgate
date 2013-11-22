@@ -1,9 +1,6 @@
-from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher():
-    disp = Dispatcher()
-
+def add_endpoints(disp):
     # V2 API - http://api.openstack.org/api-ref-blockstorage.html#volumes-api
 
     disp.add_endpoint('v2_volumes', '/v2/{tenant_id}/volumes')
@@ -24,4 +21,3 @@ def get_dispatcher():
     disp.add_endpoint('v1_volume_types', '/v1/{tenant_id}/types')
     disp.add_endpoint('v1_volumes_detail', '/v1/{tenant_id}/volumes/detail')
     disp.add_endpoint('v1_volume', '/v1/{tenant_id}/volumes/{volume_id}')
-    return disp

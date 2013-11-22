@@ -1,9 +1,6 @@
-from jumpgate.common.dispatcher import Dispatcher
 
 
-def get_dispatcher():
-    disp = Dispatcher()
-
+def add_endpoints(disp):
     # V2 API - http://docs.openstack.org/developer/ironic/dev/api-spec-v1.html
 
     disp.add_endpoint('v1_versions', '/v1/versions')
@@ -37,4 +34,5 @@ def get_dispatcher():
 
     disp.add_endpoint('v1_vendor_passthru',
                       '/v1/nodes/{node_id}/vendor_passthru/{method_name}')
-    return disp
+
+    print("ADDED STUFF TO", disp)

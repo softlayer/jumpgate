@@ -444,14 +444,17 @@ class ImagesV2(object):
         client = req.env['sl_client']
 
         image_obj = SLImages(client)
-        params = {
-            'name': req.get_param('name'),
-            'limit': req.get_param('limit')}
 
         output = []
+        limit = None
+        if req.get_param('limit'):
+            limit = int(req.get_param('limit'))
         for visibility, funct in [('public', image_obj.get_public_images),
                                   ('private', image_obj.get_private_images)]:
-            results = funct(**params)
+
+            if limit == 0:
+                break
+            results = funct(name=req.get_param('name'), limit=limit)
 
             if not results:
                 continue
@@ -467,6 +470,8 @@ class ImagesV2(object):
                 if formatted_image:
                     formatted_image['visibility'] = visibility
                     output.append(formatted_image)
+                    if limit is not None:
+                        limit -= 1
 
         resp.body = {'images': sorted(output,
                                       key=lambda x: x['name'].lower())}
@@ -540,14 +545,17 @@ class ImagesV1(object):
         client = req.env['sl_client']
 
         image_obj = SLImages(client)
-        params = {
-            'name': req.get_param('name'),
-            'limit': req.get_param('limit')}
 
         output = []
+        limit = None
+        if req.get_param('limit'):
+            limit = int(req.get_param('limit'))
         for visibility, funct in [('public', image_obj.get_public_images),
                                   ('private', image_obj.get_private_images)]:
-            results = funct(**params)
+
+            if limit == 0:
+                break
+            results = funct(name=req.get_param('name'), limit=limit)
 
             if not results:
                 continue
@@ -563,6 +571,8 @@ class ImagesV1(object):
                 if formatted_image:
                     formatted_image['visibility'] = visibility
                     output.append(formatted_image)
+                    if limit is not None:
+                        limit -= 1
 
         resp.body = {'images': sorted(output,
                                       key=lambda x: x['name'].lower())}
@@ -613,7 +623,8 @@ def get_v2_image_details_dict(app, req, image, tenant_id=None):
         'tags': [],
         'updated': image.get('createDate'),
         'created': image.get('createDate'),
-        'self': app.get_endpoint_url('image', req, 'v2_image', image_guid=image['id']),
+        'self': app.get_endpoint_url('image', req, 'v2_image',
+                                     image_guid=image['id']),
         'file': app.get_endpoint_url('image', req, 'v2_image_file',
                                      image_guid=image['id']),
         'schema': app.get_endpoint_url('image', req, 'v2_schema_image'),

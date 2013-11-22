@@ -1,16 +1,67 @@
 import datetime
 import logging
+import os.path
+
 from SoftLayer import Client
 
 from jumpgate.common.sl.errors import convert_errors
 from jumpgate.common.sl.auth import get_auth
+from jumpgate.config import CONF
 
-logger = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
+
+
+def parse_templates(template_lines):
+    o = {}
+    for line in template_lines:
+        if ' = ' not in line:
+            continue
+
+        k, v = line.strip().split(' = ')
+        if not k.startswith('catalog.'):
+            continue
+
+        parts = k.split('.')
+
+        region, service, key = parts[1:4]
+
+        region_ref = o.get(region, {})
+        service_ref = region_ref.get(service, {})
+        service_ref[key] = v
+
+        region_ref[service] = service_ref
+        o[region] = region_ref
+
+    return o
 
 
 class TokensV2(object):
     def __init__(self, app):
         self.app = app
+        template_file = CONF.softlayer.catalog_template_file
+
+        if not os.path.exists(template_file):
+            template_file = CONF.find_file(template_file)
+        self._load_templates(template_file)
+
+    def _load_templates(self, template_file):
+        try:
+            self.templates = parse_templates(open(template_file))
+        except IOError:
+            LOG.critical('Unable to open template file %s' % template_file)
+            raise
+
+    def _get_catalog(self, tenant_id, user_id):
+        d = {'tenant_id': tenant_id, 'user_id': user_id}
+
+        o = {}
+        for region, region_ref in self.templates.items():
+            o[region] = {}
+            for service, service_ref in region_ref.items():
+                o[region][service] = {}
+                for k, v in service_ref.items():
+                    o[region][service][k] = v.replace('$(', '%(') % d
+        return o
 
     @convert_errors
     def on_post(self, req, resp):
@@ -18,69 +69,26 @@ class TokensV2(object):
         auth, token, err = get_auth(req, resp, body=body)
         if err:
             return err
-        client = Client(auth=auth)
+        client = Client(auth=auth, endpoint_url=CONF['softlayer']['endpoint'])
 
         user = client['Account'].getCurrentUser(mask='id, account, username')
         account = user['account']
 
-        index_url = self.app.get_endpoint_url('identity', req, 'v2_auth_index')
-        v2_url = self.app.get_endpoint_url('openstack', req, 'v2_index')
-
-        service_catalog = [{
-            'endpoint_links': [],
-            'endpoints': [{
-                'region': 'RegionOne',
-                'publicURL': v2_url + '/%s' % account['id'],
-                'privateURL': v2_url + '/v2/%s' % account['id'],
-                'adminURL': v2_url + '/v2/%s' % account['id'],
-                'internalURL': v2_url + '/v2/%s' % account['id'],
-                'id': 1,
-            }],
-            'type': 'compute',
-            'name': 'nova',
-        }, {
-            'endpoint_links': [],
-            'endpoints': [
-                {
-                    'region': 'RegionOne',
-                    'publicURL': index_url,
-                    'privateURL': index_url,
-                    'adminURL': index_url,
-                    'internalURL': index_url,
-                    'id': 1,
-                },
-            ],
-            'type': 'identity',
-            'name': 'keystone',
-        }, {
-            'endpoint_links': [],
-            'endpoints': [
-                {
-                    'region': 'RegionOne',
-                    'publicURL': 'http://localhost:5000',
-                    'privateURL': 'http://localhost:5000',
-                    'adminURL': 'http://localhost:5000',
-                    'internalURL': 'http://localhost:5000',
-                    'id': 1,
-                },
-            ],
-            'type': 'image',
-            'name': 'glance',
-        }, {
-            'endpoint_links': [],
-            'endpoints': [
-                {
-                    'region': 'RegionOne',
-                    'publicURL': 'http://localhost:5000',
-                    'privateURL': 'http://localhost:5000',
-                    'adminURL': 'http://localhost:5000',
-                    'internalURL': 'http://localhost:5000',
-                    'id': 1,
-                },
-            ],
-            'type': 'baremetal',
-            'name': 'ironic',
-        }]
+        raw_catalog = self._get_catalog(account['id'], user['id'])
+        catalog = []
+        for region, services in raw_catalog.items():
+            for service_type, service in services.items():
+                d = {
+                    'type': service_type,
+                    'name': service.get('name', 'Unknown'),
+                    'endpoints': [{
+                        'region': service.get('region', 'RegionOne'),
+                        'publicURL': service.get('publicURL'),
+                        'privateURL': service.get('privateURL'),
+                    }],
+                    'endpoint_links': [],
+                }
+                catalog.append(d)
 
         expiration = datetime.datetime.now() + datetime.timedelta(days=1)
         access = {
@@ -94,7 +102,7 @@ class TokensV2(object):
                     'name': account['id'],
                 },
             },
-            'serviceCatalog': service_catalog,
+            'serviceCatalog': catalog,
             'user': {
                 'username': user['username'],
                 'id': user['id'],

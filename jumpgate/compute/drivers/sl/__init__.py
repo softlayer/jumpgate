@@ -13,12 +13,21 @@ from .usage import UsageV2
 from .volumes import OSVolumeAttachmentsV2
 from .networks import OSNetworksV2, OSNetworkV2
 from .instance_actions import InstanceActionsV2
+from .index import IndexV2
+
+from jumpgate.image.drivers.sl import ImageV1, ImagesV2
 
 from jumpgate.common.sl import add_hooks
 
 
-def setup_driver(app, disp):
+def setup_routes(app, disp):
+    # V3 Routes
+    # None currently supported
+
     # V2 Routes
+    disp.set_handler('index', IndexV2(app))
+    disp.set_handler('v2_index', IndexV2(app))
+
     flavor = FlavorV2(app)
     flavors = FlavorsV2(app)
     flavors_detail = FlavorsDetailV2(app)
@@ -68,5 +77,9 @@ def setup_driver(app, disp):
     disp.set_handler('v2_tenant_flavors_detail', flavors_detail)
 
     disp.set_handler('v2_tenant_usage', UsageV2())
+
+    disp.set_handler('v2_image', ImageV1(app))
+    disp.set_handler('v2_images', ImagesV2(app))
+    disp.set_handler('v2_images_detail', ImagesV2(app))
 
     add_hooks(app)
