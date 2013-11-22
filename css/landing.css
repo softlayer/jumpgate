@@ -87,9 +87,9 @@ a#get-started.btn.btn-info.btn-lg {
   color: #fff;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #c75a48;
+  background-color: #e44f38;
   background-image: none;
-  border: 1px solid #a0483a;
+  border: 1px solid #ca4632;
   border-radius: 4px;
   box-shadow: none;
   padding: 14px;
@@ -154,12 +154,18 @@ a#get-started.btn.btn-info.btn-lg {
   background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
+        -ms-background-size: cover;
          -o-background-size: cover;
             background-size: cover;
 }
 
 @media (min-width: 768px) {
   .docs-home {
+  background: -webkit-filter: blur(5px);
+  background: -moz-filter: blur(5px);
+  background: -ms-filter: blur(5px);
+  background: -o-filter: blur(5px);
+  background: filter: blur(5px);
   background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
   background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
@@ -182,7 +188,7 @@ a#get-started.btn.btn-info.btn-lg {
   line-height: 1;
   letter-spacing: -1px;
   text-transform: none;
-  margin-top: 10px;
+  margin-top: -10px;
 }
 
 .masthead .lead {
