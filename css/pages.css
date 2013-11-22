@@ -30,7 +30,7 @@ body {
 }
 
 a {
-  color: #2980b9;
+  color: #21759b;
 }
 
 a:hover,
@@ -110,8 +110,8 @@ p {
 .navbar-inverse .navbar-nav > .active > a,
 .navbar-inverse .navbar-nav > .active > a:focus,
 .navbar-inverse .navbar-nav > .active > a:hover {
-  color: #fff;
-  background-color: #222;
+  color: #999;
+  background-color: #f2f2f2;
   background-image: none;
   border-radius: 15px;
   box-shadow: none;
@@ -144,12 +144,12 @@ p {
 .docs-nav .navbar-nav > li > a {
   margin-top: 0;
   line-height: 0;
-  color: #666;
+  color: #262125;
   text-shadow: none;
 }
 
 .docs-nav .navbar-nav > li > a:hover {
-  color: #222;
+  color: #262125;
 }
 
 @media (min-width: 768px) {
@@ -174,7 +174,7 @@ p {
   font-weight: 300;
   color: #666;
   text-align: center;
-  background: #222;
+  background: #262125;
   border-top: 1px solid #999;
 }
 
@@ -392,7 +392,7 @@ a#twitter-icon {
 .sidebar .nav > .active:hover > a,
 .sidebar .nav > .active:focus > a {
   font-weight: 400;
-  color: #222;
+  color: #262125;
   background-color: transparent;
   border-right: none;
 }
@@ -499,12 +499,12 @@ h4,
   margin-bottom: 0;
   font-size: 26px;
   font-weight: 500;
-  color: #222;
+  color: #262125;
   border-bottom: none;
 }
 
 .row .col-lg-6 h2 a {
-  color: #222;
+  color: #262125;
 }
 
 .row .col-lg-6 h2 a:hover,
@@ -531,8 +531,8 @@ pre {
   font-size: 13px;
   line-height: 1.5;
   color: #fff;
-  background: #222;
-  border: #222 solid 1px;
+  background: #262125;
+  border: #262125 solid 1px;
   border-radius: 4px;
 }
 
@@ -559,8 +559,8 @@ output pre.nowrap {
     font-size: 13px;
     line-height: 1.5;
     color: #fff;
-    background: #222;
-    border: #222 solid 1px;
+    background: #262125;
+    border: #262125 solid 1px;
     border-radius: 4px;
   }
   output pre {
@@ -654,13 +654,13 @@ output pre.nowrap {
 /*-- Tables --*/
 
 table#no-borders.table.table-hover > thead {
-  color: #222;
+  color: #262125;
   background: transparent;
   border: none;
 }
 
 table#no-borders.table.table-hover > thead > tr > th {
-  color: #222;
+  color: #262125;
   text-align: left;
 }
 
@@ -717,8 +717,8 @@ button#version-selector.btn.dropdown-toggle {
 }
 
 .docs-nav .navbar-toggle {
-  background-color: #222;
-  border-color: #222;
+  background-color: #262125;
+  border-color: #262125;
   top: 10px;
   right: 4px;
 }

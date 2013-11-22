@@ -30,7 +30,7 @@ a:focus {
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
-  color: #222;
+  color: #262125;
   text-shadow: none;
   text-transform: uppercase;
   background-color: #fff;
@@ -48,7 +48,7 @@ a:focus {
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
-  color: #222;
+  color: #262125;
   text-shadow: none;
   text-transform: uppercase;
   background-color: #fff;
@@ -60,7 +60,7 @@ a:focus {
 }
 
 .btn-primary {
-  color: #222;
+  color: #262125;
   background-color: #fff;
   border-color: #fff;
 }
@@ -74,7 +74,7 @@ a:focus {
 .btn-primary:active,
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
-  color: #222;
+  color: #262125;
   background-color: #fff;
   border: 1px solid #aaa;
 }
@@ -150,7 +150,7 @@ a#get-started.btn.btn-info.btn-lg {
   background: -webkit-linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("../img/bg@768.jpg");
   background: -moz-linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("../img/bg@768.jpg");
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("../img/bg@768.jpg");
-  background-color: #222;
+  background-color: #262125;
   background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
@@ -163,7 +163,7 @@ a#get-started.btn.btn-info.btn-lg {
   background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
   background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
-  background-color: #222;
+  background-color: #262125;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
      -moz-background-size: cover;
@@ -232,7 +232,7 @@ a#get-started.btn.btn-info.btn-lg {
   margin-top: 7px;
   margin-right: -250px;
   overflow-y: auto;
-  background: none repeat scroll 0 0 #222;
+  background: none repeat scroll 0 0 #262125;
   -webkit-transition: all .4s ease 0;
      -moz-transition: all .4s ease 0;
       -ms-transition: all .4s ease 0;
@@ -307,6 +307,10 @@ a#get-started.btn.btn-info.btn-lg {
   margin: 5px 5px 0 0;
 }
 
+.fa {
+  font-size: 14px;
+}
+
 /*-- Services --*/
 
 .services {
@@ -334,5 +338,3 @@ i.service-icon {
 i.service-icon:hover {
   font-size: 68px;
 }
-
-
