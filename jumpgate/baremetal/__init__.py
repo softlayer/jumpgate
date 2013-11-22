@@ -34,5 +34,3 @@ def add_endpoints(disp):
 
     disp.add_endpoint('v1_vendor_passthru',
                       '/v1/nodes/{node_id}/vendor_passthru/{method_name}')
-
-    print("ADDED STUFF TO", disp)
