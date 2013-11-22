@@ -28,3 +28,4 @@ twitter: http://twitter.com/softlayerdevs
 # Server
 permalink: pretty
 exclude: [".gitignore", "LICENSE", "README.md", "humans.txt", "TODO.md"]
+pygments: true

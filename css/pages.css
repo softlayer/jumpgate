@@ -399,7 +399,6 @@ a#twitter-icon {
 
 .sidebar .nav .nav {
   display: none;
-  margin-bottom: 8px;
 }
 
 .sidebar .nav .nav > li > a {
@@ -527,23 +526,10 @@ code {
 
 pre {
   display: none; /* hidden until > 480px */
-  margin: 10px 0 20px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #fff;
-  background: #262125;
-  border: #262125 solid 1px;
-  border-radius: 4px;
 }
 
 output pre {
   display: none; /* hidden until > 480px */
-  margin: -10px 0 20px;
-  font-size: 13px;
-  color: #666;
-  background: #f4f4f4;
-  border: #e5e5e5 solid 1px;
-  border-radius: 6px;
 }
 
 output pre.nowrap {
