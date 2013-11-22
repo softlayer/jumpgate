@@ -1,7 +1,7 @@
 ---
 layout: pages
-title: Release Notes
-slug: release-notes
+title: Get Started
+slug: get-started
 baseurl: "../"
 ---
 

@@ -26,7 +26,7 @@ a:focus {
 }
 
 .btn-info {
-  width: 124px;
+  width: 150px;
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
@@ -44,7 +44,7 @@ a:focus {
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
-  width: 124px;
+  width: 150px;
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
@@ -80,7 +80,7 @@ a:focus {
 }
 
 a#get-started.btn.btn-info.btn-lg {
-  width: 124px;
+  width: 150px;
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
@@ -97,13 +97,13 @@ a#get-started.btn.btn-info.btn-lg {
 
 @media (min-width: 768px) {
   a#get-started.btn.btn-info.btn-lg {
-    width: 170px;
+    width: 190px;
     font-size: 14px;
     margin-right: 20px;
     letter-spacing: 1px;
   }
   .btn-info {
-    width: 170px;
+    width: 190px;
     font-size: 14px;
     margin-right: 20px;
     letter-spacing: 1px;
@@ -111,7 +111,7 @@ a#get-started.btn.btn-info.btn-lg {
   .btn-info:hover,
   .btn-info:focus,
   .btn-info:active {
-    width: 170px;
+    width: 190px;
     font-size: 14px;
     margin-right: 20px;
     letter-spacing: 1px;
@@ -133,7 +133,7 @@ a#get-started.btn.btn-info.btn-lg {
 
 .container {
   margin-top: 0;
-  text-align: left;
+  text-align: center;
 }
 
 .header {
@@ -141,6 +141,12 @@ a#get-started.btn.btn-info.btn-lg {
   display: table;
   width: 100%;
   height: 85%;
+}
+
+@media (min-width: 768px) {
+  .container {
+    text-align: left;
+  }
 }
 
 

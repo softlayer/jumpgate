@@ -1,11 +1,10 @@
 <a id="menu-toggle" href="#" class="btn btn-primary btn-lg toggle"><i class="fa fa-reorder"></i></a>
 <div id="sidebar-wrapper">
 	<ul class="sidebar-nav">
-	  <li {% if page.slug == "getting-started" %} class="active" {% endif %}><a href="{{ page.baseurl }}getting-started">Getting Started</a></li>
-      <li {% if page.slug == "release-notes" %} class="active" {% endif %}><a href="{{ page.baseurl }}release-notes">Release Notes</a></li>
+	  <li {% if page.slug == "get-started" %} class="active" {% endif %}><a href="{{ page.baseurl }}get-started">Get Started</a></li>
+      <li {% if page.slug == "documents" %} class="active" {% endif %}><a href="{{ page.baseurl }}developer-guide">Developer Guide</a></li>
       <li {% if page.slug == "learn-more" %} class="active" {% endif %}><a href="{{ page.baseurl }}learn-more">Learn More</a></li>
       <li><a href="{{ site.repo }}" target="_blank">GitHub Repo</a></li>
-      <li><a href="{{ site.milestones }}"target="_blank">Milestones</a></li>
       <li><a href="{{ site.license }}" target="_blank">License</a></li>
   </ul>
 </div>

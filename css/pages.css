@@ -469,7 +469,7 @@ h2,
 h3,
 .h3 {
   padding-top: 10px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
 }
 
@@ -521,8 +521,8 @@ h4,
 
 code {
   font-size: 94%;
-  color: #c0392b;
-  background: #f9f0dc;
+  color: #d8283c;
+  background: #fdf9f2;
 }
 
 pre {

@@ -1,11 +1,11 @@
 ---
 layout: pages
-title: Getting Started
-slug: getting-started
+title: Developer Guide
+slug: developer-guide
 baseurl: "../"
 ---
 
-# Introduction
+# Purpose
 
 The primary purpose of the this project is to provide an easy way to add
 OpenStack API compatibility to existing cloud products. This is
@@ -14,7 +14,7 @@ provider. If you're reading this document, it is assumed that you are
 interested in using this project to add OpenStack API compatibility via
 drivers.
 
-# Getting Started
+# Your First Driver
 
 When creating a new driver, there are only a few things you need to
 understand:
@@ -24,8 +24,6 @@ understand:
 3.  You need to be familiar with the expected [OpenStack API](http://api.openstack.org/api-ref.html) JSON. The compatibility layer will provide the endpoint mappings for you, but does not handle building valid responses.
 
 Once you have these things, you are ready to begin building your driver.
-
-# Your First Driver
 
 There are many places where you could begin building your first driver,
 but we've generally found starting with the index and the Identity
@@ -360,7 +358,7 @@ Building any compatibility driver is going to be a large amount of work for any 
 *   [OpenStack API](http://docs.openstack.org/api/api-specs.html)
 *   [OpenStack API Quick Reference](http://api.openstack.org/api-ref.html)
 *   [SoftLayer API](http://sldn.softlayer.com/reference/softlayerapi)
-*   [Language Binding for Python](http://docs.openstack.org/developer/language-bindings.html)
+*   [Language Bindings for Python](http://docs.openstack.org/developer/language-bindings.html)
 
 # Compatibility
 

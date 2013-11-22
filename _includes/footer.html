@@ -5,44 +5,8 @@
 <script src="{{ page.baseurl }}js/affix.js"></script>
 <script src="{{ page.baseurl }}js/collapse.js"></script>
 <script src="{{ page.baseurl }}js/scrollspy.js"></script>
-
-<!-- Side Menu -->
-<script>
-  $("#menu-close").click(function(e) {
-      e.preventDefault();
-      $("#sidebar-wrapper").toggleClass("active");
-  });
-</script>
-<script>
-    $("#menu-close").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
-</script>
-<script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#sidebar-wrapper").toggleClass("active");
-    });
-</script>
-<script>
-  $(function() {
-    $('a[href*=#]:not([href=#])').click(function() {
-      if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') 
-        || location.hostname == this.hostname) {
-
-        var target = $(this.hash);
-        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-        if (target.length) {
-          $('html,body').animate({
-            scrollTop: target.offset().top
-          }, 1000);
-          return false;
-        }
-      }
-    });
-  });
-</script>
+<script src="{{ page.baseurl }}js/sidemenu.js"></script>
+<script src="http://platform.twitter.com/widgets.js"></script>
 
 <!-- Google Universal Analytics -->
 <script>
