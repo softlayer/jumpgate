@@ -17,8 +17,8 @@ def setup_responder(app, disp):
 
 
 class OpenStackResponder(object):
-    def __init__(self, app):
-        self.endpoint = cfg['openstack']['default_endpoint']
+    def __init__(self):
+        self.endpoint = cfg.CONF['openstack']['default_hostname']
 
     def on_delete(self, req, resp, **kwargs):
         self._standard_responder(req, resp)

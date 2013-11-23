@@ -1,14 +1,22 @@
 import unittest
 import importlib
+import os.path
+from mock import MagicMock
 
 from jumpgate.common.dispatcher import Dispatcher
 from jumpgate.api import Jumpgate, SUPPORTED_SERVICES
 
+DIR_PATH = os.path.dirname(__file__)
+MOCK_CONFIG = MagicMock()
+MOCK_CONFIG.softlayer.catalog_template_file = os.path.join(
+    DIR_PATH, 'identity.templates')
 
-class TestSoftLayerBootstrap(unittest.TestCase):
-    def test_all_setup_routes(self):
+
+class TestServiceDispatchers(unittest.TestCase):
+    def test_all_endpoints(self):
         for service in SUPPORTED_SERVICES:
             app = Jumpgate()
+            app.config = MOCK_CONFIG
             disp = Dispatcher()
             dispatcher_module = importlib.import_module('jumpgate.' + service)
             dispatcher_module.add_endpoints(disp)

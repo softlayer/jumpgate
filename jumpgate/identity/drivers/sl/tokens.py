@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os.path
 
 from SoftLayer import Client
 
@@ -36,12 +35,7 @@ def parse_templates(template_lines):
 
 
 class TokensV2(object):
-    def __init__(self, app):
-        self.app = app
-        template_file = CONF.softlayer.catalog_template_file
-
-        if not os.path.exists(template_file):
-            template_file = CONF.find_file(template_file)
+    def __init__(self, template_file):
         self._load_templates(template_file)
 
     def _load_templates(self, template_file):
@@ -90,6 +84,7 @@ class TokensV2(object):
                 }
                 catalog.append(d)
 
+        # Set expiration for a day
         expiration = datetime.datetime.now() + datetime.timedelta(days=1)
         access = {
             'token': {

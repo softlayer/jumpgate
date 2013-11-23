@@ -1,3 +1,5 @@
+import os.path
+
 from .tenants import TenantsV2
 from .tokens import TokensV2, TokenV2
 from jumpgate.common.sl import add_hooks
@@ -9,7 +11,11 @@ def setup_routes(app, disp):
 
     # V2 Routes
     disp.set_handler('v2_tenants', TenantsV2())
-    disp.set_handler('v2_tokens', TokensV2(app))
     disp.set_handler('v2_token', TokenV2())
+
+    template_file = app.config.softlayer.catalog_template_file
+    if not os.path.exists(template_file):
+        template_file = app.config.find_file(template_file)
+    disp.set_handler('v2_tokens', TokensV2(template_file))
 
     add_hooks(app)

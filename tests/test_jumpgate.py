@@ -1,7 +1,7 @@
 import unittest
 from mock import MagicMock, call, patch
 
-from jumpgate.api import Jumpgate, make_api
+from jumpgate.api import Jumpgate
 from jumpgate.common.hooks import hook_format, hook_set_uuid, hook_log_request
 from jumpgate.common.dispatcher import Dispatcher
 from jumpgate.common.nyi import NYI
@@ -92,21 +92,21 @@ class TestJumpgate(unittest.TestCase):
         self.app._dispatchers = {'compute': compute_disp,
                                  'identity': identity_disp}
 
-        with patch('jumpgate.api.CONF', TEST_CFG):
-            self.app.load_drivers()
+        self.app.config = TEST_CFG
+        self.app.load_drivers()
 
-            # Make sure setup_routes() is called for each driver. Order
-            # is ignored due to Python 3's difference dict ordering
-            import_module.assert_has_calls([
-                call('path.to.compute.driver'),
-                call().setup_routes(self.app, compute_disp),
-                call('path.to.identity.driver'),
-                call().setup_routes(self.app, identity_disp),
-            ], any_order=True)
+        # Make sure setup_routes() is called for each driver. Order
+        # is ignored due to Python 3's different dict ordering
+        import_module.assert_has_calls([
+            call('path.to.compute.driver'),
+            call().setup_routes(self.app, compute_disp),
+            call('path.to.identity.driver'),
+            call().setup_routes(self.app, identity_disp),
+        ], any_order=True)
 
     def test_load_endpoints(self):
-        with patch('jumpgate.api.CONF', TEST_CFG):
-            self.app.load_endpoints()
+        self.app.config = TEST_CFG
+        self.app.load_endpoints()
 
         self.assertEquals(len(self.app._dispatchers), 2)
         self.assertEquals(sorted(self.app._dispatchers.keys()),
@@ -119,12 +119,3 @@ class TestJumpgate(unittest.TestCase):
                            'image': False,
                            'network': False,
                            'volume': False})
-
-
-class TestMakeAPI(unittest.TestCase):
-    @patch('jumpgate.api.Jumpgate.load_drivers')
-    def test_make_api(self, load_drivers):
-        api = make_api()
-
-        self.assertTrue(hasattr(api, '__call__'))
-        self.assertIsInstance(api, falcon.API)

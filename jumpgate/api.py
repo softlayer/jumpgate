@@ -23,6 +23,7 @@ SUPPORTED_SERVICES = [
 class Jumpgate(object):
 
     def __init__(self):
+        self.config = CONF
         self.installed_modules = {}
 
         self.before_hooks = [hook_set_uuid]
@@ -60,12 +61,12 @@ class Jumpgate(object):
 
     def load_endpoints(self):
         for service in SUPPORTED_SERVICES:
-            enabled_services = CONF['enabled_services']
+            enabled_services = self.config['enabled_services']
             if service in enabled_services:
                 service_module = importlib.import_module('jumpgate.' + service)
 
                 # Import the dispatcher for the service
-                disp = Dispatcher(mount=CONF[service]['mount'])
+                disp = Dispatcher(mount=self.config[service]['mount'])
                 service_module.add_endpoints(disp)
                 self.add_dispatcher(service, disp)
                 self.installed_modules[service] = True
@@ -74,19 +75,7 @@ class Jumpgate(object):
 
     def load_drivers(self):
         for service, disp in self._dispatchers.items():
-            module = importlib.import_module(CONF[service]['driver'])
+            module = importlib.import_module(self.config[service]['driver'])
 
             if hasattr(module, 'setup_routes'):
                 module.setup_routes(self, disp)
-
-
-def make_api():
-    CONF(project='jumpgate',
-         args=[],  # We don't want CLI arguments to pass through here
-         default_config_files=['etc/jumpgate.conf'])
-    app = Jumpgate()
-    app.load_endpoints()
-    app.load_drivers()
-
-    api = app.make_api()
-    return api
