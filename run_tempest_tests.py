@@ -4,13 +4,12 @@ import argparse
 import os
 import os.path
 
-TEMPEST_DEFAULT_LOCATION = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), 'tempest')
+LOCAL_PATH = os.path.dirname(os.path.realpath(__file__))
+TEMPEST_DEFAULT_LOCATION = os.path.join(LOCAL_PATH, 'tempest')
 TEMPEST_CONFIG_DEFAULT_LOCATION = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), 'etc', 'tempest.conf')
+    LOCAL_PATH, 'etc', 'tempest.conf')
 WHITELIST_DEFAULT_LOCATION = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)),
-    'etc', 'tempest-whitelist.txt')
+    LOCAL_PATH, 'whitelists', 'softlayer.txt')
 
 
 def get_whitelist_from_file(path):
