@@ -13,6 +13,14 @@ class StubResource(object):
     pass
 
 
+TEST_CFG = {
+    'compute': {'driver': 'path.to.compute.driver',
+                'mount': '/compute'},
+    'identity': {'driver': 'path.to.identity.driver', 'mount': None},
+    'enabled_services': ['compute', 'identity']
+}
+
+
 class TestJumpgateInit(unittest.TestCase):
     def test_init(self):
         app = Jumpgate()
@@ -79,27 +87,36 @@ class TestJumpgate(unittest.TestCase):
 
     @patch('jumpgate.api.importlib.import_module')
     def test_load_drivers(self, import_module):
-        cfg = {
-            'compute': {'driver': 'path.to.compute.driver',
-                        'mount': '/compute'},
-            'identity': {'driver': 'path.to.identity.driver', 'mount': None},
-            'enabled_services': ['compute', 'identity']
-        }
-        with patch('jumpgate.api.CONF', cfg):
+        compute_disp = MagicMock()
+        identity_disp = MagicMock()
+        self.app._dispatchers = {'compute': compute_disp,
+                                 'identity': identity_disp}
+
+        with patch('jumpgate.api.CONF', TEST_CFG):
             self.app.load_drivers()
-            compute_disp = self.app.get_dispatcher('compute')
-            identity_disp = self.app.get_dispatcher('identity')
 
             import_module.assert_has_calls([
-                call('jumpgate.compute'),
-                call().add_endpoints(compute_disp),
                 call('path.to.compute.driver'),
                 call().setup_routes(self.app, compute_disp),
-                call('jumpgate.identity'),
-                call().add_endpoints(identity_disp),
                 call('path.to.identity.driver'),
                 call().setup_routes(self.app, identity_disp),
             ])
+
+    def test_load_endpoints(self):
+        with patch('jumpgate.api.CONF', TEST_CFG):
+            self.app.load_endpoints()
+
+        self.assertEquals(len(self.app._dispatchers), 2)
+        self.assertEquals(list(self.app._dispatchers.keys()),
+                          ['compute', 'identity'])
+
+        self.assertEquals(self.app.installed_modules,
+                          {'baremetal': False,
+                           'compute': True,
+                           'identity': True,
+                           'image': False,
+                           'network': False,
+                           'volume': False})
 
 
 class TestMakeAPI(unittest.TestCase):

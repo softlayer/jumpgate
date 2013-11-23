@@ -58,7 +58,7 @@ class Jumpgate(object):
         dispatcher = self._dispatchers.get(service)
         return dispatcher.get_endpoint_url(*args, **kwargs)
 
-    def load_drivers(self):
+    def load_endpoints(self):
         for service in SUPPORTED_SERVICES:
             enabled_services = CONF['enabled_services']
             if service in enabled_services:
@@ -68,15 +68,16 @@ class Jumpgate(object):
                 disp = Dispatcher(mount=CONF[service]['mount'])
                 service_module.add_endpoints(disp)
                 self.add_dispatcher(service, disp)
-
-                module = importlib.import_module(CONF[service]['driver'])
-
-                if hasattr(module, 'setup_routes'):
-                    module.setup_routes(self, disp)
-
                 self.installed_modules[service] = True
             else:
                 self.installed_modules[service] = False
+
+    def load_drivers(self):
+        for service, disp in self._dispatchers.items():
+            module = importlib.import_module(CONF[service]['driver'])
+
+            if hasattr(module, 'setup_routes'):
+                module.setup_routes(self, disp)
 
 
 def make_api():
@@ -84,6 +85,7 @@ def make_api():
          args=[],  # We don't want CLI arguments to pass through here
          default_config_files=['etc/jumpgate.conf'])
     app = Jumpgate()
+    app.load_endpoints()
     app.load_drivers()
 
     api = app.make_api()
