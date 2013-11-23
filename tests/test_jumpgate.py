@@ -95,20 +95,22 @@ class TestJumpgate(unittest.TestCase):
         with patch('jumpgate.api.CONF', TEST_CFG):
             self.app.load_drivers()
 
+            # Make sure setup_routes() is called for each driver. Order
+            # is ignored due to Python 3's difference dict ordering
             import_module.assert_has_calls([
                 call('path.to.compute.driver'),
                 call().setup_routes(self.app, compute_disp),
                 call('path.to.identity.driver'),
                 call().setup_routes(self.app, identity_disp),
-            ])
+            ], any_order=True)
 
     def test_load_endpoints(self):
         with patch('jumpgate.api.CONF', TEST_CFG):
             self.app.load_endpoints()
 
         self.assertEquals(len(self.app._dispatchers), 2)
-        self.assertEquals(list(self.app._dispatchers.keys()),
-                          ['compute', 'identity'])
+        self.assertEquals(sorted(self.app._dispatchers.keys()),
+                          sorted(['compute', 'identity']))
 
         self.assertEquals(self.app.installed_modules,
                           {'baremetal': False,
