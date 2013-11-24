@@ -15,14 +15,15 @@ cfg.CONF.register_opts(opts, group='openstack')
 
 
 def setup_responder(app, disp, service):
-    responder = OpenStackResponder(service)
+    responder = OpenStackResponder(disp.mount, service)
 
     for endpoint in disp.get_unused_endpoints():
         disp.set_handler(endpoint, responder)
 
 
 class OpenStackResponder(object):
-    def __init__(self, service):
+    def __init__(self, mount, service):
+        self.mount = mount
         self.service = service
         endpoint = cfg.CONF['openstack'][service + '_endpoint']
         self.endpoint = endpoint.rstrip('/')
@@ -32,8 +33,11 @@ class OpenStackResponder(object):
         if req.method == 'POST' or req.method == 'PUT':
             data = req.stream.read()
 
-        endpoint = self.endpoint + req.relative_uri.replace('/' + self.service,
-                                                            '', 1) + '/'
+        relative_uri = req.relative_uri
+        if self.mount:
+            relative_uri = relative_uri.replace(self.mount, '', 1)
+        endpoint = self.endpoint + relative_uri
+
         os_resp = requests.request(req.method,
                                    endpoint,
                                    data=data,
@@ -41,8 +45,14 @@ class OpenStackResponder(object):
                                    stream=True)
 
         resp.status = os_resp.status_code
-        resp.content_type = os_resp.headers.pop(
+        content_type = os_resp.headers.pop(
             'Content-Type', 'application/json').split(';', 1)[0]
+
+        # Hack for test_delete_image_blank_id test. Somehow text/html comes
+        # back as the content-type when it's supposed to be text/plain.
+        if content_type == 'text/html':
+            content_type = 'text/plain; charset=UTF-8'
+        resp.content_type = content_type
         resp.stream_len = os_resp.headers.pop('Content-Length')
         resp.set_headers(os_resp.headers)
         resp.stream = os_resp.raw

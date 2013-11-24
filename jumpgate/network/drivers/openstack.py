@@ -1,4 +1,4 @@
-from jumpgate.common.openstack.responder import setup_responder
+from jumpgate.common.openstack import setup_responder
 
 
 def setup_routes(app, disp):
