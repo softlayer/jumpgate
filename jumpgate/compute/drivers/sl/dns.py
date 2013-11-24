@@ -29,7 +29,7 @@ class DNSDomainEntryV2(object):
         client = req.env['sl_client']
         mgr = DNSManager(client)
 
-        domain = urllib.parse.unquote_plus(domain)
+        domain = unquote_plus(domain)
 
         zone_id = mgr._get_zone_id_from_name(domain)[0]
 

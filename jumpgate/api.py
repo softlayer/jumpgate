@@ -28,18 +28,15 @@ class Jumpgate(object):
 
         self.before_hooks = [hook_set_uuid]
         self.after_hooks = [hook_format, hook_log_request]
+        self.default_route = None
 
         self._dispatchers = {}
 
     def make_api(self):
         api = API(before=self.before_hooks, after=self.after_hooks)
 
-        # An easy class that can be used to implement endpoints that are
-        # not yet implemented.
-        nyi = NYI()
-
         # Set the default route to the NYI object
-        api.set_default_route(nyi)
+        api.set_default_route(self.default_route or NYI())
 
         # Add all the routes collected thus far
         for _, disp in self._dispatchers.items():

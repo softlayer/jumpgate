@@ -5,10 +5,10 @@ import os
 import os.path
 
 LOCAL_PATH = os.path.dirname(os.path.realpath(__file__))
-TEMPEST_DEFAULT_LOCATION = os.path.join(LOCAL_PATH, 'tempest')
-TEMPEST_CONFIG_DEFAULT_LOCATION = os.path.join(
+DEFAULT_TEMPEST_LOCATION = os.path.join(LOCAL_PATH, 'tempest')
+DEFAULT_TEMPEST_CONFIG_LOCATION = os.path.join(
     LOCAL_PATH, 'etc', 'tempest.conf')
-WHITELIST_DEFAULT_LOCATION = os.path.join(
+DEFAULT_WHITELIST_LOCATION = os.path.join(
     LOCAL_PATH, 'whitelists', 'softlayer.txt')
 
 
@@ -28,13 +28,13 @@ def main():
     parser = argparse.ArgumentParser(
         description='Tempest test runner for SLAPI-Stack')
     parser.add_argument('--tempest-location',
-                        default=TEMPEST_DEFAULT_LOCATION,
+                        default=DEFAULT_TEMPEST_LOCATION,
                         help='Location of tempest tests')
     parser.add_argument('--tempest-config',
-                        default=TEMPEST_CONFIG_DEFAULT_LOCATION,
+                        default=DEFAULT_TEMPEST_CONFIG_LOCATION,
                         help='Location of tempest config')
     parser.add_argument('--whitelist-location',
-                        default=WHITELIST_DEFAULT_LOCATION,
+                        default=DEFAULT_WHITELIST_LOCATION,
                         help='Location of whitelist file')
     parser.add_argument('--disable-whitelist',
                         action='store_true',
