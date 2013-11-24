@@ -35,7 +35,7 @@ a:focus {
   text-transform: uppercase;
   background-color: #fff;
   background-image: none;
-  border: 1px solid #bdc3c7;
+  border: 1px solid #fff;
   border-radius: 4px;
   box-shadow: none;
   padding: 14px;
@@ -53,7 +53,7 @@ a:focus {
   text-transform: uppercase;
   background-color: #fff;
   background-image: none;
-  border: 1px solid #bdc3c7;
+  border: 1px solid #fff;
   border-radius: 4px;
   box-shadow: none;
   padding: 14px;
@@ -87,9 +87,9 @@ a#get-started.btn.btn-info.btn-lg {
   color: #fff;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #e44f38;
+  background-color: #e86d45;
   background-image: none;
-  border: 1px solid #ca4632;
+  border: 1px solid #e86d45;
   border-radius: 4px;
   box-shadow: none;
   padding: 14px;
@@ -100,13 +100,17 @@ a#get-started.btn.btn-info.btn-lg {
     width: 190px;
     font-size: 14px;
     margin-right: 20px;
-    letter-spacing: 1px;
+    line-height: inherit;
+    letter-spacing: 1.1px;
+    height: 50px;
   }
   .btn-info {
     width: 190px;
     font-size: 14px;
     margin-right: 20px;
-    letter-spacing: 1px;
+    line-height: inherit;
+    letter-spacing: 1.1px;
+    height: 50px;
   }
   .btn-info:hover,
   .btn-info:focus,
@@ -114,7 +118,9 @@ a#get-started.btn.btn-info.btn-lg {
     width: 190px;
     font-size: 14px;
     margin-right: 20px;
-    letter-spacing: 1px;
+    line-height: inherit;
+    letter-spacing: 1.1px;
+    height: 50px;
   }
 }
 
@@ -153,25 +159,13 @@ a#get-started.btn.btn-info.btn-lg {
 /*-- Background --*/
 
 .docs-home {
-  background: -webkit-linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("../img/bg@768.jpg");
-  background: -moz-linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("../img/bg@768.jpg");
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("../img/bg@768.jpg");
+  background: url("../images/bg@768.png");
   background-color: #262125;
-  background-repeat: no-repeat;
-    -webkit-background-size: cover;
-       -moz-background-size: cover;
-        -ms-background-size: cover;
-         -o-background-size: cover;
-            background-size: cover;
+  background-repeat: repeat;
 }
 
 @media (min-width: 768px) {
   .docs-home {
-  background: -webkit-filter: blur(5px);
-  background: -moz-filter: blur(5px);
-  background: -ms-filter: blur(5px);
-  background: -o-filter: blur(5px);
-  background: filter: blur(5px);
   background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
   background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
@@ -219,10 +213,10 @@ a#get-started.btn.btn-info.btn-lg {
     margin-left: 0;
     font-size: 100px;
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.2;
     letter-spacing: -4px;
     text-transform: none;
-    margin-top: 100px;
+    margin-top: 75px;
   }
   .masthead .lead {
     margin-right: 25%;
@@ -244,7 +238,7 @@ a#get-started.btn.btn-info.btn-lg {
   margin-top: 7px;
   margin-right: -250px;
   overflow-y: auto;
-  background: none repeat scroll 0 0 #262125;
+  background: none repeat scroll 0 0 #666;
   -webkit-transition: all .4s ease 0;
      -moz-transition: all .4s ease 0;
       -ms-transition: all .4s ease 0;
@@ -321,6 +315,17 @@ a#get-started.btn.btn-info.btn-lg {
 
 .fa {
   font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    background: none repeat scroll 0 0 #262125;
+    -webkit-transition: all .4s ease 0;
+       -moz-transition: all .4s ease 0;
+        -ms-transition: all .4s ease 0;
+         -o-transition: all .4s ease 0;
+            transition: all .4s ease 0;
+  }
 }
 
 /*-- Services --*/

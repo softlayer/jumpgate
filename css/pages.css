@@ -520,8 +520,8 @@ h4,
 
 code {
   font-size: 94%;
-  color: #d8283c;
-  background: #fdf9f2;
+  color: #dd1144;
+  background: transparent;
 }
 
 pre {
@@ -542,11 +542,9 @@ output pre.nowrap {
   pre {
     display: block; /* hidden until > 480px */
     margin: 10px 0 20px;
-    font-size: 13px;
-    line-height: 1.5;
-    color: #fff;
-    background: #262125;
-    border: #262125 solid 1px;
+    background: #fafafa;
+    color: #262125;
+    border: #e5e5e5 solid 1px;
     border-radius: 4px;
   }
   output pre {
@@ -703,15 +701,15 @@ button#version-selector.btn.dropdown-toggle {
 }
 
 .docs-nav .navbar-toggle {
-  background-color: #262125;
-  border-color: #262125;
+  background-color: #21759b;
+  border-color: #21759b;
   top: 10px;
   right: 4px;
 }
 
 .docs-nav .navbar-toggle:hover {
-  background: #666;
-  border-color: #666;
+  background: #7f8c8d;
+  border-color: #7f8c8d;
 }
 
 /*-- Index --*/

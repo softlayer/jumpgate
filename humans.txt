@@ -1,0 +1,14 @@
+/* Jumpgate is the product of SoftLayer, a global cloud infrastructure provider based in Dallas, TX */
+/* www.softlayer.com */
+/* humanstxt.org */
+
+/* TEAM */
+  Product Manager: Michael O'Rourke
+  Twitter: @caleorourke
+  Location: Dallas, TX
+
+/* SITE */
+  Last update: 2013/11/23
+  Standards: HTML, CSS
+  Extensions: SASS, jQuery, node.js
+  Components: Sublime Text 3, Git, Jekyll, Recess

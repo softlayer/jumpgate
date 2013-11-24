@@ -29,16 +29,20 @@ Note that there are no restrictions on how you build your driver as long as you 
 
 The first step is to create your driver. You can do this anywhere, as long as its within your Python path and Jumpgate can load it. We're going to do it within the `drivers` directory for identity. We'll start with the index driver.
 
-	$ mkdir jumpgate/index/drivers/my_driver
+{% highlight bash %}
+$ mkdir jumpgate/index/drivers/my_driver
+{% endhighlight %}
 
-Next we're going to create an __init__.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your __init__.py file:
+Next we're going to create an \_\_init\_\_.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your \_\_init\_\_.py file:
 
-	from jumpgate.openstack import openstack_dispatcher
-	from .endpoints.index import IndexV2
+{% highlight python %}
+from jumpgate.openstack import openstack_dispatcher
+from .endpoints.index import IndexV2
 
-	openstack_dispatcher.set_handler('v2_index', IndexV2())
+openstack_dispatcher.set_handler('v2_index', IndexV2())
 
-	openstack_dispatcher.import_routes()
+openstack_dispatcher.import_routes()
+{% endhighlight %}
 
 Let's look at each section. The first thing we import is the `openstack_dispatcher`. Each area of the API has a dispatcher that knows about the routes/endpoints that OpenStack has. Jumpgate creates these dispatcher objects for you and uses them to determine which endpoints your driver supports and doesn't expose any functionality you haven't created.
 
@@ -59,43 +63,47 @@ When implementing things like the index endpoint (and the tokens endpoint later)
 
 To start, let's create the endpoints directory we imported from earlier:
 
-	$ mkdir jumpgate/index/drivers/my_driver
+{% highlight bash %}
+$ mkdir jumpgate/index/drivers/my_driver
+{% endhighlight %}
 
 Now within that, create the index.py where our IndexV2 class will reside. Start by putting the following within the index.py file:
 
-	from jumpgate.compute import compute_dispatcher
+{% highlight python %}
+from jumpgate.compute import compute_dispatcher
 
-	class IndexV2(object):
-    	def on_get(self, req, resp):
-        	versions = [{
-            	'id': 'v2.0',
-            	'links': [{
-                	'href': compute_dispatcher.get_endpoint_url(req, 'v2_index'),
-                	'rel': 'self'
-            	}],
-            	'status': 'CURRENT',
-            	'media-types': [
-                	{
-                    	'base': 'application/json',
-                    	'type': 'application/vnd.openstack.compute.v1.0+json',
-                	}
-            	],
-         	}, {
-             	'id': 'v1.0',
-             	'links': [{
-                 	'href': compute_dispatcher.get_endpoint_url(req, 'v1_index'),
-                 	'rel': 'self'
-             	}],
-             	'status': 'ACTIVE',
-             	'media-types': [
-                 	{
-                     	'base': 'application/json',
-                     	'type': 'application/vnd.openstack.compute.v1.0+json',
-                 	}
-             	],
-         	}]
+class IndexV2(object):
+    def on_get(self, req, resp):
+        versions = [{
+            'id': 'v2.0',
+            'links': [{
+                'href': compute_dispatcher.get_endpoint_url(req, 'v2_index'),
+                'rel': 'self'
+            }],
+            'status': 'CURRENT',
+            'media-types': [
+                {
+                    'base': 'application/json',
+                    'type': 'application/vnd.openstack.compute.v1.0+json',
+                }
+            ],
+         }, {
+             'id': 'v1.0',
+             'links': [{
+                 'href': compute_dispatcher.get_endpoint_url(req, 'v1_index'),
+                 'rel': 'self'
+             }],
+             'status': 'ACTIVE',
+             'media-types': [
+                 {
+                     'base': 'application/json',
+                     'type': 'application/vnd.openstack.compute.v1.0+json',
+                 }
+             ],
+         }]
 
-         	resp.body = {'versions': versions}
+         resp.body = {'versions': versions}
+{% endhighlight %}
 
 As with the driver above, we import a dispatcher, but notice that we're importing the `compute_dispatcher` (for Nova) and not the generic OpenStack one. We'll see why in a moment.
 
@@ -111,88 +119,95 @@ The other endpoint example we're going to provide is the v2_tokens endpoint with
 
 As with the index driver, we first need to create a few things. We'll do it in a larger batch this time:
 
-	$ mkdir jumpgate/identity/drivers/my_driver
-	$ mkdir jumpgate/identity/drivers/my_driver/endpoints
+{% highlight bash %}
+$ mkdir jumpgate/identity/drivers/my_driver
+$ mkdir jumpgate/identity/drivers/my_driver/endpoints
+{% endhighlight %}
 
 Create the \_\_init\_\_.py file
 
-	from jumpgate.identity import identity_dispatcher
-	from .endpoints.tokens import TokensV2
+{% highlight python %}
+from jumpgate.identity import identity_dispatcher
+from .endpoints.tokens import TokensV2
 
-	identity_dispatcher.set_handler('v2_tokens', TokensV2())
-	identity_dispatcher.import_routes()
+identity_dispatcher.set_handler('v2_tokens', TokensV2())
+identity_dispatcher.import_routes()
+{% endhighlight %}
 
 This should look familiar to you from the index example earlier. Next,
 create the tokens.py file where the TokensV2 class will live.
 
-	from datetime import datetime
-	from jumpgate.identity import identity_dispatcher
-	from jumpgate.openstack import openstack_dispatcher
+{% highlight python %}
+from datetime import datetime
+from jumpgate.identity import identity_dispatcher
+from jumpgate.openstack import openstack_dispatcher
 
-	class TokensV2(object):
-    	def on_post(self, req, resp):
-    	    body = req.stream.read().decode()
+class TokensV2(object):
+    def on_post(self, req, resp):
+    	body = req.stream.read().decode()
+{% endhighlight %}
 
 This is the starting point for the driver. If you refer to the Identity API documentation, you'll see that the /v2.0/tokens endpoint responds to POST, so we've created an `on_post()` method. Next, we pull the body out of the request stream. After that, we should authenticate the user. The implementation of this is going to be specific to your API, but hopefully you know how to authenticate someone. We're going to assume that you've successfully authenticated the person and put information about him into a dictionary called *user* and information about his tenant account into a dictionary called *account*. From there, we just need to build the response body based upon what the driver supports and what the API expects.
 
+{% highlight python %}
+index_url = identity_dispatcher.get_endpoint_url(req, 'v2_auth_index')
+v2_url = openstack_dispatcher.get_endpoint_url(req, 'v2_index')
 
-	index_url = identity_dispatcher.get_endpoint_url(req, 'v2_auth_index')
-    v2_url = openstack_dispatcher.get_endpoint_url(req, 'v2_index')
+service_catalog = [{
+   'endpoint_links': [],
+   'endpoints': [{
+        'region': 'RegionOne',
+        'publicURL': v2_url + '/%s' % account['id'],
+        'privateURL': v2_url + '/v2/%s' % account['id'],
+        'adminURL': v2_url + '/v2/%s' % account['id'],
+        'internalURL': v2_url + '/v2/%s' % account['id'],
+        'id': 1,
+   }],
+   'type': 'compute',
+   'name': 'nova',
+}, {
+   'endpoint_links': [],
+   'endpoints': [
+       {
+           'region': 'RegionOne',
+           'publicURL': index_url,
+           'privateURL': index_url,
+           'adminURL': index_url,
+           'internalURL': index_url,
+           'id': 1,
+       },
+   ],
+   'type': 'identity',
+   'name': 'keystone',
+},
+]
 
-    service_catalog = [{
-		'endpoint_links': [],
-		'endpoints': [{
-			'region': 'RegionOne',
-			'publicURL': v2_url + '/%s' % account['id'],
-			'privateURL': v2_url + '/v2/%s' % account['id'],
-			'adminURL': v2_url + '/v2/%s' % account['id'],
-			'internalURL': v2_url + '/v2/%s' % account['id'],
-			'id': 1,
-		}],
-        'type': 'compute',
-        'name': 'nova',
-	}, {
-		'endpoint_links': [],
-        'endpoints': [
-			{
-				'region': 'RegionOne',
-				'publicURL': index_url,
-				'privateURL': index_url,
-				'adminURL': index_url,
-				'internalURL': index_url,
-				'id': 1,
-			},
-		],
-		'type': 'identity',
-		'name': 'keystone',
-	}, 
-	]
+expiration = datetime.datetime.now() + datetime.timedelta(days=1)
+access = {
+    'token': {
+        'expires': expiration.isoformat(),
+        'id': token,
+        'tenant': {
+            'id': account['id'],
+            'enabled': True,
+            'description': account['companyName'],
+            'name': account['id'],
+        },
+    },
+    'serviceCatalog': service_catalog,
+    'user': {
+        'username': user['username'],
+        'id': user['id'],
+        'roles': [
+            {'name': 'user'},
+        ],
+        'role_links': [],
+        'name': user['username'],
+    },
+}
 
-	expiration = datetime.datetime.now() + datetime.timedelta(days=1)
-	access = {
-		'token': {
-			'expires': expiration.isoformat(),
-			'id': token,
-			'tenant': {
-                        'id': account['id'],
-                        'enabled': True,
-                        'description': account['companyName'],
-                        'name': account['id'],
-                    },
-			},
-			'serviceCatalog': service_catalog,
-			'user': {
-				'username': user['username'],
-				'id': user['id'],
-				'roles': [
-					{'name': 'user'},
-				],
-				'role_links': [],
-				'name': user['username'],
-			},
-	}
-
-	resp.body = {'access': access}
+resp.body = {'access': access}
+{% endhighlight %}
 
 You'll notice that this is a lot smaller than what you get back from a native OpenStack Keystone call and that's because we're not going to support many modules right now. As you add more drivers, you'll want to update this dictionary. Lastly, as before, we assign it to the response body and we're done.
 
@@ -200,51 +215,54 @@ You'll notice that this is a lot smaller than what you get back from a native Op
 
 Now that we've built a couple drivers, we need to tell Jumpgate to use them. This is done by modifying the jumpgate.conf file in the root of the installation directory. By default, Jumpgate uses the OpenStack passthrough drivers. What we want to do instead is use our drivers for the index and identity. Open up the jumpgate.conf file and it should look something like this:
 
-    [identity]
-    driver=jumpgate.identity.drivers.openstack.identity
+{% highlight bash %}
+[identity]
+driver=jumpgate.identity.drivers.openstack.identity
 
-    [compute]
-    driver=jumpgate.compute.drivers.openstack.compute
+[compute]
+driver=jumpgate.compute.drivers.openstack.compute
 
-    [image]
-    driver=jumpgate.image.drivers.openstack.image
+[image]
+driver=jumpgate.image.drivers.openstack.image
 
-    [block_storage]
-    driver=jumpgate.block_storage.drivers.openstack.block_storage
+[block_storage]
+driver=jumpgate.block_storage.drivers.openstack.block_storage
 
-    [openstack]
-    driver=jumpgate.openstack.drivers.openstack.core
+[openstack]
+driver=jumpgate.openstack.drivers.openstack.core
 
-    [network]
-    driver=jumpgate.network.drivers.openstack.network
+[network]
+driver=jumpgate.network.drivers.openstack.network
 
-    [shared]
-    driver=jumpgate.shared.drivers.openstack.network
+[shared]
+driver=jumpgate.shared.drivers.openstack.network
+{% endhighlight %}
 
 
 The file is in standard [ConfigParser](http://docs.python.org/3.3/library/configparser.html) format and should be easy to follow. All we need to do is replace the driver line for both OpenStack and Identity so that it uses the module path for our drivers instead.
 
-    [identity]
-    driver=jumpgate.identity.drivers.my_driver
+{% highlight bash %}
+[identity]
+driver=jumpgate.identity.drivers.my_driver
 
-    [compute]
-    driver=jumpgate.compute.drivers.openstack.compute
+[compute]
+driver=jumpgate.compute.drivers.openstack.compute
 
-    [image]
-    driver=jumpgate.image.drivers.openstack.image
+[image]
+driver=jumpgate.image.drivers.openstack.image
 
-    [block_storage]
-    driver=jumpgate.block_storage.drivers.openstack.block_storage
+[block_storage]
+driver=jumpgate.block_storage.drivers.openstack.block_storage
 
-    [openstack]
-    driver=jumpgate.openstack.drivers.my_driver
+[openstack]
+driver=jumpgate.openstack.drivers.my_driver
 
-    [network]
-    driver=jumpgate.network.drivers.openstack.network
+[network]
+driver=jumpgate.network.drivers.openstack.network
 
-    [shared]
-    driver=jumpgate.shared.drivers.openstack.network
-
+[shared]
+driver=jumpgate.shared.drivers.openstack.network
+{% endhighlight %}
 
 ## Next Steps
 
@@ -278,7 +296,7 @@ Each section below includes compatibility references for the following component
 * Images (Glance)
 * Block Storage (Cinder)
 
-## Identity
+### Identity
 
 This table includes compatibility references for Identity (Keystone).
 
@@ -420,7 +438,7 @@ This table includes compatibility references for Identity (Keystone).
   </table>
 </div>
 
-## Compute
+### Compute
 
 This table includes compatibility references for Compute (Nova).
 
@@ -763,7 +781,7 @@ This table includes compatibility references for Compute (Nova).
   </table>
 </div>
 
-## Images
+### Images
 
 This table includes compatibility references for Images (Glance).
 
@@ -995,7 +1013,7 @@ This table includes compatibility references for Images (Glance).
   </table>
 </div>
 
-## Block Storage
+### Block Storage
 
 This table includes compatibility references for Block Storage (Cinder).
 
