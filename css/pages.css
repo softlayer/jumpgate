@@ -126,7 +126,7 @@ p {
 .navbar > .container .navbar-brand {
   margin-top: 4px;
   margin-right: 20px;
-  margin-left: 0px;
+  margin-left: 0;
 }
 
 .navbar-nav > .active > a {
@@ -220,15 +220,15 @@ p {
 
 .social-buttons {
   display: inline-block;
-  margin-bottom: 0;
   padding-left: 0;
+  margin-bottom: 0;
   list-style: none;
 }
 
 .social-buttons li {
   display: inline-block;
-  line-height: 1;
   padding: 5px 8px;
+  line-height: 1;
 }
 
 .social-buttons .twitter-follow-button {
@@ -240,8 +240,8 @@ p {
 }
 
 .github-btn {
-  border: 0;
   overflow: hidden;
+  border: 0;
 }
 
 a#github-icon {
@@ -258,8 +258,8 @@ a#twitter-icon {
 /*-- Background --*/
 
 .docs-home {
-  background: transparent;
   color: #fff;
+  background: transparent;
   background-color: #563d7c;
 }
 
@@ -314,41 +314,41 @@ a#twitter-icon {
 }
 
 @media (min-width: 768px) {
-   .masthead-links {
-    text-align: center;
+  .masthead-links {
     font-size: 14px;
+    text-align: center;
   }
   .masthead {
-    text-align: left;
-    padding-top:    140px;
+    padding-top: 140px;
     padding-bottom: 140px;
+    text-align: left;
   }
   .masthead h1 {
     font-size: 80px;
   }
   .masthead .lead {
-    margin-right: 0%;
+    margin-right: 0;
     font-size: 36px;
   }
 }
 
 @media (min-width: 320px) {
   .masthead-links {
-    text-align: center;
     font-size: 14px;
+    text-align: center;
   }
   .masthead {
-    text-align: left;
-    padding-top:    80px;
+    padding-top: 80px;
     padding-bottom: 40px;
+    text-align: left;
   }
   .masthead h1 {
     font-size: 40px;
-    letter-spacing: -1px;
     line-height: 1.2;
+    letter-spacing: -1px;
   }
   .masthead .lead {
-    margin-right: 0%;
+    margin-right: 0;
     font-size: 21px;
   }
 }
@@ -417,7 +417,7 @@ a#twitter-icon {
     width: 213px;
   }
   .sidebar.affix {
-    position: fixed; 
+    position: fixed;
     top: 80px;
   }
   .sidebar.affix-bottom {
@@ -525,30 +525,39 @@ code {
 }
 
 pre {
-  display: none; /* hidden until > 480px */
+  display: none;
+  /* hidden until > 480px */
+
 }
 
 output pre {
-  display: none; /* hidden until > 480px */
+  display: none;
+  /* hidden until > 480px */
+
 }
 
 output pre.nowrap {
-  display: none; /* hidden until > 1280px */
+  display: none;
+  /* hidden until > 1280px */
+
   white-space: pre;
 }
 
 /* Reveals code only when we have real estate to do so */
+
 @media (min-width: 481px) {
   pre {
-    display: block; /* hidden until > 480px */
+    display: block;
     margin: 10px 0 20px;
-    background: #fafafa;
     color: #262125;
+    background: #fafafa;
     border: #e5e5e5 solid 1px;
     border-radius: 4px;
   }
   output pre {
-    display: block; /* hidden until > 480px */
+    display: block;
+    /* hidden until > 480px */
+  
     margin: -10px 0 20px;
     font-size: 13px;
     color: #666;
@@ -557,9 +566,12 @@ output pre.nowrap {
     border-radius: 6px;
   }
 }
+
 @media (min-width: 1280px) {
   output pre.nowrap {
-    display: block; /* hidden until >= 1280px */
+    display: block;
+    /* hidden until >= 1280px */
+  
     white-space: pre;
   }
 }
@@ -701,10 +713,10 @@ button#version-selector.btn.dropdown-toggle {
 }
 
 .docs-nav .navbar-toggle {
-  background-color: #21759b;
-  border-color: #21759b;
   top: 10px;
   right: 4px;
+  background-color: #21759b;
+  border-color: #21759b;
 }
 
 .docs-nav .navbar-toggle:hover {

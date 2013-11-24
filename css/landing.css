@@ -25,8 +25,13 @@ a:focus {
   color: #fff;
 }
 
+p {
+  font-size: 16px;
+}
+
 .btn-info {
   width: 150px;
+  padding: 14px;
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
@@ -38,13 +43,13 @@ a:focus {
   border: 1px solid #fff;
   border-radius: 4px;
   box-shadow: none;
-  padding: 14px;
 }
 
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
   width: 150px;
+  padding: 14px;
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
@@ -56,7 +61,6 @@ a:focus {
   border: 1px solid #fff;
   border-radius: 4px;
   box-shadow: none;
-  padding: 14px;
 }
 
 .btn-primary {
@@ -81,6 +85,7 @@ a:focus {
 
 a#get-started.btn.btn-info.btn-lg {
   width: 150px;
+  padding: 14px;
   margin-right: 10px;
   margin-bottom: 20px;
   font-size: 12px;
@@ -92,35 +97,34 @@ a#get-started.btn.btn-info.btn-lg {
   border: 1px solid #e86d45;
   border-radius: 4px;
   box-shadow: none;
-  padding: 14px;
 }
 
 @media (min-width: 768px) {
   a#get-started.btn.btn-info.btn-lg {
     width: 190px;
+    height: 50px;
+    margin-right: 10px;
     font-size: 14px;
-    margin-right: 20px;
     line-height: inherit;
     letter-spacing: 1.1px;
-    height: 50px;
   }
   .btn-info {
     width: 190px;
-    font-size: 14px;
+    height: 50px;
     margin-right: 20px;
+    font-size: 14px;
     line-height: inherit;
     letter-spacing: 1.1px;
-    height: 50px;
   }
   .btn-info:hover,
   .btn-info:focus,
   .btn-info:active {
     width: 190px;
-    font-size: 14px;
+    height: 50px;
     margin-right: 20px;
+    font-size: 14px;
     line-height: inherit;
     letter-spacing: 1.1px;
-    height: 50px;
   }
 }
 
@@ -133,8 +137,8 @@ a#get-started.btn.btn-info.btn-lg {
 }
 
 .navbar-brand {
-  margin-top: -45px;
   padding: 15px 0;
+  margin-top: -45px;
 }
 
 .container {
@@ -151,10 +155,9 @@ a#get-started.btn.btn-info.btn-lg {
 
 @media (min-width: 768px) {
   .container {
-    text-align: left;
+    text-align: center;
   }
 }
-
 
 /*-- Background --*/
 
@@ -166,15 +169,15 @@ a#get-started.btn.btn-info.btn-lg {
 
 @media (min-width: 768px) {
   .docs-home {
-  background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
-  background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url("http://s12.postimg.org/61a0hibb1/image.jpg");
-  background-color: #262125;
-  background-repeat: no-repeat;
-  -webkit-background-size: cover;
-     -moz-background-size: cover;
-       -o-background-size: cover;
-          background-size: cover;
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.7)), url("../images/bg@1280.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.7)), url("../images/bg@1280.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.7)), url("../images/bg@1280.jpg");
+    background-color: #262125;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+       -moz-background-size: cover;
+         -o-background-size: cover;
+            background-size: cover;
   }
 }
 
@@ -182,17 +185,17 @@ a#get-started.btn.btn-info.btn-lg {
 
 .masthead h1 {
   padding: 0;
+  margin-top: -10px;
   margin-left: 0;
   font-size: 36px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -1px;
   text-transform: none;
-  margin-top: -10px;
 }
 
 .masthead .lead {
-  margin-right: 0%;
+  margin-right: 0;
   margin-bottom: 40px;
   font-size: 22px;
   line-height: 1.1;
@@ -200,28 +203,27 @@ a#get-started.btn.btn-info.btn-lg {
 }
 
 .masthead {
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
 @media (min-width: 768px) {
   .masthead {
     padding-bottom: 40px;
   }
-
   .masthead h1 {
     padding: 0;
+    margin-top: 0;
     margin-left: 0;
-    font-size: 100px;
+    font-size: 76px;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -4px;
     text-transform: none;
-    margin-top: 75px;
   }
   .masthead .lead {
-    margin-right: 25%;
+    margin-right: 0%;
     margin-bottom: 60px;
-    font-size: 38px;
+    font-size: 34px;
     line-height: 1.1;
     letter-spacing: -0.5px;
   }
@@ -302,6 +304,10 @@ a#get-started.btn.btn-info.btn-lg {
   color: #fff;
 }
 
+i.fa.fa-reorder {
+  font-size: 14px;
+}
+
 #menu-toggle {
   position: fixed;
   top: 10px;
@@ -311,10 +317,6 @@ a#get-started.btn.btn-info.btn-lg {
 
 .toggle {
   margin: 5px 5px 0 0;
-}
-
-.fa {
-  font-size: 14px;
 }
 
 @media (min-width: 768px) {
@@ -354,4 +356,16 @@ i.service-icon {
 
 i.service-icon:hover {
   font-size: 68px;
+}
+
+/*-- Grid --*/
+
+.row {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .row {
+    margin-bottom: 70px;
+  }
 }
