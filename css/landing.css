@@ -26,7 +26,12 @@ a:focus {
 }
 
 p {
-  font-size: 16px;
+  font-size: 20px;
+}
+
+ul.social-github {
+  margin-top: 30px;
+  padding-left: 0;
 }
 
 .btn-info {
@@ -139,7 +144,6 @@ a#get-started.btn.btn-info.btn-lg {
 .navbar-brand {
   padding: 15px 0;
   margin-top: -45px;
-  width: 14.8%;
 }
 
 .container {
@@ -187,7 +191,7 @@ a#get-started.btn.btn-info.btn-lg {
   padding: 0;
   margin-top: -10px;
   margin-left: 0;
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -1px;
@@ -197,7 +201,7 @@ a#get-started.btn.btn-info.btn-lg {
 .masthead .lead {
   margin-right: 0;
   margin-bottom: 40px;
-  font-size: 22px;
+  font-size: 18px;
   line-height: 1.1;
   letter-spacing: 0;
 }
@@ -222,8 +226,8 @@ a#get-started.btn.btn-info.btn-lg {
   }
   .masthead .lead {
     margin-right: 0%;
-    margin-bottom: 80px;
-    font-size: 34px;
+    margin-bottom: 50px;
+    font-size: 30px;
     line-height: 1.1;
     letter-spacing: -0.5px;
   }
@@ -350,7 +354,7 @@ i.service-icon:hover {
 /*-- Grid --*/
 
 .row {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-right: 0;
   margin-left: -20px;
 }
@@ -362,6 +366,6 @@ i.icon-python {
 
 @media (min-width: 768px) {
   .row {
-    margin-bottom: 80px;
+    margin-bottom: 50px;
   }
 }

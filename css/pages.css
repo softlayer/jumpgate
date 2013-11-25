@@ -127,7 +127,6 @@ p {
   margin-top: 5px;
   margin-right: 20px;
   margin-left: 0;
-  width: 90%
 }
 
 .navbar-nav > .active > a {
@@ -213,16 +212,10 @@ p {
 
 /*-- Social --*/
 
-.social {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 .social-buttons {
   display: inline-block;
   padding-left: 0;
-  margin-bottom: 0;
+  margin: 24px 0 0 0;
   list-style: none;
 }
 
