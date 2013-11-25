@@ -1,4 +1,6 @@
-All of our public content is built from minimal static webpages made using [Bootstrap CSS](http://getboostrap.com), [Foundation](http://foundation.zurb.com) and [Jekyll](http://jekyllrb.com).
+# Intro
+
+All our public content is built from minimal static webpages made using [Bootstrap CSS](http://getboostrap.com), [Foundation](http://foundation.zurb.com) and [Jekyll](http://jekyllrb.com).
 
 ## Download
 

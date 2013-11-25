@@ -124,9 +124,10 @@ p {
 }
 
 .navbar > .container .navbar-brand {
-  margin-top: 4px;
+  margin-top: 5px;
   margin-right: 20px;
   margin-left: 0;
+  width: 90%
 }
 
 .navbar-nav > .active > a {
