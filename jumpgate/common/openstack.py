@@ -15,18 +15,18 @@ cfg.CONF.register_opts(opts, group='openstack')
 
 
 def setup_responder(app, disp, service):
-    responder = OpenStackResponder(disp.mount, service)
+
+    endpoint = app.config['openstack'][service + '_endpoint'].rstrip('/')
+    responder = OpenStackResponder(disp.mount, endpoint)
 
     for endpoint in disp.get_unused_endpoints():
         disp.set_handler(endpoint, responder)
 
 
 class OpenStackResponder(object):
-    def __init__(self, mount, service):
+    def __init__(self, mount, endpoint):
         self.mount = mount
-        self.service = service
-        endpoint = cfg.CONF['openstack'][service + '_endpoint']
-        self.endpoint = endpoint.rstrip('/')
+        self.endpoint = endpoint
 
     def _standard_responder(self, req, resp, **kwargs):
         data = None
@@ -53,7 +53,7 @@ class OpenStackResponder(object):
         if content_type == 'text/html':
             content_type = 'text/plain; charset=UTF-8'
         resp.content_type = content_type
-        resp.stream_len = os_resp.headers.pop('Content-Length')
+        resp.stream_len = os_resp.headers.pop('Content-Length', 0)
         resp.set_headers(os_resp.headers)
         resp.stream = os_resp.raw
 
