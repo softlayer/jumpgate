@@ -31,4 +31,4 @@ def hook_log_request(req, resp):
 
 
 def hook_set_uuid(req, resp, kwargs):
-    req.env['REQUEST_ID'] = str(uuid.uuid1())
+    req.env['REQUEST_ID'] = 'req-' + str(uuid.uuid1())
