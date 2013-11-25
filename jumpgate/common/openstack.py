@@ -15,12 +15,30 @@ cfg.CONF.register_opts(opts, group='openstack')
 
 
 def setup_responder(app, disp, service):
-
     endpoint = app.config['openstack'][service + '_endpoint'].rstrip('/')
     responder = OpenStackResponder(disp.mount, endpoint)
 
     for endpoint in disp.get_unused_endpoints():
         disp.set_handler(endpoint, responder)
+
+
+class OpenstackStream(object):
+    def __init__(self, stream, size=None):
+        self.stream = stream
+        self.size = size
+
+    def __len__(self):
+        return self.size
+
+    def read(self, size=None):
+        return self.stream.read(size=None)
+
+    def __iter__(self):
+        return self.stream.__iter__()
+
+    def __next__(self):
+        return self.stream.__next__()
+    next = __next__
 
 
 class OpenStackResponder(object):
@@ -30,8 +48,9 @@ class OpenStackResponder(object):
 
     def _standard_responder(self, req, resp, **kwargs):
         data = None
-        if req.method == 'POST' or req.method == 'PUT':
-            data = req.stream.read()
+        if (req.method == 'POST' or req.method == 'PUT'):
+            if req.content_length:
+                data = OpenstackStream(req.stream, size=req.content_length)
 
         relative_uri = req.relative_uri
         if self.mount:
