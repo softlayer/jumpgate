@@ -26,16 +26,29 @@ a:focus {
 }
 
 p {
-  font-size: 20px;
+  font-size: 14px;
 }
 
-ul.social-github {
-  margin-top: 30px;
+ul.social {
+  margin-top: 40px;
   padding-left: 0;
+  font-size: 14px;
+}
+
+i.fa.fa-twitter {
+  margin-left: 10px;
+  vertical-align: middle;
+  font-size: 1.5em;
+}
+
+i.fa.fa-star {
+  margin-left: 0;
+  vertical-align: middle;
+  font-size: 1.5em;
 }
 
 .btn-info {
-  width: 150px;
+  width: 160px;
   padding: 14px;
   margin-right: 10px;
   margin-bottom: 20px;
@@ -53,7 +66,7 @@ ul.social-github {
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
-  width: 150px;
+  width: 160px;
   padding: 14px;
   margin-right: 10px;
   margin-bottom: 20px;
@@ -89,7 +102,7 @@ ul.social-github {
 }
 
 a#get-started.btn.btn-info.btn-lg {
-  width: 150px;
+  width: 160px;
   padding: 14px;
   margin-right: 10px;
   margin-bottom: 20px;
@@ -106,7 +119,7 @@ a#get-started.btn.btn-info.btn-lg {
 
 @media (min-width: 768px) {
   a#get-started.btn.btn-info.btn-lg {
-    width: 180px;
+    width: 190px;
     height: 50px;
     margin-right: 10px;
     font-size: 14px;
@@ -114,7 +127,7 @@ a#get-started.btn.btn-info.btn-lg {
     letter-spacing: 1.1px;
   }
   .btn-info {
-    width: 180px;
+    width: 190px;
     height: 50px;
     margin-right: 20px;
     font-size: 14px;
@@ -124,12 +137,20 @@ a#get-started.btn.btn-info.btn-lg {
   .btn-info:hover,
   .btn-info:focus,
   .btn-info:active {
-    width: 180px;
+    width: 190px;
     height: 50px;
     margin-right: 20px;
     font-size: 14px;
     line-height: inherit;
     letter-spacing: 1.1px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+
+  ul.social {
+    font-size: 16px;
   }
 }
 
@@ -189,9 +210,9 @@ a#get-started.btn.btn-info.btn-lg {
 
 .masthead h1 {
   padding: 0;
-  margin-top: -10px;
+  margin-top: -30px;
   margin-left: 0;
-  font-size: 40px;
+  font-size: 54px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -1px;
@@ -201,7 +222,7 @@ a#get-started.btn.btn-info.btn-lg {
 .masthead .lead {
   margin-right: 0;
   margin-bottom: 40px;
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.1;
   letter-spacing: 0;
 }
@@ -226,7 +247,7 @@ a#get-started.btn.btn-info.btn-lg {
   }
   .masthead .lead {
     margin-right: 0%;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
     font-size: 30px;
     line-height: 1.1;
     letter-spacing: -0.5px;
@@ -366,6 +387,6 @@ i.icon-python {
 
 @media (min-width: 768px) {
   .row {
-    margin-bottom: 50px;
+    margin-bottom: 60px;
   }
 }

@@ -13,20 +13,20 @@ baseurl: "./"
         <div class="row">
           <div class="col-lg-4 col-md-4">
             <i class="fa fa-cogs fa-4x"></i>
-            <p>Next up: The release of our <b>|milestone:title|</b> milestone. Available |milestone:due_on|.</p>
+            <p>Next up: The release for <b>|milestone:title|</b>. Available on |milestone:due_on|.</p>
           </div>
           <div class="col-lg-4 col-md-4">
             <i class="fa fa-github fa-4x"></i>
-            <p>Last successful commit was done on |committer:date| by |committer:name|.</p>
+            <p>Last commit was done by |committer:name| on |committer:date|.</p>
           </div>
           <div class="col-lg-4 col-md-4">
             <i class="icon-python"></i>
-            <p>Built with Python, the highly extensible, industry-favored language. It's only logical.</p>
+            <p>Built with Python, the highly extensible, industry-favored language.</p>
           </div>
         </div>
 
     <a class="btn btn-info btn-lg" id="get-started" href="{{ page.baseurl }}get-started">Get Started</a>
     <a class="btn btn-info btn-lg" id="documents" href="{{ page.baseurl }}learn-more">Learn More</a>
-    <p>{% include social-github.html %}</p>
+    <p>{% include social.html %}</p>
   </div>
 </main>
