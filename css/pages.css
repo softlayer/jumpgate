@@ -309,8 +309,7 @@ a#twitter-icon {
 
 @media (min-width: 768px) {
   .masthead-links {
-    font-size: 14px;
-    text-align: center;
+    font-size: 13.5px;
   }
   .masthead {
     padding-top: 140px;
@@ -328,8 +327,8 @@ a#twitter-icon {
 
 @media (min-width: 320px) {
   .masthead-links {
-    font-size: 14px;
-    text-align: center;
+    font-size: 13.5px;
+    padding: 0;
   }
   .masthead {
     padding-top: 80px;
@@ -709,8 +708,8 @@ button#version-selector.btn.dropdown-toggle {
 .docs-nav .navbar-toggle {
   top: 10px;
   right: 4px;
-  background-color: #21759b;
-  border-color: #21759b;
+  background-color: #262125;
+  border-color: #262125;
 }
 
 .docs-nav .navbar-toggle:hover {

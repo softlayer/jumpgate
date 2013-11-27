@@ -9,21 +9,23 @@ baseurl: "./"
                 <h1>{{ site.project }}</h1>
     <p class="lead">{{ site.lead }}</p>
 
-    <!-- Grid Content -->
-        <div class="row">
-          <div class="col-lg-4 col-md-4">
-            <i class="fa fa-cogs fa-4x"></i>
-            <p>Next up: The release for <b><span id="mtitle"></span></b>. Available on <b><span id="mdate"></span></b>.</p>
-          </div>
-          <div class="col-lg-4 col-md-4">
-            <i class="fa fa-github fa-4x"></i>
-            <p>The last code change was committed on <b><span id="gitdate"></span></b> by <b><span id="gitcommitter"></span></b>.</p>
-          </div>
-          <div class="col-lg-4 col-md-4">
-            <i class="icon-python"></i>
-            <p>Built with Python, the highly extensible, industry-favored language.</p>
-          </div>
+      <div class="row">
+        
+        <div class="col-lg-4 col-md-4">  
+          <a href="{{ site.milestones }}"><h3><i class="fa fa-rocket fa-3x"></i> Next Release</h3></a>
+            <p>Our <b><span id="milestone-title"></span></b> release will be launched publicly on <b><span id="milestone-date"></span></b>.</p>
         </div>
+        
+        <div class="col-lg-4 col-md-4">
+          <a href="{{ site.commits }}"><h3><i class="fa fa-github fa-3x"></i> Commits</h3></a>
+            <p>Our last commit was made by <b><span id="commit-committer"></span></b> on <b><span id="commit-date"></span></a></b>.</p>
+        </div>
+        
+        <div class="col-lg-4 col-md-4">
+          <a href=""><h3><i class="fa fa-code-fork fa-3x"></i> Pull Requests</h3>
+          <p>Version <b><span id="release-peg"></span></b> for the <b><span id="release-branch"></span></b> branch was released on <b><span id="release-date"></span></b>.</p>
+        </div>
+      </div>
 
     <a class="btn btn-info btn-lg" id="get-started" href="{{ page.baseurl }}get-started">Get Started</a>
     <a class="btn btn-info btn-lg" id="documents" href="{{ page.baseurl }}learn-more">Learn More</a>
