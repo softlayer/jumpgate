@@ -1,18 +1,18 @@
 /*! 
  * Index
  * 
- * -- Counting Stars
- * -- Commitment (Chef-OpenStack) ** For demo only **
- * -- Milestones (Chef-OpenStack) ** For demo only **
- * -- Pull Requests (Chef-OpenStack) ** For demo only **
- * -- Commitment (Jumpgate) ** Hidden until repo goes public **
- * -- Milestones (Jumpgate) ** Hidden until repo goes public **
- * -- Pull Requests (Jumpgate) ** Hidden until repo goes public **
+ * (a) Stars
+ * (b) Commitment (Chef-OpenStack) ** For demo only **
+ * (c) Milestones (Chef-OpenStack) ** For demo only **
+ * (d) Pull Requests (Chef-OpenStack) ** For demo only **
+ * (e) Commitment (Jumpgate) ** Hidden until repo goes public **
+ * (f) Milestones (Jumpgate) ** Hidden until repo goes public **
+ * (g) Pull Requests (Jumpgate) ** Hidden until repo goes public **
  * 
  */
 
-// Star Count
-// A count of all stargazers/members
+// (a) Stars
+// The # of stargazers/members
 
 $.getJSON("https://api.github.com/orgs/softlayer/members?callback=?",
 
@@ -23,7 +23,7 @@ function (result) {
     });
 });
 
-// Commitment (Chef-OpenStack)
+// (b) Commitment (Chef-OpenStack)
 // Last commit date and who did it
 
 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -41,7 +41,7 @@ $.ajax({
     }
 });
 
-// Milestones (Chef-OpenStack)
+// (c) Milestones (Chef-OpenStack)
 // Next milestone date and its title
 
 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -59,27 +59,20 @@ $.ajax({
     }
 });
 
-// Release Pegs (Chef-OpenStack)
-// Current release peg and when it went into production
+// (d) Pull Requests (Chef-OpenStack)
+// Completed pull requests
 
-
-var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 $.ajax({
-    url: "https://api.github.com/repos/softlayer/chef-openstack/releases?",
+    url: "https://api.github.com/repos/softlayer/chef-openstack/pulls?state=closed?",
     dataType: 'jsonp',
     success: function (json) {
         var latest = json.data[0];
         if (!latest) return;
-
-        var stamp = new Date(latest.published_at),
-            stampRelease = month[stamp.getMonth()] + ' ' + stamp.getDate() + ', ' + stamp.getFullYear();
-        $('#release-date').text(stampRelease);
-        $('#release-branch').text(latest.target_commitish);
-        $('#release-peg').text(latest.tag_name);
+        $('#closed-pulls').text(latest.number);
     }
 });
 
-// Commitment (Jumpgate)
+// (e) Commitment (Jumpgate)
 // Last commit date and who did it
 
 /* Hidden until repo goes public
@@ -99,7 +92,7 @@ $.ajax({
     }
 });     */
 
-// Milestones (Jumpgate)
+// (f) Milestones (Jumpgate)
 // Next milestone date and its title
 
 /* Hidden until repo goes public
@@ -119,23 +112,17 @@ $.ajax({
     }
 });     */
 
-// Release Pegs (Jumpgate)
-// Current release peg and when it went into production
+// (g) Pull Requests (Jumpgate)
+// Completed pull requests
 
 /* Hidden until repo goes public
 
-var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 $.ajax({
-    url: "https://api.github.com/repos/softlayer/jumpgate/releases?",
+    url: "https://api.github.com/repos/softlayer/jumpgate/pulls?state=closed?",
     dataType: 'jsonp',
     success: function (json) {
         var latest = json.data[0];
         if (!latest) return;
-
-        var stamp = new Date(latest.published_at),
-            stampRelease = month[stamp.getMonth()] + ' ' + stamp.getDate() + ', ' + stamp.getFullYear();
-        $('#release-date').text(stampRelease);
-        $('#release-branch').text(latest.target_commitish);
-        $('#release-peg').text(latest.tag_name);
+        $('#closed-pulls').text(latest.number);
     }
 });     */

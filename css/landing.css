@@ -20,7 +20,7 @@ body {
 }
 
 h3, .h3 {
-  font-size: 20px;
+  font-size: 19px;
 }
 
 a,
@@ -53,6 +53,10 @@ i.fa.fa-star {
   margin-left: 0;
   vertical-align: middle;
   font-size: 1.5em;
+}
+
+a#heres-how {
+  border-bottom: 1px dotted #fff;
 }
 
 .btn-info {
@@ -388,8 +392,6 @@ i.service-icon:hover {
   margin-right: 0;
   margin-left: -20px;
 }
-
-
 
 @media (min-width: 768px) {
   .row {
