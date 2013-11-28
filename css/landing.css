@@ -30,40 +30,40 @@ a:focus {
 }
 
 p {
-  font-size: 14px;
+  font-size: 1em;
 }
 
-ul.social {
-  margin-top: 40px;
+.social {
+  margin-top: 1em;
   padding-left: 0;
-  font-size: 14px;
+  font-size: 1em;
 }
 
 .fa-3x {
   vertical-align: bottom;
 }
 
-i.fa.fa-twitter {
+.fa.fa-twitter {
   margin-left: 10px;
   vertical-align: middle;
   font-size: 1.5em;
 }
 
-i.fa.fa-star {
+.fa.fa-star {
   margin-left: 0;
   vertical-align: middle;
   font-size: 1.5em;
 }
 
-a#heres-how {
+#heres-how {
   border-bottom: 1px dotted #fff;
 }
 
 .btn-info {
-  width: 160px;
-  padding: 14px;
+  width: 12em;
+  padding: 1em;
   margin-right: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 1.5em;
   font-size: 12px;
   color: #fff;
   text-shadow: none;
@@ -78,10 +78,10 @@ a#heres-how {
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
-  width: 160px;
-  padding: 14px;
+  width: 12em;
+  padding: 1em;
   margin-right: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 1.5em;
   font-size: 12px;
   color: #262125;
   text-shadow: none;
@@ -113,56 +113,59 @@ a#heres-how {
   border: 1px solid #aaa;
 }
 
-a#get-started.btn.btn-info.btn-lg {
-  width: 160px;
-  padding: 14px;
+#get-started.btn.btn-info.btn-lg {
+  width: 12em;
+  padding: 1em;
   margin-right: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 1.5em;
+  margin-top: 10px;
   font-size: 12px;
   color: #fff;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #e86d45;
+  background-color: #54baa2;
   background-image: none;
-  border: 1px solid #e86d45;
+  border: 1px solid #54baa2;
   border-radius: 4px;
   box-shadow: none;
 }
 
 @media (min-width: 768px) {
-  a#get-started.btn.btn-info.btn-lg {
-    width: 190px;
-    height: 50px;
+  #get-started.btn.btn-info.btn-lg {
+    width: 14em;
+    height: 3.5em;
     margin-right: 10px;
-    font-size: 14px;
+    margin-top: 0;
+    font-size: 1em;
     line-height: inherit;
     letter-spacing: 1.1px;
   }
   .btn-info {
-    width: 190px;
-    height: 50px;
-    margin-right: 20px;
-    font-size: 14px;
+    width: 14em;
+    height: 3.5em;
+    margin-right: 1.5em;
+    font-size: 1em;
     line-height: inherit;
     letter-spacing: 1.1px;
   }
   .btn-info:hover,
   .btn-info:focus,
   .btn-info:active {
-    width: 190px;
-    height: 50px;
-    margin-right: 20px;
-    font-size: 14px;
+    width: 14em;
+    height: 3.5em;
+    margin-right: 1.5em;
+    font-size: 1em;
     line-height: inherit;
     letter-spacing: 1.1px;
   }
 
   p {
-    font-size: 16px;
+    font-size: 1em;
   }
 
-  ul.social {
-    font-size: 15px;
+  .social {
+    font-size: 1em;
+    margin-top: 1em;
   }
 }
 
@@ -175,7 +178,7 @@ a#get-started.btn.btn-info.btn-lg {
 }
 
 .navbar-brand {
-  padding: 15px 0;
+  padding: 1em 0;
   margin-top: -45px;
 }
 
@@ -224,7 +227,7 @@ a#get-started.btn.btn-info.btn-lg {
   padding: 0;
   margin-top: -30px;
   margin-left: 0;
-  font-size: 48px;
+  font-size: 3em;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -1px;
@@ -233,8 +236,8 @@ a#get-started.btn.btn-info.btn-lg {
 
 .masthead .lead {
   margin-right: 0;
-  margin-bottom: 40px;
-  font-size: 22px;
+  margin-bottom: 3em;
+  font-size: 1.5em;
   line-height: 1.1;
   letter-spacing: 0;
   font-weight: 500;
@@ -246,13 +249,13 @@ a#get-started.btn.btn-info.btn-lg {
 
 @media (min-width: 768px) {
   .masthead {
-    padding-bottom: 40px;
+    padding-bottom: 3em;
   }
   .masthead h1 {
     padding: 0;
     margin-top: 0;
     margin-left: 0;
-    font-size: 68px;
+    font-size: 4.75em;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -4px;
@@ -260,8 +263,8 @@ a#get-started.btn.btn-info.btn-lg {
   }
   .masthead .lead {
     margin-right: 0%;
-    margin-bottom: 50px;
-    font-size: 30px;
+    margin-bottom: 1em;
+    font-size: 2em;
     line-height: 1.1;
     letter-spacing: -0.5px;
   }
@@ -273,10 +276,10 @@ a#get-started.btn.btn-info.btn-lg {
   position: fixed;
   right: 0;
   z-index: 1000;
-  width: 250px;
+  width: 18em;
   height: 100%;
   margin-top: 7px;
-  margin-right: -250px;
+  margin-right: -18em;
   overflow-y: auto;
   background: none repeat scroll 0 0 #666;
   -webkit-transition: all .4s ease 0;
@@ -287,8 +290,8 @@ a#get-started.btn.btn-info.btn-lg {
 }
 
 #sidebar-wrapper.active {
-  right: 250px;
-  width: 250px;
+  right: 18em;
+  width: 18em;
   -webkit-transition: all .4s ease 0;
      -moz-transition: all .4s ease 0;
       -ms-transition: all .4s ease 0;
@@ -299,16 +302,16 @@ a#get-started.btn.btn-info.btn-lg {
 .sidebar-nav {
   position: absolute;
   top: 0;
-  width: 250px;
+  width: 18em;
   padding: 0;
   margin: 0;
   list-style: none;
 }
 
 .sidebar-nav li {
-  margin-top: 6px;
+  margin-top: 0.5em;
   line-height: 43px;
-  text-indent: 20px;
+  text-indent: 1.5em;
 }
 
 .sidebar-nav li a {
@@ -329,9 +332,9 @@ a#get-started.btn.btn-info.btn-lg {
 }
 
 .sidebar-nav > .sidebar-brand {
-  height: 40px;
-  font-size: 14px;
-  line-height: 40px;
+  height: 3em;
+  font-size: 1em;
+  line-height: 3em;
 }
 
 .sidebar-nav > .sidebar-brand a {
@@ -342,7 +345,7 @@ a#get-started.btn.btn-info.btn-lg {
   color: #fff;
 }
 
-i.fa.fa-reorder {
+.fa.fa-reorder {
   font-size: 17px;
 }
 
@@ -360,29 +363,29 @@ i.fa.fa-reorder {
 /*-- Services --*/
 
 .services {
-  padding: 50px 0;
+  padding: 3.5em 0;
   color: #fff;
   background: #7fbbda;
 }
 
 .service-item {
-  margin-bottom: 15px;
+  margin-bottom: 1em;
 }
 
-i.service-icon {
+.service-icon {
   display: inline-block;
-  width: 140px;
-  height: 140px;
-  font-size: 56px;
-  line-height: 136px;
+  width: 10em;
+  height: 10em;
+  font-size: 5px;
+  line-height: 13px;
   text-align: center;
   vertical-align: middle;
   border: 3px solid #fff;
   border-radius: 50%;
 }
 
-i.service-icon:hover {
-  font-size: 68px;
+.service-icon:hover {
+  font-size: 5em;
 }
 
 /*-- Grid --*/
@@ -395,6 +398,6 @@ i.service-icon:hover {
 
 @media (min-width: 768px) {
   .row {
-    margin-bottom: 60px;
+    margin-bottom: 4em;
   }
 }

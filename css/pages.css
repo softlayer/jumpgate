@@ -199,13 +199,13 @@ p {
 .footer a,
 .footer a:hover,
 .footer a:focus {
-  color: #666;
+  color: #999;
   text-decoration: none;
 }
 
 @media (min-width: 768px) {
   .footer {
-    padding: 2.6em 0;
+    padding: 2em 0;
     text-align: left;
   }
 }
@@ -722,5 +722,5 @@ button#version-selector.btn.dropdown-toggle {
 .btn-lg,
 .lead,
 .row .col-lg-6 p a {
-  font-size: 16px;
+  font-size: 1em;
 }
