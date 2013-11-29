@@ -94,6 +94,7 @@ p {
 
 .docs-nav {
   background-color: #fff;
+  background-image: linear-gradient(rgb(255,255,255), rgb(249,249,249));
   border-color: #e5e5e5;
   -webkit-box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
      -moz-box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
