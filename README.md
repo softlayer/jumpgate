@@ -40,9 +40,9 @@ For readability purposes, we slotted the vars under the HTML files that referenc
 * `pulls` url for open pull requests, if any
 
 #### Server
-`permalink` defaults to "pretty" (don't change)
-`exclude` a list of files to omit from the _site directory (ex. LICENSE, .gitignore, README.md, CNAME)
-`pygments` defaults to "true" (don't change)
+* `permalink` defaults to "pretty" (don't change)
+* `exclude` a list of files to omit from the _site directory (ex. LICENSE, .gitignore, README.md, CNAME)
+* `pygments` defaults to "true" (don't change)
 
 ## Troubleshooting
 
