@@ -5,11 +5,11 @@ slug: developer-guide
 baseurl: "../"
 ---
 
-# Purpose
+# Summary
 
-The primary purpose of the this project is to provide an easy way to add OpenStack API compatibility to existing cloud products. This is accomplished through a series of drivers that are specific to each cloud provider. If you're reading this document, it is assumed that you are interested in using this project to add OpenStack API compatibility via drivers.
+The primary purpose of this project is to provide an easy way to add OpenStack API compatibility to existing cloud products. This is accomplished through a series of drivers that are specific to each cloud provider. If you're reading this document, it's assumed that you are interested in using this project to add OpenStack API compatibility via drivers.
 
-# Before Getting Started
+## Before Getting Started
 
 When creating a new driver, there are only a few things you need to understand:
 
@@ -19,21 +19,26 @@ When creating a new driver, there are only a few things you need to understand:
 
 Once you have these things, you are ready to begin building your driver.
 
-# Your First Driver
+# Creating Your Driver
 
 There are many places where you could begin building your first driver, but we've generally found starting with the index and the Identity driver (Keystone) to be the easiest. We're going to cover how to build out a couple endpoints to give you an idea. From there, you can use the SoftLayer driver that ships with this project as a further example of other endpoints, should you need it.
 
 Note that there are no restrictions on how you build your driver as long as you make it work with the Falcon framework. You are free to use whatever libraries, tools, and folder layout you are most comfortable with. This document will use the same style as the SoftLayer driver for consistency, but you are not required to do this for your driver.
 
-## Create Your Driver
+## Getting Started
 
-The first step is to create your driver. You can do this anywhere, as long as its within your Python path and Jumpgate can load it. We're going to do it within the `drivers` directory for identity. We'll start with the index driver.
+The first step in creating your driver is deciding where to create it. You can create it almost anywhere, just as long as: 
+
+* It is within your Python path
+* It can be loaded by Jumpgate
+
+We'll start by creating an index driver within the `drivers` directory for Identity.
 
 {% highlight bash %}
 $ mkdir jumpgate/index/drivers/my_driver
 {% endhighlight %}
 
-Next we're going to create an \_\_init\_\_.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your \_\_init\_\_.py file:
+Next, we're going to create an \_\_init\_\_.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your \_\_init\_\_.py file:
 
 {% highlight python %}
 from jumpgate.openstack import openstack_dispatcher
@@ -44,7 +49,7 @@ openstack_dispatcher.set_handler('v2_index', IndexV2())
 openstack_dispatcher.import_routes()
 {% endhighlight %}
 
-Let's look at each section. The first thing we import is the `openstack_dispatcher`. Each area of the API has a dispatcher that knows about the routes/endpoints that OpenStack has. Jumpgate creates these dispatcher objects for you and uses them to determine which endpoints your driver supports and doesn't expose any functionality you haven't created.
+Let's look at each section. The first thing we import is the `openstack_dispatcher`. Each area of the API has a dispatcher that knows about the routes/endpoints that OpenStack has. Jumpgate creates these dispatcher objects for you, uses them to determine which endpoints your driver supports, and doesn’t expose any functionality you haven’t created.
 
 The next import pulls in the IndexV2 class. This is the actual driver class we'll be developing for the /v2 endpoint. We'll cover it in a moment.
 
@@ -54,7 +59,7 @@ The last thing in the file is a call to `import_routes()`. This call tells the d
 
 ## The Index Endpoint
 
-Now that the driver has been created, we need to build a response handler. As noted above, we're starting with the v2_index endpoint, which corresponds to the /v2 path. If you refer to the [OpenStack API](http://api.openstack.org/api-ref.html) docs, you'll find a /v2 endpoint for multiple APIs. The one we're going to concern ourselves with right now is within the [Compute API](http://api.openstack.org/api-ref-compute.html). If you read the details for the section, you'll find out that it doesn't need a request body and the response JSON is straightforward. We could copy the document from the docs exactly and have a valid response, but there are a couple problems with this:
+Now that the driver created, we need to build a response handler. As noted above, we're starting with the v2_index endpoint, which corresponds to the /v2 path. If you refer to the [OpenStack API](http://api.openstack.org/api-ref.html) docs, you'll find a /v2 endpoint for multiple APIs. The one we're going to concern ourselves with right now is within the [Compute API](http://api.openstack.org/api-ref-compute.html). If you read the details for the section, you'll find out that it doesn't need a request body and the response JSON is straightforward. We could copy the document from the docs exactly and have a valid response, but there are a couple problems with this:
 
 1. It has URLs in it
 2. It doesn't represent the functionality our driver actually supports.
@@ -213,7 +218,7 @@ You'll notice that this is a lot smaller than what you get back from a native Op
 
 ## Configuring
 
-Now that we've built a couple drivers, we need to tell Jumpgate to use them. This is done by modifying the jumpgate.conf file in the root of the installation directory. By default, Jumpgate uses the OpenStack passthrough drivers. What we want to do instead is use our drivers for the index and identity. Open up the jumpgate.conf file and it should look something like this:
+Now that we've built a couple drivers, we need to tell Jumpgate to use them. This is done by modifying the jumpgate.conf file in the root of the installation directory. By default, Jumpgate uses the OpenStack passthrough drivers. What we want to do instead is use our drivers for the index and identity. Open up the jumpgate.conf file. It should look something like this:
 
 {% highlight bash %}
 [identity]
@@ -266,7 +271,7 @@ driver=jumpgate.shared.drivers.openstack.network
 
 ## Next Steps
 
-At this point, you have the basics of building a driver and it's a matter of expanding the functionality. Where you go next is up to you and what your goals are. But regardless of what you build next, there are a few things that can help you to be more successful.
+At this point, you have the basics of building a driver and it’s a matter of expanding the functionality. Where you go next is up to you and what your goals are. Regardless of what you build next, here are a few things to help you to be more successful.
 
 * Use [Horizon](https://github.com/openstack/horizon) in debug mode to test your functionality. Horizon provides a good, standard GUI for interacting with OpenStack and will give you a list of target endpoints to prioritize when implementing your drivers.
 * If Horizon is too broad for you, you can also use the various CLI tools provided by Nova and other modules for the same purpose. Just add the `-debug` flag.
@@ -412,7 +417,7 @@ This table includes compatibility references for Identity (Keystone).
 
         <td>Yes</td>
 
-        <td>The return values need to be expanded a bit, but basic data is accurate.</td>
+        <td>The return values need to be expanded, but basic data is accurate.</td>
       </tr>
 
       <tr>
