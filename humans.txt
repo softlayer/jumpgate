@@ -8,7 +8,7 @@
   Location: Dallas, TX
 
 /* SITE */
-  Last update: 2013/11/28
+  Last update: 2013/11/29
   Standards: HTML, CSS
-  Extensions: LESS, jQuery, JSON
+  Extensions: jQuery, JSON
   Components: Sublime Text 3, Git, Jekyll, Recess
