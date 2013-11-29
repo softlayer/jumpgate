@@ -13,7 +13,7 @@ The primary purpose of the this project is to provide an easy way to add OpenSta
 
 When creating a new driver, there are only a few things you need to understand:
 
-1. Jumpgate has been written primarily for Python 2.7/3.3 and assumes your drivers will work with these versions as well.
+1. Jumpgate has been written primarily for Python 2.7/Python 3.3 and assumes your drivers will work with these versions as well.
 2. Drivers are built as a series of objects for the [Falcon framework](http://falconframework.org). You should be familiar with both Falcon and REST APIs in general.
 3. You need to be familiar with the expected [OpenStack API](http://api.openstack.org/api-ref.html) JSON. Jumpgate will provide the endpoint mappings for you, but does not handle building valid responses.
 

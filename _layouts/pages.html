@@ -7,8 +7,12 @@
   </head>
   <body>
     <a class="sr-only" href="#content">Skip to main content</a>
+
+    <header class="navbar navbar-inverse navbar-fixed-top docs-nav" role="banner">
       
-      {% include main-pages.html %}
+      {% include main.html %}
+
+    </header>
 
     <div class="header" id="content">
       <div class="container">
@@ -43,7 +47,7 @@
       <div class="container">
         
         <div class="masthead-links">
-          <a href="{{ site.www }}">© 2013 SoftLayer, an IBM Company</a><br>
+          <a href="{{ site.www }}">© 2013 SoftLayer, an IBM Company</a> &middot; 
           <a href="{{ site.license }}">MIT License</a> &middot; 
           <a href="{{ site.sldn }}">Development Network</a><br>
         </div>

@@ -18,6 +18,8 @@
  * Images/Icons
  * Toggle
  * Index
+ * Sidebar
+ * Services
  *
  */
 
@@ -41,7 +43,7 @@ a:focus {
 
 blockquote p {
   font-size: 13.5px;
-  color: #666;
+  color: #777;
 }
 
 ul,
@@ -172,7 +174,7 @@ p {
   padding: 3em 0;
   margin-top: 100px;
   font-weight: 300;
-  color: #666;
+  color: #777;
   text-align: center;
   background: #262125;
   border-top: 1px solid #999;
@@ -289,7 +291,7 @@ a#twitter-icon {
 
 .masthead-links {
   padding: 0 65px 0 0;
-  margin: -25px 0 0;
+  margin: -21px 0 0;
   font-size: 14px;
   font-weight: 300;
   letter-spacing: 0;
@@ -327,8 +329,8 @@ a#twitter-icon {
 
 @media (min-width: 320px) {
   .masthead-links {
-    font-size: 13.5px;
     padding: 0;
+    font-size: 13.5px;
   }
   .masthead {
     padding-top: 80px;
@@ -501,7 +503,7 @@ h4,
 
 .row .col-lg-6 h2 a:hover,
 .row .col-lg-6 h2 a:focus {
-  color: #666;
+  color: #777;
 }
 
 .row .col-lg-6 p {
@@ -553,7 +555,7 @@ output pre.nowrap {
   
     margin: -10px 0 20px;
     font-size: 13px;
-    color: #666;
+    color: #777;
     background: #f4f4f4;
     border: #e5e5e5 solid 1px;
     border-radius: 6px;
@@ -661,7 +663,7 @@ table#no-borders.table.table-hover > thead > tr > th {
 .table thead > tr > th {
   color: #fff;
   text-align: center;
-  border-color: #666;
+  border-color: #777;
 }
 
 .table-bordered > tbody > tr > th,
@@ -695,6 +697,11 @@ img#custom-height.img-thumbnail {
   margin-left: 40px;
 }
 
+.fa {
+  display: inline;
+  padding-right: 8px;
+}
+
 /*-- Toggle --*/
 
 button#version-selector.btn.dropdown-toggle {
@@ -723,4 +730,125 @@ button#version-selector.btn.dropdown-toggle {
 .lead,
 .row .col-lg-6 p a {
   font-size: 1em;
+}
+
+/*-- Sidebar --*/
+
+#sidebar-wrapper {
+  position: fixed;
+  right: 0;
+  z-index: 1000;
+  width: 18em;
+  height: 100%;
+  margin-top: 57px;
+  margin-right: -18em;
+  overflow-y: auto;
+  background: none repeat scroll 0 0 #7f8c8d;
+  -webkit-transition: all .4s ease 0;
+     -moz-transition: all .4s ease 0;
+      -ms-transition: all .4s ease 0;
+       -o-transition: all .4s ease 0;
+          transition: all .4s ease 0;
+}
+
+#sidebar-wrapper.active {
+  right: 18em;
+  width: 18em;
+  -webkit-transition: all .4s ease 0;
+     -moz-transition: all .4s ease 0;
+      -ms-transition: all .4s ease 0;
+       -o-transition: all .4s ease 0;
+          transition: all .4s ease 0;
+}
+
+.sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 18em;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sidebar-nav li {
+  margin-top: 0.5em;
+  line-height: 43px;
+  text-indent: 1.5em;
+}
+
+.sidebar-nav li a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar-nav li a:hover {
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+  text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+  height: 3em;
+  font-size: 1em;
+  line-height: 3em;
+}
+
+.sidebar-nav > .sidebar-brand a {
+  color: #ccc;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+  color: #fff;
+}
+
+.fa.fa-reorder {
+  font-size: 17px;
+}
+
+#menu-toggle {
+  position: fixed;
+  top: 10px;
+  right: 4px;
+  z-index: 1;
+  padding-right: 10px;
+  background-color: #7f8c8d;
+  border-color: #7f8c8d;
+}
+
+.toggle {
+  margin: 5px 5px 0 0;
+}
+
+/*-- Services --*/
+
+.services {
+  padding: 3.5em 0;
+  color: #fff;
+  background: #7fbbda;
+}
+
+.service-item {
+  margin-bottom: 1em;
+}
+
+.service-icon {
+  display: inline-block;
+  width: 10em;
+  height: 10em;
+  font-size: 5px;
+  line-height: 13px;
+  text-align: center;
+  vertical-align: middle;
+  border: 3px solid #fff;
+  border-radius: 50%;
+}
+
+.service-icon:hover {
+  font-size: 5em;
 }
