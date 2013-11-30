@@ -21,6 +21,7 @@ body {
 h3,
 .h3 {
   font-size: 1.5em;
+  letter-spacing: -0.1px;
 }
 
 a,
@@ -151,6 +152,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   }
   p {
     font-size: 1.1em;
+    line-height: 1.3;
   }
 }
 

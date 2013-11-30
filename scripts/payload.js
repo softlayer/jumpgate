@@ -1,30 +1,17 @@
 /*! 
  * Index
  * 
- * (a) Stars
- * (b) Commitment (Chef-OpenStack) ** For demo only **
- * (c) Milestones (Chef-OpenStack) ** For demo only **
- * (d) Pull Requests (Chef-OpenStack) ** For demo only **
- * (e) Commitment (Jumpgate) ** Hidden until repo goes public **
- * (f) Milestones (Jumpgate) ** Hidden until repo goes public **
- * (g) Pull Requests (Jumpgate) ** Hidden until repo goes public **
+ * Commitment (Chef-OpenStack) ** For demo only **
+ * Milestones (Chef-OpenStack) ** For demo only **
+ * Pull Requests (Chef-OpenStack) ** For demo only **
+ * Commitment (Jumpgate) ** Hidden until repo goes public **
+ * Milestones (Jumpgate) ** Hidden until repo goes public **
+ * Pull Requests (Jumpgate) ** Hidden until repo goes public **
  * 
  */
 
-// (a) Stars
-// The # of stargazers/members
-
-$.getJSON("https://api.github.com/orgs/softlayer/members?callback=?",
-
-function (result) { 
-    var members = result.data;
-    $(function () {
-        $("#stargazers").text(members.length);
-    });
-});
-
-// (b) Commitment (Chef-OpenStack)
-// Last commit date and who did it
+// Commitment (Chef-OpenStack)
+// Last commit date
 
 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 $.ajax({
@@ -35,13 +22,12 @@ $.ajax({
         if (!latest) return;
 
         var stamp = new Date(latest.commit.committer.date),
-            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate() + ', ' + stamp.getFullYear();
+            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
         $('#commit-date').text(stampString);
-        $('#commit-committer').text(latest.author.login);
     }
 });
 
-// (c) Milestones (Chef-OpenStack)
+// Milestones (Chef-OpenStack)
 // Next milestone date and its title
 
 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -53,7 +39,7 @@ $.ajax({
         if (!latest) return;
 
         var stamp = new Date(latest.due_on),
-            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate() + ', ' + stamp.getFullYear();
+            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
         $('#milestone-date').text(stampString);
         $('#milestone-title').text(latest.title);
     }
@@ -72,7 +58,7 @@ $.ajax({
     }
 });
 
-// (e) Commitment (Jumpgate)
+// Commitment (Jumpgate)
 // Last commit date and who did it
 
 /* Hidden until repo goes public
@@ -86,13 +72,12 @@ $.ajax({
         if (!latest) return;
 
         var stamp = new Date(latest.commit.committer.date),
-            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate() + ', ' + stamp.getFullYear();
+            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
         $('#commit-date').text(stampString);
-        $('#commit-committer').text(latest.author.login);
     }
 });     */
 
-// (f) Milestones (Jumpgate)
+// Milestones (Jumpgate)
 // Next milestone date and its title
 
 /* Hidden until repo goes public
@@ -106,13 +91,13 @@ $.ajax({
         if (!latest) return;
 
         var stamp = new Date(latest.due_on),
-            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate() + ', ' + stamp.getFullYear();
+            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
         $('#milestone-date').text(stampString);
         $('#milestone-title').text(latest.title);
     }
 });     */
 
-// (g) Pull Requests (Jumpgate)
+// Pull Requests (Jumpgate)
 // Completed pull requests
 
 /* Hidden until repo goes public
