@@ -11,7 +11,9 @@ Our combustion begins at the grassroots level with free and open source software
 
 All our work is happening publically on GitHub, and we invite everyone to join in.
 
-# Guidelines
+{% include community.md %}
+
+# Contributor Guidelines
 
 The OpenStack Compatibility Layer and SoftLayer drivers were created and are maintained by SoftLayer, an IBM Company. We welcome anyone to submit pull requests for fixes or new features, but ask that you follow a few simple steps.
 
@@ -40,12 +42,11 @@ Have an issue to report? Here are some guidelines to read first.
 
 When contributing to a driver, your changes should not break any currently passing Tempest tests. If you introduce new functionality, please update the Tempest test whitelist to test the new functionality.
 
-### Our Documents
+### Developer Guides
 
 We treat our docs like we treat our code. And like our code, we invite everyone to join in.
 
-* We publish our Getting Started guide on [GitHub Pages](http://pages.github.com) and use GitHub to track and manage changes.
+* We publish all our content on [GitHub Pages](http://pages.github.com) and use GitHub to track and manage changes.
 * We manage our web resources under the `gh-pages` [branch](https://github.com/softlayer/jumpgate/tree/gh-pages).
 
-{% include community.md %}
 {% include copyright.md %}

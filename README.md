@@ -17,21 +17,21 @@ The `_config.yml` file contains everything necessary to make a page on-the-fly i
 
 For readability purposes, we slotted the vars under the HTML files that reference them.
 
-#### Project
+### Project
 * `project` the *public* name for the project
 * `lead` high-level description for the product
 * `public_url` url for the public GitHub pages
 
-#### Company
+### Company
 * `www` url for SoftLayer website (don't change)
 * `license` url for the MIT license on the repo
 * `sldn` url for SoftLayer Development Network (don't change)
 
-#### Social
+### Social
 * `github` url for all GitHub repositories
 * `twitter` url for Twitter account (do not change)
 
-#### GitHub
+### GitHub
 * `repo` url for this GitHub repository
 * `open_issues` url for open, active issues
 * `closed_issues` url for closed/archives issues
@@ -39,7 +39,7 @@ For readability purposes, we slotted the vars under the HTML files that referenc
 * `commits` url for this project's commits
 * `pulls` url for open pull requests, if any
 
-#### Server
+### Server
 * `permalink` defaults to "pretty" (don't change)
 * `exclude` a list of files to omit from the _site directory (ex. LICENSE, .gitignore, README.md, CNAME)
 * `pygments` defaults to "true" (don't change)
@@ -48,7 +48,7 @@ For readability purposes, we slotted the vars under the HTML files that referenc
 
 Here are a few known issues and solutions that we came across during development. 
 
-#### Incompatible character encodings
+### Incompatible character encodings
 
 Getting a "Liquid Exception: incompatible character encodings: UTF-8 and IBM437..." error after running `jekyll serve` or `jekyll serve -w`. This means the CLI does not use UTF-8 by default (ex. Git for Windows). Run these commands first.
 
@@ -58,15 +58,15 @@ Getting a "Liquid Exception: incompatible character encodings: UTF-8 and IBM437.
 
 You only need to run these commands when you first open your CLI. You don't need to run these commands again until you close it.
 
-#### Conversion error
+### Conversion error
 
 Getting a "Conversion error: There was an error converting *file_name*.md". This means an unexpected paragraph or break tag is in the Markdown file. Delete all paragraph and break tags.
 
-#### Maruku will be deprecated
+### Maruku will be deprecated
 
 Getting a "Maruku to_s will be deprecated soon" error. This means a HTML tag is not closed. Close all HTML tags.
 
-#### Liquid Exception: Cannot find /bin/sh on Windows
+### Liquid Exception: Cannot find /bin/sh
 
 Getting a "Liquid Exception: Cannot find /bin/sh" on Windows. Make sure pygments is running on 0.5.0. While you're at it, uninstall newer versions. Run these commands.
 
@@ -78,7 +78,7 @@ Getting a "Liquid Exception: Cannot find /bin/sh" on Windows. Make sure pygments
 * For more information on Jekyll, visit [Jekyll's Wiki](https://github.com/mojombo/jekyll/wiki).
 * For more information on GitHub Pages, visit [GitHub Pages](http://pages.github.com).
 
-### Useful Resources
+## Useful Resources
 
 * [Markable.in](http://markable.in): A powerful online markdown editor
 * [Recess](http://twitter.github.io/recess): Twitter's CSS hinter

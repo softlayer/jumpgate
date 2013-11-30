@@ -285,12 +285,7 @@ Building any compatibility driver is going to be a large amount of work for any 
 * The dispatcher includes a full set of before and after request hooks that allow you to perform common actions immediately prior to or after acting upon a request. This can allow you to centralize some common functionality. For example, the SoftLayer driver uses it to automatically set the `tenant_id variable` on routes that need it. All you have to do is set the `tenant_id property` within the request's environment dictionary and the dispatcher will automatically include it.
 * The dispatcher objects include a method called `get_unused_endpoints()` that will provide a list of all endpoints the dispatcher knows about that you haven't attached handlers to. If you want to get an idea of your coverage, you can run that command after calling `import_routes()`.
 
-# Additional Documentation
-
-*   [OpenStack API](http://docs.openstack.org/api/api-specs.html)
-*   [OpenStack API Quick Reference](http://api.openstack.org/api-ref.html)
-*   [SoftLayer API](http://sldn.softlayer.com/reference/softlayerapi)
-*   [Language Bindings for Python](http://docs.openstack.org/developer/language-bindings.html)
+{% include additional-docs.md %}
 
 # Compatibility
 

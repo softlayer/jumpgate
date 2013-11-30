@@ -5,61 +5,50 @@ slug: get-started
 baseurl: "../"
 ---
 
-# Overview
+# About
 
-The release for {{ site.project }} is now available on [GitHub]({{ site.repo }}). Browse the sections below to read more about what’s available.
+Jumpgate is a library which acts as translation layer to convert incoming OpenStack calls to different cloud provider's API calls.
 
-# Milestones
+## Requirements
 
-The key milestones for this project are outlined below.
+This library has been tested on Python 2.7 and Python 3.3.
 
-<div class="table-responsive" id="component-table">
-  <table class="table table-hover" id="no-borders">
-    <thead>
-      <tr>
-        <th>Event</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Kickoff</td>
-        <td>September 18, 2013</td>
-      </tr>
-      <tr>
-        <td>Dev Complete</td>
-        <td>TBD</td>
-      </tr>
-      <tr>
-        <td>Public Unveiling</td>
-        <td>TBD</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+# Get Started
 
-# Features
+Browse the following sections to learn how to download, install, configure, and create drivers.
 
-This second public version is available as an open source project. It includes four OpenStack components:
+## Download
 
-* Keystone (authentication)
-* Nova (compute)
-* Glance (images)
-* Horizon (dashboard)
+Two download options are available.
+
+*   [Download the latest release]({{ site.repo }}/archive/master.zip)
+*   Clone the repo via `git clone https://github.com/softlayer/jumpgate.git`
+
+## Install
+
+After downloading the source, run the following:
+
+{% highlight bash %}
+$ python setup.py install
+{% endhighlight %}
+
+Our [Developer Guide]({{ page.baseurl }}developer-guide) provides an overview for configuring, deploying, and supporting Jumpgate.
+
+## Configure
+
+Once you have Jumpgate, you need to configure it to use the appropriate drivers for your chosen target API. Jumpgate ships with two default drivers: An OpenStack passthrough driver (primarily as an example) and a driver for the SoftLayer API. You may install or develop additional drivers to suit your particular needs.
+
+To configure Jumpgate to use a particular driver, open the `jumpgate.conf` file in the root of your installation and change the *driver* properties for each section you wish to use. If you don't want or need a particular set of endpoints, you can comment out that section and Jumpgate will not expose them.
+
+Some drivers may require additional configuration via a `driver.conf` file. Consult your driver's documentation to determine if this is necessary.
+
+## Create Drivers
+
+If you're interested in creating a new driver, read our [Developers Guide]({{ page.baseurl }}developers-guide).
 
 # Known Issues
 
 All known open issues are listed on [our GitHub public repo]({{ site.open_issues }}).
 
-# Download
-
-Two download options are available.
-
-*   [Download the latest release]({{ site.repo }}/archive/master.zip)
-*   Clone the repo: `git clone https://github.com/softlayer/jumpgate.git`
-
-# Install
-
-Our [Getting Started Guide]({{ page.baseurl }}getting-started) provides an overview for installing, configuring, deploying, and supporting Jumpgate.
-
-{% include community.md %}
+{% include additional-docs.md %}
+{% include copyright.md %}

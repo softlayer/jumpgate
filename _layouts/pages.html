@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-      
-      {% include header.html %}
-  
+  <head> 
+    {% include header.html %}
   </head>
   <body>
     <a class="sr-only" href="#content">Skip to main content</a>
-
     <header class="navbar navbar-inverse navbar-fixed-top docs-nav" role="banner">
       {% include main.html %}
     </header>
-
-    <div class="header" id="content">
-    </div>
-
+    <div class="header" id="content"></div>
     <div class="container docs-container">
       <div class="row">
         <div class="col-md-3">
           <div class="sidebar hidden-print" role="complementary">
-            <ul class="nav sidenav">
-              
+            <ul class="nav sidenav">    
               {% if page.slug == "developer-guide" %}
                 {% include nav-developer-guide.html %}
               {% elsif page.slug == "learn-more" %}
@@ -28,29 +21,23 @@
               {% elsif page.slug == "get-started" %}
                 {% include nav-get-started.html %}
               {% endif %}
-            
             </ul>
           </div>
         </div>
         <div class="col-md-9" role="main">
-          
-              {{ content }}
-          
+          {{ content }}
         </div>
       </div>
     </div>
     <footer class="footer" role="contentinfo">
       <div class="container">
-        
         <div class="masthead-links">
           <a href="{{ site.www }}">© 2013 SoftLayer, an IBM Company</a> &middot; 
           <a href="{{ site.license }}">MIT License</a> &middot; 
           <a href="{{ site.sldn }}">Development Network</a><br>
         </div>
       </div>
-
         {% include footer.html %}
-    
     </footer>
   </body>
 </html>
