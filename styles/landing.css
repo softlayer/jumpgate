@@ -20,8 +20,7 @@ body {
 
 h3,
 .h3 {
-  font-size: 1.5em;
-  letter-spacing: -0.1px;
+  font-size: 1.55em;
 }
 
 a,
@@ -114,7 +113,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     width: 14em;
     height: 3.5em;
     margin-top: 0;
-    margin-right: 10px;
+    margin-right: 2em;
     font-size: 1em;
     line-height: inherit;
     letter-spacing: 1.1px;
@@ -125,7 +124,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     width: 14em;
     height: 3.5em;
     margin-top: 0;
-    margin-right: 10px;
+    margin-right: 2em;
     font-size: 1em;
     line-height: inherit;
     letter-spacing: 1.1px;
@@ -152,7 +151,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   }
   p {
     font-size: 1.1em;
-    line-height: 1.3;
+    line-height: 1.35;
   }
 }
 
@@ -250,7 +249,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   }
   .masthead .lead {
     margin-right: 0;
-    margin-bottom: 1.25em;
+    margin-bottom: 1em;
     font-size: 2em;
     line-height: 1.1;
     letter-spacing: -0.5px;
@@ -293,6 +292,6 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .row {
-    margin-bottom: 5em;
+    margin-bottom: 6em;
   }
 }
