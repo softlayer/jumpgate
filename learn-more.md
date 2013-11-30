@@ -9,7 +9,7 @@ baseurl: "../"
 
 Our combustion begins at the grassroots level with free and open source software. Not only do we use it regularly, we’re firm believers in the openness of development and collaboration in order to make viable and sustainable products. That’s why we’re thrilled to be contributors toward the development of OpenStack.
 
-All our work is happening publically on GitHub, and we invite everyone to join in.
+All our work is happening publicly on GitHub, and we invite everyone to join in.
 
 {% include community.md %}
 
