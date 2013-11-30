@@ -521,39 +521,28 @@ code {
 }
 
 pre {
-  display: none;
-  /* hidden until > 480px */
-
+  display: block;
+  margin: 10px 0 20px;
+  color: #262125;
+  background: #fafafa;
+  border: #e5e5e5 solid 1px;
+  border-radius: 4px;
 }
 
 output pre {
-  display: none;
-  /* hidden until > 480px */
-
+  display: none;    /* hidden until > 480px */
 }
 
 output pre.nowrap {
-  display: none;
-  /* hidden until > 1280px */
-
+  display: none;    /* hidden until > 1280px */
   white-space: pre;
 }
 
 /* Reveals code only when we have real estate to do so */
 
 @media (min-width: 481px) {
-  pre {
+  output pre {      /* hidden until > 480px */
     display: block;
-    margin: 10px 0 20px;
-    color: #262125;
-    background: #fafafa;
-    border: #e5e5e5 solid 1px;
-    border-radius: 4px;
-  }
-  output pre {
-    display: block;
-    /* hidden until > 480px */
-  
     margin: -10px 0 20px;
     font-size: 13px;
     color: #777;
@@ -563,11 +552,9 @@ output pre.nowrap {
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1280px) {     /* hidden until >= 1280px */
   output pre.nowrap {
     display: block;
-    /* hidden until >= 1280px */
-  
     white-space: pre;
   }
 }
