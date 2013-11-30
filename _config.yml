@@ -17,6 +17,7 @@ pulls: http://github.com/softlayer/chef-openstack/pulls?direction=desc&amp;page=
 www: http://www.softlayer.com
 license: http://github.com/softlayer/jumpgate/blob/master/LICENSE
 sldn: http://sldn.softlayer.com
+kb: http://knowledgelayer.softlayer.com
 
 # Social
 github: http://github.com/softlayer
