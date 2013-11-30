@@ -34,7 +34,7 @@ For new features, we’d prefer there already be an existing, approved issue in 
 Have an issue to report? Here are some guidelines to read first.
 
 * Scroll through our list of [closed issues]({{ site.closed_issues }}) to see if yours has already been resolved or reported.
-* Be sure to include any relevant information, such as the OpenStack release (Grizzly, Havana), which version, what components you use, when it was deployed, and so on.
+* Be sure to include any relevant information, such as the OpenStack release (Grizzly, Havana), what components you use, when it was deployed, and so on.
 * Create a [gist](https://gist.github.com) of the code causing the issue, as well as any error messages, and include its URL in the issue report.
 * When you're ready, create a [new issue on GitHub]({{ site.open_issues }}).
 
@@ -42,7 +42,7 @@ Have an issue to report? Here are some guidelines to read first.
 
 When contributing to a driver, your changes should not break any currently passing Tempest tests. If you introduce new functionality, please update the Tempest test whitelist to test the new functionality.
 
-### Developer Guides
+# Developer Guide
 
 We treat our docs like we treat our code. And like our code, we invite everyone to join in.
 

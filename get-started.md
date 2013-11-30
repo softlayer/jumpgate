@@ -9,7 +9,7 @@ baseurl: "../"
 
 Jumpgate is a library which acts as translation layer to convert incoming OpenStack calls to different cloud provider's API calls.
 
-## Requirements
+## Specification
 
 This library has been tested on Python 2.7 and Python 3.3.
 
@@ -32,8 +32,6 @@ After downloading the source, run the following:
 $ python setup.py install
 {% endhighlight %}
 
-Our [Developer Guide]({{ page.baseurl }}developer-guide) provides an overview for configuring, deploying, and supporting Jumpgate.
-
 ## Configure
 
 Once you have Jumpgate, you need to configure it to use the appropriate drivers for your chosen target API. Jumpgate ships with two default drivers: An OpenStack passthrough driver (primarily as an example) and a driver for the SoftLayer API. You may install or develop additional drivers to suit your particular needs.
@@ -42,9 +40,9 @@ To configure Jumpgate to use a particular driver, open the `jumpgate.conf` file 
 
 Some drivers may require additional configuration via a `driver.conf` file. Consult your driver's documentation to determine if this is necessary.
 
-## Create Drivers
+# Developer Guide
 
-If you're interested in creating a new driver, read our [Developers Guide]({{ page.baseurl }}developers-guide).
+Our [Developer Guide]({{ page.baseurl }}developer-guide) provides an overview for configuring, deploying, and supporting Jumpgate. It's an extremely valuable resource if you're interested in creating a new driver.
 
 # Known Issues
 
