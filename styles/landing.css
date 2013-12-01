@@ -20,7 +20,8 @@ body {
 
 h3,
 .h3 {
-  font-size: 1.55em;
+  font-size: 1.75em;
+  font-family: "dejarip",helvetica,arial,sans-serif;
 }
 
 a,
@@ -196,9 +197,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)), url("../images/bg@1280.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)), url("../images/bg@1280.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)), url("../images/bg@1280.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg4@1280.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg4@1280.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg4@1280.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
@@ -213,20 +214,22 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   padding: 0;
   margin-top: -30px;
   margin-left: 0;
-  font-size: 3em;
+  font-size: 3.25em;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -1px;
   text-transform: none;
+  font-family: "freight-sans-pro",helvetica,arial,sans-serif;
 }
 
 .masthead .lead {
   margin-right: 0;
   margin-bottom: 1em;
-  font-size: 1.5em;
+  font-size: 1.75em;
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: 0;
+  font-family: "dejarip",helvetica,arial,sans-serif;
 }
 
 .masthead {
@@ -241,18 +244,20 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     padding: 0;
     margin-top: 0;
     margin-left: 0;
-    font-size: 4.5em;
+    font-size: 5.5em;
     font-weight: 700;
     line-height: 1.2;
-    letter-spacing: -4px;
+    letter-spacing: -3px;
     text-transform: none;
+    font-family: "freight-sans-pro",helvetica,arial,sans-serif;
   }
   .masthead .lead {
     margin-right: 0;
     margin-bottom: 1em;
-    font-size: 2em;
+    font-size: 2.25em;
     line-height: 1.1;
     letter-spacing: -0.5px;
+    font-family: "dejarip",helvetica,arial,sans-serif;
   }
 }
 
