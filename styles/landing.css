@@ -22,6 +22,7 @@ h3,
 .h3 {
   font-size: 1.5em;
   font-family: "dejarip",helvetica,arial,sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 a,
@@ -32,7 +33,8 @@ a:focus {
 
 p {
   font-size: 1.05em;
-  font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+  font-family: "dejarip",helvetica,arial,sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 .btn-info:hover,
@@ -52,6 +54,7 @@ p {
   border-radius: 4px;
   box-shadow: none;
   font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 .btn-info {
@@ -69,6 +72,7 @@ p {
   border-radius: 4px;
   box-shadow: none;
   font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 .btn-primary {
@@ -107,6 +111,7 @@ p {
   border-radius: 4px;
   box-shadow: none;
   font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 a#menu-toggle.btn.btn-primary.btn-lg.toggle {
@@ -156,8 +161,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     letter-spacing: 1px;
   }
   p {
-    font-size: 1.5em;
-    line-height: 1.3;
+    font-size: 1.3em;
+    line-height: 1.4;
   }
 }
 
@@ -225,6 +230,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   letter-spacing: -1px;
   text-transform: none;
   font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+  text-rendering: optimizeLegibility;
   border-bottom: none;
 }
 
@@ -236,6 +242,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   line-height: 1.1;
   letter-spacing: 0;
   font-family: "dejarip",helvetica,arial,sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 .masthead {
@@ -256,6 +263,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     letter-spacing: -3px;
     text-transform: none;
     font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+    text-rendering: optimizeLegibility;
   }
   .masthead .lead {
     margin-right: 0;
@@ -264,6 +272,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     line-height: 1.1;
     letter-spacing: -0.5px;
     font-family: "dejarip",helvetica,arial,sans-serif;
+    text-rendering: optimizeLegibility;
   }
 }
 

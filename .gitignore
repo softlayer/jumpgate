@@ -1,6 +1,5 @@
 _site
 *.log
-*.vi
 *~
 .#*
 .DS_Store
