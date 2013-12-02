@@ -79,6 +79,7 @@ class TokensV2(object):
                         'region': service.get('region', 'RegionOne'),
                         'publicURL': service.get('publicURL'),
                         'privateURL': service.get('privateURL'),
+                        'adminURL': service.get('adminURL'),
                     }],
                     'endpoint_links': [],
                 }
@@ -109,6 +110,7 @@ class TokensV2(object):
             },
         }
 
+        resp.status = 200
         resp.body = {'access': access}
 
 

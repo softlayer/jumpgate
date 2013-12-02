@@ -16,6 +16,10 @@ def setup_routes(app, disp):
     template_file = app.config.softlayer.catalog_template_file
     if not os.path.exists(template_file):
         template_file = app.config.find_file(template_file)
+
+    if template_file is None:
+        raise ValueError('Template file not found')
+
     disp.set_handler('v2_tokens', TokensV2(template_file))
 
     add_hooks(app)

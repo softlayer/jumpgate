@@ -317,7 +317,7 @@ class ServerV2(object):
         client = req.env['sl_client']
         cci = CCIManager(client)
 
-        instance = cci.get_instance(id=server_id,
+        instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
         results = get_server_details_dict(self.app, req, instance)
@@ -352,7 +352,7 @@ class ServerV2(object):
 
             cci.edit(server_id, hostname=lookup(body, 'server', 'name'))
 
-        instance = cci.get_instance(id=server_id,
+        instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
         results = get_server_details_dict(self.app, req, instance)
