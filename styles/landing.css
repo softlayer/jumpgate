@@ -63,9 +63,9 @@ p {
   color: #262125;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #fff;
+  background-color: #f4f4f4;
   background-image: none;
-  border: 1px solid #fff;
+  border: 1px solid #fafafa;
   border-radius: 4px;
   box-shadow: none;
   font-family: "freight-sans-pro",helvetica,arial,sans-serif;
@@ -101,9 +101,9 @@ p {
   color: #fff;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #21759b;
+  background-color: #247fa8;
   background-image: none;
-  border: 1px solid #21759b;
+  border: 1px solid #2688b4;
   border-radius: 4px;
   box-shadow: none;
   font-family: "freight-sans-pro",helvetica,arial,sans-serif;
@@ -202,9 +202,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url("../images/bg7@1280.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url("../images/bg7@1280.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url("../images/bg7@1280.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
@@ -291,8 +291,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   top: 10px;
   right: 4px;
   z-index: 1;
-  background-color: #fff;
-  border-color: #fff;
+  background-color: #f4f4f4;
+  border-color: #fafafa;
 }
 
 /*-- Grid --*/
