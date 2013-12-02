@@ -20,7 +20,7 @@ body {
 
 h3,
 .h3 {
-  font-size: 1.75em;
+  font-size: 1.65em;
   font-family: "dejarip",helvetica,arial,sans-serif;
 }
 
@@ -34,7 +34,9 @@ p {
   font-size: 1em;
 }
 
-.btn-info {
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:active {
   width: 12em;
   padding: 1em;
   margin-right: 10px;
@@ -50,9 +52,7 @@ p {
   box-shadow: none;
 }
 
-.btn-info:hover,
-.btn-info:focus,
-.btn-info:active {
+.btn-info {
   width: 12em;
   padding: 1em;
   margin-right: 10px;
@@ -114,10 +114,10 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     width: 14em;
     height: 3.5em;
     margin-top: 0;
-    margin-right: 2em;
-    font-size: 1em;
+    margin-right: 1em;
+    font-size: 0.9em;
     line-height: inherit;
-    letter-spacing: 1.1px;
+    letter-spacing: 1px;
   }
   #get-started.btn.btn-info.btn-lg:hover,
   #get-started.btn.btn-info.btn-lg:focus,
@@ -125,20 +125,21 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     width: 14em;
     height: 3.5em;
     margin-top: 0;
-    margin-right: 2em;
-    font-size: 1em;
+    margin-right: 1em;
+    font-size: 0.9em;
     line-height: inherit;
-    letter-spacing: 1.1px;
-    color: #262125;
-    background-color: #fff;
+    letter-spacing: 1px;
+    color: #fff;
+    border-color: #fff;
+    background-color: transparent;
   }
   .btn-info {
     width: 14em;
     height: 3.5em;
     margin-right: 1.5em;
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: inherit;
-    letter-spacing: 1.1px;
+    letter-spacing: 1px;
   }
   .btn-info:hover,
   .btn-info:focus,
@@ -146,12 +147,12 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     width: 14em;
     height: 3.5em;
     margin-right: 1.5em;
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: inherit;
-    letter-spacing: 1.1px;
+    letter-spacing: 1px;
   }
   p {
-    font-size: 1.1em;
+    font-size: 1.2em;
     line-height: 1.35;
   }
 }
@@ -197,9 +198,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg4@1280.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg4@1280.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg4@1280.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg5@1280.png");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg5@1280.png");
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg5@1280.png");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
@@ -220,6 +221,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   letter-spacing: -1px;
   text-transform: none;
   font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+  border-bottom: none;
 }
 
 .masthead .lead {
@@ -253,7 +255,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   }
   .masthead .lead {
     margin-right: 0;
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
     font-size: 2.25em;
     line-height: 1.1;
     letter-spacing: -0.5px;

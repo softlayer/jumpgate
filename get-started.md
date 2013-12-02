@@ -7,11 +7,11 @@ baseurl: "../"
 
 # About
 
-Jumpgate is a library which acts as translation layer to convert incoming OpenStack calls to different cloud provider's API calls.
+Jumpgate is a library, which acts as a translation layer to convert incoming OpenStack calls to different cloud provider's API calls.
 
 ## Specification
 
-This library has been tested on Python 2.7 and Python 3.3.
+This library has been tested on **Python 2.7** and **Python 3.3**.
 
 # Get Started
 
@@ -26,7 +26,7 @@ Two download options are available.
 
 ## Install
 
-After downloading the source, run the following:
+After downloading the source, run the following command.
 
 {% highlight bash %}
 $ python setup.py install
@@ -34,9 +34,14 @@ $ python setup.py install
 
 ## Configure
 
-Once you have Jumpgate, you need to configure it to use the appropriate drivers for your chosen target API. Jumpgate ships with two default drivers: An OpenStack passthrough driver (primarily as an example) and a driver for the SoftLayer API. You may install or develop additional drivers to suit your particular needs.
+After you download Jumpgate, configure it to use the appropriate drivers for your chosen target API. 
 
-To configure Jumpgate to use a particular driver, open the `jumpgate.conf` file in the root of your installation and change the *driver* properties for each section you wish to use. If you don't want or need a particular set of endpoints, you can comment out that section and Jumpgate will not expose them.
+Jumpgate ships with two default drivers:
+
+1. An OpenStack passthrough driver (primarily as an example)
+2. A driver for the SoftLayer API
+
+You can install or develop additional drivers to suit your particular needs. To configure Jumpgate to use a particular driver, open the `jumpgate.conf` file in the root of your installation and change the *driver* properties for each section you wish to use. If you don't want or need a particular set of endpoints, you can comment out that section and Jumpgate will not expose them.
 
 Some drivers may require additional configuration via a `driver.conf` file. Consult your driver's documentation to determine if this is necessary.
 
