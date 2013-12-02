@@ -1,5 +1,5 @@
 from .availability_zones import AvailabilityZonesV2
-from .extensions import ExtensionsV2
+from .extensions import ExtensionsV2, ExtensionV2
 from .extra_specs import ExtraSpecsFlavorV2
 from .dns import DNSDomainsV2, DNSDomainEntryV2
 from .flavors import FlavorV2, FlavorsV2, FlavorsDetailV2
@@ -36,6 +36,7 @@ def setup_routes(app, disp):
     disp.set_handler('v2_availability_zone_detail', AvailabilityZonesV2())
 
     disp.set_handler('v2_extensions', ExtensionsV2())
+    disp.set_handler('v2_extension', ExtensionV2())
 
     disp.set_handler('v2_os_extra_specs_flavor', ExtraSpecsFlavorV2())
 
