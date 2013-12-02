@@ -296,7 +296,7 @@ Each section below includes compatibility references for the following component
 * Images (Glance)
 * Block Storage (Cinder)
 
-### Identity
+## Identity
 
 This table includes compatibility references for Identity (Keystone).
 
@@ -438,7 +438,7 @@ This table includes compatibility references for Identity (Keystone).
   </table>
 </div>
 
-### Compute
+## Compute
 
 This table includes compatibility references for Compute (Nova).
 
@@ -781,7 +781,7 @@ This table includes compatibility references for Compute (Nova).
   </table>
 </div>
 
-### Images
+## Images
 
 This table includes compatibility references for Images (Glance).
 
@@ -1013,7 +1013,7 @@ This table includes compatibility references for Images (Glance).
   </table>
 </div>
 
-### Block Storage
+## Block Storage
 
 This table includes compatibility references for Block Storage (Cinder).
 

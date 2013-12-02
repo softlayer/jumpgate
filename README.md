@@ -44,7 +44,7 @@ For readability purposes, we slotted the vars under the HTML files that referenc
 * `exclude` a list of files to omit from the _site directory (ex. LICENSE, .gitignore, README.md, CNAME)
 * `pygments` defaults to "true" (don't change)
 
-## Troubleshooting
+## Support
 
 Here are a few known issues and solutions that we came across during development. 
 
@@ -80,8 +80,9 @@ Getting a "Liquid Exception: Cannot find /bin/sh" on Windows. Make sure pygments
 
 ## Useful Resources
 
-* [Markable.in](http://markable.in): A powerful online markdown editor
-* [Recess](http://twitter.github.io/recess): Twitter's CSS hinter
-* [Spur](http://www.spurapp.com): A fun and easy way to critique your web pages
-* [jsFiddle](http://jsfiddle.net): Test your JavaScript, CSS, HTML or CoffeeScript online with this code editor
-* [jsBeautifier](http://jsbeautifier.org): Beautify, unpack or deobfuscate JavaScript and HTML, make JSON/JSONP readable, etc.
+* [Markable.in](http://markable.in)
+* [Recess](http://twitter.github.io/recess)
+* [Spur](http://www.spurapp.com)
+* [jsFiddle](http://jsfiddle.net)
+* [jsBeautifier](http://jsbeautifier.org)
+* [Setup Jekyll on Windows](http://yizeng.me/2013/05/10/setup-jekyll-on-windows)

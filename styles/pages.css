@@ -95,7 +95,7 @@ p {
 .docs-nav {
   background-color: #fff;
   background-image: linear-gradient(rgb(255,255,255), rgb(249,249,249));
-  border-color: #e5e5e5;
+  border-color: #eee;
   -webkit-box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
      -moz-box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
           box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
@@ -208,7 +208,7 @@ p {
 
 @media (min-width: 768px) {
   .footer {
-    padding: 2em 0;
+    padding: 3em 0;
     text-align: left;
   }
 }
@@ -292,7 +292,7 @@ a#twitter-icon {
 
 .masthead-links {
   padding: 0 65px 0 0;
-  margin: -21px 0 0;
+  margin: -25px 0 0;
   font-size: 14px;
   font-weight: 300;
   letter-spacing: 0;
@@ -450,8 +450,10 @@ h1,
 .h1 {
   padding-bottom: 6px;
   margin-bottom: 20px;
-  font-size: 36px;
+  font-size: 40px;
   border-bottom: 1px solid #e5e5e5;
+  font-family: "freight-sans-pro",helvetica,arial,sans-serif;
+  font-weight: bold;
 }
 
 h2,
@@ -459,7 +461,7 @@ h2,
   padding-bottom: 0;
   margin: 40px 0 10px;
   font-size: 30px;
-  font-weight: bold;
+  font-family: "dejarip",helvetica,arial,sans-serif;
 }
 
 h3,
@@ -467,6 +469,7 @@ h3,
   padding-top: 10px;
   font-size: 24px;
   font-weight: 700;
+  font-family: "dejarip",helvetica,arial,sans-serif;
 }
 
 h4,
@@ -474,6 +477,7 @@ h4,
   margin: 20px 0 4px;
   font-size: 18px;
   font-weight: 600;
+  font-family: "dejarip",helvetica,arial,sans-serif;
 }
 
 /*-- Grid --*/
@@ -525,7 +529,7 @@ pre {
   display: block;
   margin: 10px 0 20px;
   color: #262125;
-  background: #fafafa;
+  background: #f4f4f4;
   border: #e5e5e5 solid 1px;
   border-radius: 4px;
 }

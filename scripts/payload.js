@@ -13,7 +13,7 @@
 // Commitment (Chef-OpenStack)
 // Last commit date
 
-var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
     url: "https://api.github.com/repos/softlayer/chef-openstack/commits?",
     dataType: 'jsonp',
@@ -30,7 +30,7 @@ $.ajax({
 // Milestones (Chef-OpenStack)
 // Next milestone date and its title
 
-var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
     url: "https://api.github.com/repos/softlayer/chef-openstack/milestones?callback?",
     dataType: 'jsonp',
@@ -63,7 +63,7 @@ $.ajax({
 
 /* Hidden until repo goes public
 
-var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
     url: "https://api.github.com/repos/softlayer/jumpgate/commits?",
     dataType: 'jsonp',
@@ -82,7 +82,7 @@ $.ajax({
 
 /* Hidden until repo goes public
 
-var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
     url: "https://api.github.com/repos/softlayer/jumpgate/milestones?callback?",
     dataType: 'jsonp',
