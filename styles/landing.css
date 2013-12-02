@@ -20,7 +20,7 @@ body {
 
 h3,
 .h3 {
-  font-size: 1.65em;
+  font-size: 1.5em;
   font-family: "dejarip",helvetica,arial,sans-serif;
 }
 
@@ -98,9 +98,9 @@ p {
   color: #fff;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #49a08c;
+  background-color: #e86d45;
   background-image: none;
-  border: 1px solid #5ac6ad;
+  border: 1px solid #e86d45;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -152,8 +152,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     letter-spacing: 1px;
   }
   p {
-    font-size: 1.2em;
-    line-height: 1.35;
+    font-size: 1.25em;
+    line-height: 1.3;
   }
 }
 
@@ -191,16 +191,16 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 /*-- Background --*/
 
 .docs-home {
-  background: url("../images/bg@768.png");
+  background: url("../images/bg2@768.jpg");
   background-color: #262125;
   background-repeat: repeat;
 }
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg5@1280.png");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg5@1280.png");
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url("../images/bg5@1280.png");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url("../images/bg7@1280.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url("../images/bg7@1280.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url("../images/bg7@1280.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
@@ -248,7 +248,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     margin-left: 0;
     font-size: 5.5em;
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.1;
     letter-spacing: -3px;
     text-transform: none;
     font-family: "freight-sans-pro",helvetica,arial,sans-serif;
