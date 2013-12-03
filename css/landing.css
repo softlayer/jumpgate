@@ -20,8 +20,8 @@ body {
 
 h3,
 .h3 {
+  font-family: "dejarip", helvetica, arial, sans-serif;
   font-size: 1.5em;
-  font-family: "dejarip",helvetica,arial,sans-serif;
   text-rendering: optimizeLegibility;
 }
 
@@ -32,8 +32,8 @@ a:focus {
 }
 
 p {
+  font-family: "dejarip", helvetica, arial, sans-serif;
   font-size: 1.05em;
-  font-family: "dejarip",helvetica,arial,sans-serif;
   text-rendering: optimizeLegibility;
 }
 
@@ -44,8 +44,10 @@ p {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
+  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
   font-size: 12px;
   color: #fff;
+  text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
   background-color: transparent;
@@ -53,8 +55,6 @@ p {
   border: 1.5px solid #fff;
   border-radius: 4px;
   box-shadow: none;
-  font-family: "freight-sans-pro",helvetica,arial,sans-serif;
-  text-rendering: optimizeLegibility;
 }
 
 .btn-info {
@@ -62,8 +62,10 @@ p {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
+  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
   font-size: 12px;
   color: #262125;
+  text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
   background-color: #f4f4f4;
@@ -71,8 +73,6 @@ p {
   border: 1px solid #fafafa;
   border-radius: 4px;
   box-shadow: none;
-  font-family: "freight-sans-pro",helvetica,arial,sans-serif;
-  text-rendering: optimizeLegibility;
 }
 
 .btn-primary {
@@ -101,8 +101,10 @@ p {
   margin-top: 10px;
   margin-right: 10px;
   margin-bottom: 1.5em;
+  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
   font-size: 12px;
   color: #fff;
+  text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
   background-color: #49a08c;
@@ -110,8 +112,6 @@ p {
   border: 1px solid #5ac6ad;
   border-radius: 4px;
   box-shadow: none;
-  font-family: "freight-sans-pro",helvetica,arial,sans-serif;
-  text-rendering: optimizeLegibility;
 }
 
 a#menu-toggle.btn.btn-primary.btn-lg.toggle {
@@ -139,8 +139,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     line-height: inherit;
     letter-spacing: 1px;
     color: #fff;
-    border-color: #fff;
     background-color: transparent;
+    border-color: #fff;
   }
   .btn-info {
     width: 14em;
@@ -161,7 +161,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     letter-spacing: 1px;
   }
   p {
-    font-size: 1.3em;
+    font-size: 1.2em;
     line-height: 1.4;
   }
 }
@@ -224,24 +224,24 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   padding: 0;
   margin-top: -30px;
   margin-left: 0;
-  font-size: 3.25em;
+  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
+  font-size: 3em;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -1px;
-  text-transform: none;
-  font-family: "freight-sans-pro",helvetica,arial,sans-serif;
   text-rendering: optimizeLegibility;
+  text-transform: none;
   border-bottom: none;
 }
 
 .masthead .lead {
   margin-right: 0;
   margin-bottom: 1em;
-  font-size: 1.75em;
+  font-family: "dejarip", helvetica, arial, sans-serif;
+  font-size: 1.5em;
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: 0;
-  font-family: "dejarip",helvetica,arial,sans-serif;
   text-rendering: optimizeLegibility;
 }
 
@@ -257,21 +257,21 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     padding: 0;
     margin-top: 0;
     margin-left: 0;
-    font-size: 5.5em;
+    font-family: "freight-sans-pro", helvetica, arial, sans-serif;
+    font-size: 5.75em;
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -3px;
-    text-transform: none;
-    font-family: "freight-sans-pro",helvetica,arial,sans-serif;
     text-rendering: optimizeLegibility;
+    text-transform: none;
   }
   .masthead .lead {
     margin-right: 0;
-    margin-bottom: 1em;
-    font-size: 2.25em;
+    margin-bottom: 1.25em;
+    font-family: "dejarip", helvetica, arial, sans-serif;
+    font-size: 2.35em;
     line-height: 1.1;
     letter-spacing: -0.5px;
-    font-family: "dejarip",helvetica,arial,sans-serif;
     text-rendering: optimizeLegibility;
   }
 }
@@ -312,6 +312,6 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .row {
-    margin-bottom: 6em;
+    margin-bottom: 6.5em;
   }
 }

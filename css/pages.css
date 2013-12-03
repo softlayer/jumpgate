@@ -28,7 +28,7 @@
 body {
   position: relative;
   padding-top: 50px;
-  font-size: 14.5px;
+  font-size: 14.25px;
 }
 
 a {
@@ -53,7 +53,7 @@ ol {
 
 p {
   margin-bottom: 14px;
-  font-size: 14.5px;
+  font-size: 14.25px;
 }
 
 .table code {
@@ -94,7 +94,7 @@ p {
 
 .docs-nav {
   background-color: #fff;
-  background-image: linear-gradient(rgb(255,255,255), rgb(249,249,249));
+  background-image: linear-gradient(#ffffff, #f9f9f9);
   border-color: #eee;
   -webkit-box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
      -moz-box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
@@ -450,11 +450,11 @@ h1,
 .h1 {
   padding-bottom: 6px;
   margin-bottom: 20px;
+  font-family: "dejarip", helvetica, arial, sans-serif;
   font-size: 36px;
-  border-bottom: 1px solid #e5e5e5;
-  font-family: "dejarip",helvetica,arial,sans-serif;
-  text-rendering: optimizeLegibility;
   font-weight: bold;
+  text-rendering: optimizeLegibility;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 h2,
@@ -518,14 +518,16 @@ h4,
 /*-- Code snippets --*/
 
 code {
-  font-size: 94%;
+  font-size: 93%;
   color: #dd1144;
+  white-space: normal;
   background: transparent;
 }
 
 pre {
   display: block;
   margin: 10px 0 20px;
+  font-size: 93%;
   color: #262125;
   background: #f4f4f4;
   border: #e5e5e5 solid 1px;
@@ -533,18 +535,24 @@ pre {
 }
 
 output pre {
-  display: none;    /* hidden until > 480px */
+  display: none;
+  /* hidden until > 480px */
+
 }
 
 output pre.nowrap {
-  display: none;    /* hidden until > 1280px */
+  display: none;
+  /* hidden until > 1280px */
+
   white-space: pre;
 }
 
 /* Reveals code only when we have real estate to do so */
 
 @media (min-width: 481px) {
-  output pre {      /* hidden until > 480px */
+  output pre {
+    /* hidden until > 480px */
+  
     display: block;
     margin: -10px 0 20px;
     font-size: 13px;
@@ -555,7 +563,11 @@ output pre.nowrap {
   }
 }
 
-@media (min-width: 1280px) {     /* hidden until >= 1280px */
+@media (min-width: 1280px) {
+  {
+    /* hidden until >= 1280px */
+  
+  }
   output pre.nowrap {
     display: block;
     white-space: pre;
