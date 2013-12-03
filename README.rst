@@ -1,7 +1,7 @@
 About Jumpgate
 --------------
 
-Jumpgate is a library which acts as translation layer to convert incoming OpenStack calls to different cloud provider's API calls. 
+A simple library to make more clouds compatible with OpenStack.
 
 Visit the Jumpgate's `In-Flight Project Page`_ to learn more.
 
