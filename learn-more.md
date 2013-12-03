@@ -17,19 +17,19 @@ All our work is happening publicly on GitHub, and we invite everyone to join in.
 
 The OpenStack Compatibility Layer and SoftLayer drivers were created and are maintained by SoftLayer, an IBM Company. We welcome anyone to submit pull requests for fixes or new features, but ask that you follow a few simple steps.
 
-### Coding Standards
+## Coding Standards
 
 All changes should follow [PEP8](http://www.python.org/dev/peps/pep-0008) guidelines.
 
-### Pull Requests
+## Pull Requests
 
 Submit all pull requests for a reported issue or include a detailed explanation of what’s changing. 
 
-### Feature Requests
+## Feature Requests
 
 For new features, we’d prefer there already be an existing, approved issue in GitHub, but we’re flexible.
 
-### Issues
+## Issues
 
 Have an issue to report? Here are some guidelines to read first.
 
@@ -38,7 +38,7 @@ Have an issue to report? Here are some guidelines to read first.
 * Create a [gist](https://gist.github.com) of the code causing the issue, as well as any error messages, and include its URL in the issue report.
 * When you're ready, create a [new issue on GitHub]({{ site.open_issues }}).
 
-### Test Cases
+## Test Cases
 
 When contributing to a driver, your changes should not break any currently passing Tempest tests. If you introduce new functionality, please update the Tempest test whitelist to test the new functionality.
 

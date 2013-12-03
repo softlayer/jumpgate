@@ -37,6 +37,11 @@ p {
   text-rendering: optimizeLegibility;
 }
 
+.grid-slogan {
+  font-size: 90%;
+  margin-top: -12px;
+} 
+
 .btn-info:hover,
 .btn-info:focus,
 .btn-info:active {
@@ -50,9 +55,9 @@ p {
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: transparent;
+  background-color: #95a5a6;
   background-image: none;
-  border: 1.5px solid #fff;
+  border: 1.5px solid #95a5a6;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -107,9 +112,9 @@ p {
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #49a08c;
+  background-color: #16a085;
   background-image: none;
-  border: 1px solid #5ac6ad;
+  border: 1px solid #1abc9c;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -139,8 +144,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     line-height: inherit;
     letter-spacing: 1px;
     color: #fff;
-    background-color: transparent;
-    border-color: #fff;
+    background-color: #95a5a6;
+    border-color: #95a5a6;
   }
   .btn-info {
     width: 14em;
@@ -161,9 +166,12 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     letter-spacing: 1px;
   }
   p {
-    font-size: 1.2em;
-    line-height: 1.4;
+    font-size: 1.25em;
+    line-height: 0.5;
   }
+  .grid-slogan {
+    margin-top: 0;
+  } 
 }
 
 /*-- Navigation --*/
@@ -207,9 +215,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg8@1280.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg8@1280.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg8@1280.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;

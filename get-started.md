@@ -9,7 +9,7 @@ baseurl: "../"
 
 Jumpgate is a library, which acts as a translation layer to convert incoming OpenStack calls to different cloud provider's API calls.
 
-## Specification
+# Specification
 
 This library has been tested on **Python 2.7** and **Python 3.3**.
 

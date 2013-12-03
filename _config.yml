@@ -1,6 +1,6 @@
 # Project
 project: Jumpgate
-lead: "Because Landreth just had to ruin it for everybody"
+lead: "A simple library to make more clouds compatible with OpenStack"
 public_url: http://softlayer.github.io/jumpgate
 
 # GitHub
