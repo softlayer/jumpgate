@@ -6,3 +6,5 @@ _site
 Thumbs.db
 .cache
 tmp
+node_modules
+npm-debug.log
