@@ -7,7 +7,7 @@ baseurl: "../"
 
 # Summary
 
-The primary purpose of this project is to provide an easy way to add OpenStack API compatibility to existing cloud products. This is accomplished through a series of drivers that are specific to each cloud provider. If you're reading this document, it's assumed that you are interested in using this project to add OpenStack API compatibility via drivers.
+The primary purpose of this project is to provide an easy way to add OpenStack API compatibility to existing cloud products. This is accomplished through a series of drivers that are specific to each cloud provider. If you're reading this document, it's assumed that you are interested in using this project to add OpenStack API compatibility to an existing public or private cloud provider via drivers.
 
 ## Before Getting Started
 
@@ -21,7 +21,7 @@ Once you have these things, you are ready to begin building your driver.
 
 # Creating Your Driver
 
-There are many places where you could begin building your first driver, but we've generally found starting with the index and the Identity driver (Keystone) to be the easiest. We're going to cover how to build out a couple endpoints to give you an idea. From there, you can use the SoftLayer driver that ships with this project as a further example of other endpoints, should you need it.
+There are many places where you could begin building your first driver, but we've generally found starting with the compute index and the Identity driver (Keystone) to be the easiest. We're going to cover how to build out a couple endpoints to give you an idea. From there, you can use the SoftLayer driver that ships with this project as a further example of other endpoints, should you need it.
 
 Note that there are no restrictions on how you build your driver as long as you make it work with the Falcon framework. You are free to use whatever libraries, tools, and folder layout you are most comfortable with. This document will use the same style as the SoftLayer driver for consistency, but you are not required to do this for your driver.
 
@@ -29,33 +29,27 @@ Note that there are no restrictions on how you build your driver as long as you 
 
 The first step in creating your driver is deciding where to create it. You can create it almost anywhere, just as long as: 
 
-* It is within your Python path
-* It can be loaded by Jumpgate
+* It will be in your Python path
+* It can be imported by Jumpgate
 
-We'll start by creating an index driver within the `drivers` directory for Identity.
+We'll start by creating a small compute driver that implements the index endpoint (`/v2/`).
 
 {% highlight bash %}
-$ mkdir jumpgate/index/drivers/my_driver
+$ mkdir jumpgate/compute/drivers/my_driver
 {% endhighlight %}
 
-Next, we're going to create an \_\_init\_\_.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're going to use this as a module to load other modules based upon functional area. To start, make this the contents of your \_\_init\_\_.py file:
+Next, we're going to create an \_\_init\_\_.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're mostly going to be importing classes from other modules into scope. To start, make this the contents of your \_\_init\_\_.py file:
 
 {% highlight python %}
-from jumpgate.openstack import openstack_dispatcher
-from .endpoints.index import IndexV2
+from .index import IndexV2
 
-openstack_dispatcher.set_handler('v2_index', IndexV2())
-
-openstack_dispatcher.import_routes()
+def setup_routes(app, disp):
+    disp.set_handler('v2_index', IndexV2(disp))
 {% endhighlight %}
 
-Let's look at each section. The first thing we import is the `openstack_dispatcher`. Each area of the API has a dispatcher that knows about the routes/endpoints that OpenStack has. Jumpgate creates these dispatcher objects for you, uses them to determine which endpoints your driver supports, and doesn’t expose any functionality you haven’t created.
+Let's look at each section. First we import the IndexV2 class. This is the actual driver class we'll be developing for the /v2 endpoint. We'll cover it in a moment.
 
-The next import pulls in the IndexV2 class. This is the actual driver class we'll be developing for the /v2 endpoint. We'll cover it in a moment.
-
-Next, we see a call to the `set_handler()` method. This is how we tell the dispatcher object that we're going to expose a particular endpoint. The set_handler() method takes two arguments: The endpoint variable and the responder object for to handle that endpoint. Each endpoint that OpenStack supports has a unique variable name so that you can refer to it without having to know exactly what the URL is. You can either open up the dispatcher to get a list of all of the endpoint variables or check out our docs on GitHub to get a list there. The handler is the IndexV2() object we imported earlier.
-
-The last thing in the file is a call to `import_routes()`. This call tells the dispatcher that you've finished assigning handlers and that it should import the routes into Falcon's routes table. If you don't make this call, your endpoints won't be exposed and your driver won't do anything!
+Next, we implement a `setup_routes()` method which takes two arguments: `app` and `disp`. `app` is an instance of jumpgate.api.Jumpgate which is likely the only instance. This enables us to attach global hooks (before and after) and gives us a clean way to access jumpgate configuration. `disp` is an instance of `jumpgate.common.dispatcher.Dispatcher`. The `Dispatcher.set_handler()` method takes two arguments: The endpoint name and the responder object for to handle that endpoint. Each endpoint that OpenStack supports has a unique name so that you can refer to it without having to know exactly what the URL is. You can either open up the dispatcher to get a list of all of the endpoint names or check out our docs on GitHub to get a list there. The handler is an instance of IndexV2 that we imported earlier.
 
 ## The Index Endpoint
 
@@ -66,23 +60,18 @@ Now that the driver created, we need to build a response handler. As noted above
 
 When implementing things like the index endpoint (and the tokens endpoint later), it's extremely important to remember that the output is dependent upon what your driver *actually* supports. In this case, we're not going to worry about v3 support and we're going to add in v1 support (to make using Horizon easier).
 
-To start, let's create the endpoints directory we imported from earlier:
-
-{% highlight bash %}
-$ mkdir jumpgate/index/drivers/my_driver
-{% endhighlight %}
-
-Now within that, create the index.py where our IndexV2 class will reside. Start by putting the following within the index.py file:
+To start, create the index.py where our IndexV2 class will reside. Start by putting the following within the index.py file:
 
 {% highlight python %}
-from jumpgate.compute import compute_dispatcher
-
 class IndexV2(object):
+    def __init__(self, disp):
+        self.disp = disp
+
     def on_get(self, req, resp):
         versions = [{
             'id': 'v2.0',
             'links': [{
-                'href': compute_dispatcher.get_endpoint_url(req, 'v2_index'),
+                'href': self.disp.get_endpoint_url(req, 'v2_index'),
                 'rel': 'self'
             }],
             'status': 'CURRENT',
@@ -95,7 +84,7 @@ class IndexV2(object):
          }, {
              'id': 'v1.0',
              'links': [{
-                 'href': compute_dispatcher.get_endpoint_url(req, 'v1_index'),
+                 'href': self.disp.get_endpoint_url(req, 'v1_index'),
                  'rel': 'self'
              }],
              'status': 'ACTIVE',
@@ -110,11 +99,9 @@ class IndexV2(object):
          resp.body = {'versions': versions}
 {% endhighlight %}
 
-As with the driver above, we import a dispatcher, but notice that we're importing the `compute_dispatcher` (for Nova) and not the generic OpenStack one. We'll see why in a moment.
+Response handlers are plain objects and don't need to inherit from any particular class or interface. Per the [Compute API](http://api.openstack.org/api-ref-compute.html) documentation, we know that this endpoint handles the GET verb, so we create an `on_get()` function. This is how the [Falcon framework](http://falconframework.org) handles responses. The contents of the function are what we're going to do to serve this endpoint. This should look very similar to the sample within the API docs, though you'll see we've added the v1 support as we discussed and we're not hardcoding URLs.
 
-Next, we start the class itself. Response handlers are plain objects and don't need to inherit from any particular class or interface. Per the [Compute API](http://api.openstack.org/api-ref-compute.html) documentation, we know that this endpoint handles the GET verb, so we create an `on_get()` function. This is how the [Falcon framework](http://falconframework.org) handles responses. The contents of the function are what we're going to do to serve this endpoint. This should look very similar to the sample within the API docs, though you'll see we've added the v1 support as we discussed and we're not hardcoding URLs.
-
-Because dispatchers handle endpoints, they also know how to build URLs. This is handy because it provides a level of abstraction between your driver and the OpenStack API itself so that if something changed in the future or Jumpgate switched hosts, you shouldn't need to change any of your driver code. To get the URL for a particular endpoint, call the `get_endpoint_url()` method on the appropriate dispatcher and pass in the Falcon request object and the identifier for the endpoint. If the endpoint's URL has variables within it (as a lot of the Nova compute endpoints do), you pass them in as keyword arguments. The only exception to this is the tenant ID, which we'll discuss later. Each dispatcher only knows about its own endpoints (they're contained as properties of the object), so you need to use the appropriate one when building your endpoint URL.
+Because dispatchers handle endpoints, they also know how to build URLs. This is handy because it provides a level of abstraction between your driver and the OpenStack API itself so that if something changed in the future or Jumpgate switched hosts, you shouldn't need to change any of your driver code. To get the URL for a particular endpoint, call the `get_endpoint_url()` method on the dispatcher and pass in the Falcon request object and the identifier for the endpoint. If the endpoint's URL has variables within it (as a lot of the Nova compute endpoints do), you pass them in as keyword arguments. The only exception to this is the tenant ID, which we'll discuss later. Each dispatcher only knows about its own endpoints (they're contained as properties of the object), so you need to use the appropriate one when building your endpoint URL.
 
 The very last thing the function does is assign a body to the response object. This should conform to the expected format within the OpenStack API documentation. Assuming you provide a valid Python dictionary, Jumpgate will automatically JSON encode it for you. Note that the default status code is 200. If you need to assign a different status code, you should refer to the Falcon docs or look at the examples within the SoftLayer driver.
 
@@ -126,17 +113,15 @@ As with the index driver, we first need to create a few things. We'll do it in a
 
 {% highlight bash %}
 $ mkdir jumpgate/identity/drivers/my_driver
-$ mkdir jumpgate/identity/drivers/my_driver/endpoints
 {% endhighlight %}
 
 Create the \_\_init\_\_.py file
 
 {% highlight python %}
-from jumpgate.identity import identity_dispatcher
-from .endpoints.tokens import TokensV2
+from .tokens import TokensV2
 
-identity_dispatcher.set_handler('v2_tokens', TokensV2())
-identity_dispatcher.import_routes()
+def setup_routes(app, disp):
+    disp.set_handler('v2_tokens', TokensV2())
 {% endhighlight %}
 
 This should look familiar to you from the index example earlier. Next,
@@ -144,74 +129,75 @@ create the tokens.py file where the TokensV2 class will live.
 
 {% highlight python %}
 from datetime import datetime
-from jumpgate.identity import identity_dispatcher
-from jumpgate.openstack import openstack_dispatcher
 
 class TokensV2(object):
+    def __init__(self, app):
+        self.app = app
+
     def on_post(self, req, resp):
-    	body = req.stream.read().decode()
+        body = req.stream.read().decode()
 {% endhighlight %}
 
-This is the starting point for the driver. If you refer to the Identity API documentation, you'll see that the /v2.0/tokens endpoint responds to POST, so we've created an `on_post()` method. Next, we pull the body out of the request stream. After that, we should authenticate the user. The implementation of this is going to be specific to your API, but hopefully you know how to authenticate someone. We're going to assume that you've successfully authenticated the person and put information about him into a dictionary called *user* and information about his tenant account into a dictionary called *account*. From there, we just need to build the response body based upon what the driver supports and what the API expects.
+This is the starting point for the driver. If you refer to the Identity API documentation, you'll see that the /v2.0/tokens endpoint responds to POST, so we've created an `on_post()` method. Next, we pull the body out of the request stream. After that, we should authenticate the user. The implementation of this is going to be specific to your API, but hopefully you know how to authenticate someone. We're going to assume that you've successfully authenticated the person and put information about him into a dictionary called *user*, information about his tenant account into a dictionary called *account* and a string which represents enough information to represent an authenticated session called *token*. From there, we just need to build the response body based upon what the driver supports and what the API expects.
 
 {% highlight python %}
-index_url = identity_dispatcher.get_endpoint_url(req, 'v2_auth_index')
-v2_url = openstack_dispatcher.get_endpoint_url(req, 'v2_index')
+        index_url = self.app.get_dispatcher('identity').get_endpoint_url(req, 'v2_auth_index')
+        v2_url = self.app.get_dispatcher('compute').get_endpoint_url(req, 'v2_index')
 
-service_catalog = [{
-   'endpoint_links': [],
-   'endpoints': [{
-        'region': 'RegionOne',
-        'publicURL': v2_url + '/%s' % account['id'],
-        'privateURL': v2_url + '/v2/%s' % account['id'],
-        'adminURL': v2_url + '/v2/%s' % account['id'],
-        'internalURL': v2_url + '/v2/%s' % account['id'],
-        'id': 1,
-   }],
-   'type': 'compute',
-   'name': 'nova',
-}, {
-   'endpoint_links': [],
-   'endpoints': [
-       {
-           'region': 'RegionOne',
-           'publicURL': index_url,
-           'privateURL': index_url,
-           'adminURL': index_url,
-           'internalURL': index_url,
-           'id': 1,
-       },
-   ],
-   'type': 'identity',
-   'name': 'keystone',
-},
-]
-
-expiration = datetime.datetime.now() + datetime.timedelta(days=1)
-access = {
-    'token': {
-        'expires': expiration.isoformat(),
-        'id': token,
-        'tenant': {
-            'id': account['id'],
-            'enabled': True,
-            'description': account['companyName'],
-            'name': account['id'],
+        service_catalog = [{
+           'endpoint_links': [],
+           'endpoints': [{
+                'region': 'RegionOne',
+                'publicURL': v2_url + '/%s' % account['id'],
+                'privateURL': v2_url + '/v2/%s' % account['id'],
+                'adminURL': v2_url + '/v2/%s' % account['id'],
+                'internalURL': v2_url + '/v2/%s' % account['id'],
+                'id': 1,
+           }],
+           'type': 'compute',
+           'name': 'nova',
+        }, {
+           'endpoint_links': [],
+           'endpoints': [
+               {
+                   'region': 'RegionOne',
+                   'publicURL': index_url,
+                   'privateURL': index_url,
+                   'adminURL': index_url,
+                   'internalURL': index_url,
+                   'id': 1,
+               },
+           ],
+           'type': 'identity',
+           'name': 'keystone',
         },
-    },
-    'serviceCatalog': service_catalog,
-    'user': {
-        'username': user['username'],
-        'id': user['id'],
-        'roles': [
-            {'name': 'user'},
-        ],
-        'role_links': [],
-        'name': user['username'],
-    },
-}
+        ]
 
-resp.body = {'access': access}
+        expiration = datetime.datetime.now() + datetime.timedelta(days=1)
+        access = {
+            'token': {
+                'expires': expiration.isoformat(),
+                'id': token,
+                'tenant': {
+                    'id': account['id'],
+                    'enabled': True,
+                    'description': account['companyName'],
+                    'name': account['id'],
+                },
+            },
+            'serviceCatalog': service_catalog,
+            'user': {
+                'username': user['username'],
+                'id': user['id'],
+                'roles': [
+                    {'name': 'user'},
+                ],
+                'role_links': [],
+                'name': user['username'],
+            },
+        }
+
+        resp.body = {'access': access}
 {% endhighlight %}
 
 You'll notice that this is a lot smaller than what you get back from a native OpenStack Keystone call and that's because we're not going to support many modules right now. As you add more drivers, you'll want to update this dictionary. Lastly, as before, we assign it to the response body and we're done.
@@ -222,51 +208,39 @@ Now that we've built a couple drivers, we need to tell Jumpgate to use them. Thi
 
 {% highlight bash %}
 [identity]
-driver=jumpgate.identity.drivers.openstack.identity
+driver=jumpgate.identity.drivers.openstack
 
 [compute]
-driver=jumpgate.compute.drivers.openstack.compute
+driver=jumpgate.compute.drivers.openstack
 
 [image]
-driver=jumpgate.image.drivers.openstack.image
+driver=jumpgate.image.drivers.openstack
 
 [block_storage]
-driver=jumpgate.block_storage.drivers.openstack.block_storage
-
-[openstack]
-driver=jumpgate.openstack.drivers.openstack.core
+driver=jumpgate.block_storage.drivers.openstack
 
 [network]
-driver=jumpgate.network.drivers.openstack.network
-
-[shared]
-driver=jumpgate.shared.drivers.openstack.network
-{% endhighlight %}
+driver=jumpgate.network.drivers.openstack
 
 
-The file is in standard [ConfigParser](http://docs.python.org/3.3/library/configparser.html) format and should be easy to follow. All we need to do is replace the driver line for both OpenStack and Identity so that it uses the module path for our drivers instead.
+The file is in standard [ConfigParser](http://docs.python.org/3.3/library/configparser.html) format and should be easy to follow. All we need to do is replace the driver line for both Compute and Identity so that it uses the module path for our drivers instead.
 
 {% highlight bash %}
 [identity]
 driver=jumpgate.identity.drivers.my_driver
 
 [compute]
-driver=jumpgate.compute.drivers.openstack.compute
+driver=jumpgate.compute.drivers.my_driver
 
 [image]
-driver=jumpgate.image.drivers.openstack.image
+driver=jumpgate.image.drivers.openstack
 
 [block_storage]
 driver=jumpgate.block_storage.drivers.openstack.block_storage
 
-[openstack]
-driver=jumpgate.openstack.drivers.my_driver
-
 [network]
-driver=jumpgate.network.drivers.openstack.network
+driver=jumpgate.network.drivers.openstack
 
-[shared]
-driver=jumpgate.shared.drivers.openstack.network
 {% endhighlight %}
 
 ## Next Steps
@@ -289,7 +263,7 @@ Building any compatibility driver is going to be a large amount of work for any 
 
 # Compatibility
 
-Each section below includes compatibility references for the following components.
+Each section below includes compatibility references for the following components for the SoftLayer driver.
 
 * Identity (Keystone)
 * Compute (Nova)
@@ -350,9 +324,9 @@ This table includes compatibility references for Identity (Keystone).
 
         <td>v2.0/tokens</td>
 
-        <td>Partial</td>
+        <td>Yes</td>
 
-        <td>The endpoints that are returned are currently hardcoded</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -412,7 +386,7 @@ This table includes compatibility references for Identity (Keystone).
 
         <td>Yes</td>
 
-        <td>The return values need to be expanded, but basic data is accurate.</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -472,7 +446,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>v2/{tenant_id}/extensions</td>
 
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -482,7 +456,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>v2/{tenant_id}/extensions/{alias}</td>
 
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -494,8 +468,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>Mocked</td>
 
-        <td>Hardcoded to garbage data. This needs major discussion because it doesn't match our business model. This would effect Horizon's
-        neat graphical displays.</td>
+        <td>Hardcoded to garbage data. This would effect Horizon's neat graphical displays.</td>
       </tr>
 
       <tr>
@@ -525,7 +498,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>Yes</td>
 
-        <td>Only some of the optional response parameters are supported</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -565,7 +538,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>First implementation on 'metadata' branch</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -575,7 +548,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>First implementation on 'metadata' branch</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -585,7 +558,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>First implementation on 'metadata' branch</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -595,7 +568,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>First implementation on 'metadata' branch</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -605,7 +578,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>First implementation on 'metadata' branch</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -615,7 +588,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>First implementation on 'metadata' branch</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -625,7 +598,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>Yes</td>
 
-        <td>Missing: suspend/unsuspend/console log/change password/resize/confirmResize/revertResize/createImage</td>
+        <td>Missing: suspend/unsuspend/console log/change password/resize/confirmResize/revertResize</td>
       </tr>
 
       <tr>
@@ -635,7 +608,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>???</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -645,7 +618,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>???</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -655,7 +628,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>Yes</td>
 
-        <td>How we handle images needs to be better determined</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -665,7 +638,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>Yes</td>
 
-        <td>How we handle images needs to be better determined</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -685,7 +658,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>No</td>
 
-        <td>Missing: Importing images</td>
+        <td>Missing: Importing images, creating 'empty' image records to be populated later</td>
       </tr>
 
       <tr>
@@ -917,7 +890,7 @@ This table includes compatibility references for Images (Glance).
 
         <td>Yes</td>
 
-        <td>Simple to implement based on /v1/images/detail</td>
+        <td></td>
       </tr>
 
       <tr>
