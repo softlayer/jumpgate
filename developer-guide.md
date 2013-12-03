@@ -258,7 +258,7 @@ Building any compatibility driver is going to be a large amount of work for any 
 
 * Within the jumpgate.common directory, there are several libraries for providing common, reusable functionality for things like error handling, formatting, and nested dictionary management. If you find yourself using something else repeatedly, please let us know so that we can include it in the common toolset.
 * The dispatcher includes a full set of before and after request hooks that allow you to perform common actions immediately prior to or after acting upon a request. This can allow you to centralize some common functionality. For example, the SoftLayer driver uses it to automatically set the `tenant_id variable` on routes that need it. All you have to do is set the `tenant_id property` within the request's environment dictionary and the dispatcher will automatically include it.
-* The dispatcher objects include a method called `get_unused_endpoints()` that will provide a list of all endpoints the dispatcher knows about that you haven't attached handlers to. If you want to get an idea of your coverage.`.
+* The dispatcher objects include a method called `get_unused_endpoints()` that will provide a list of all endpoints the dispatcher knows about that you haven't attached handlers to. If you want to get an idea of your coverage.
 
 {% include additional-docs.md %}
 
