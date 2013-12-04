@@ -9,29 +9,20 @@ baseurl: "./"
                 <h1>{{ site.project }}</h1>
     <p class="lead">{{ site.lead }}</p>
       <div class="row">
-        
         <div class="col-lg-4 col-md-4">  
-          <a href="{{ site.milestones }}"><h3><i class="fa fa-rocket fa-3x"></i></h3></a>
-            
-          <p><b><span id="milestone-title"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span> launches publicly on <span id="milestone-date"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span></b></p>
-          
-          <p class="grid-slogan"><a href="{{ site.milestones }}"><i class="fa fa-chevron-circle-right"></i>See what else is coming soon</a></b></p>
+          <h3><a href="{{ site.milestones }}"><i class="fa fa-rocket fa-3x"></i></a></h3>
+            <p><b><span id="milestone-title"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span> launches publicly on <span id="milestone-date"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span></b></p>
+            <p class="grid-slogan"><a href="{{ site.milestones }}"><i class="fa fa-chevron-circle-right"></i>See what else is coming soon</a></p>
         </div>
-        
         <div class="col-lg-4 col-md-4">
-          <a href="{{ site.commits }}"><h3><i class="fa fa-code fa-3x"></i></h3></a>
-          
-          <p><b>Last code update was released on <span id="commit-date"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span></b></p>
-
-          <p class="grid-slogan"><a href="{{ site.repo }}"><i class="fa fa-chevron-circle-right"></i>Watch our repo to get updates</a></p>
+          <h3><a href="{{ site.commits }}"><i class="fa fa-code fa-3x"></i></a>></h3>
+            <p><b>Last code update was released on <span id="commit-date"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span></b></p>
+            <p class="grid-slogan"><a href="{{ site.repo }}"><i class="fa fa-chevron-circle-right"></i>Watch our repo to get updates</a></p>
         </div>
-        
         <div class="col-lg-4 col-md-4">
-          <a href="{{ site.pulls }}"><h3><i class="fa fa-github fa-3x"></i></h3>
-
-          <p><b><span id="closed-pulls"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span> contributors have made contributions</b></p>
-          
-          <p class="grid-slogan"><a href="{{ page.baseurl }}learn-more#contributor_guidelines" id="heres-how"><i class="fa fa-chevron-circle-right"></i>Find out how you can help</a></p>
+          <h3><a href="{{ site.pulls }}"><i class="fa fa-github fa-3x"></i></a></h3>
+            <p><b><span id="closed-pulls"><img src="{{ page.baseurl }}images/spinner.gif" alt="Waiting..."></span> contributions have made to {{ site.project }}</b></p>
+            <p class="grid-slogan"><a href="{{ page.baseurl }}learn-more#contributor_guidelines" id="heres-how"><i class="fa fa-chevron-circle-right"></i>Find out how you can help</a></p>
         </div>
       </div>
     <a class="btn btn-info btn-lg" id="get-started" href="{{ page.baseurl }}get-started"><i class="fa fa-wrench"></i>Get Started</a>
