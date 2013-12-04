@@ -38,7 +38,7 @@ p {
 }
 
 .grid-slogan {
-  font-size: 90%;
+  font-size: 92%;
   margin-top: -12px;
 } 
 
@@ -207,14 +207,14 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 /*-- Background --*/
 
-.docs-home {
+.docs-home, .masthead {
   background: url("../images/bg@768.png");
   background-color: #262125;
   background-repeat: repeat;
 }
 
 @media (min-width: 768px) {
-  .docs-home {
+  .docs-home, .masthead {
     background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
     background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg7@1280.jpg");
