@@ -11,11 +11,11 @@
  */
 
 $(function () {
-    $("#loading").ajaxStart(function () {
+    $("#gitstatus").ajaxStart(function () {
         $(this).show();
     });
-
-    $("#loading").ajaxStop(function () {
+    
+    $("#gitstatus").ajaxStop(function () {
           $(this).hide();
     });
 });
