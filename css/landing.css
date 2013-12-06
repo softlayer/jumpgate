@@ -37,9 +37,21 @@ p {
   text-rendering: optimizeLegibility;
 }
 
+p#milestone-status {
+  margin-bottom: 0;
+}
+
+p#commit-status {
+  margin-bottom: 0;
+}
+
+p#pull-status {
+  margin-bottom: 0;
+}
+
 .grid-slogan {
   font-size: 92%;
-  margin-top: -12px;
+  margin-top: 0;
 } 
 
 .btn-info:hover,
@@ -103,7 +115,6 @@ p {
 #get-started.btn.btn-info.btn-lg {
   width: 12em;
   padding: 1em;
-  margin-top: 10px;
   margin-right: 10px;
   margin-bottom: 1.5em;
   font-family: "freight-sans-pro", helvetica, arial, sans-serif;
@@ -169,9 +180,15 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     font-size: 1.25em;
     line-height: 0.5;
   }
-  .grid-slogan {
-    margin-top: 0;
-  } 
+  p#milestone-status {
+    margin-bottom: 10px;
+  }
+  p#commit-status {
+    margin-bottom: 10px;
+  }
+  p#pull-status {
+    margin-bottom: 10px;
+  }
 }
 
 /*-- Navigation --*/
@@ -296,11 +313,17 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   margin-right: -18em;
   overflow-y: auto;
   background: none repeat scroll 0 0 #777;
-  -webkit-transition: all .4s ease 0;
-     -moz-transition: all .4s ease 0;
-      -ms-transition: all .4s ease 0;
-       -o-transition: all .4s ease 0;
-          transition: all .4s ease 0;
+  -webkit-transition: all .8s ease 0;
+     -moz-transition: all .8s ease 0;
+      -ms-transition: all .8s ease 0;
+       -o-transition: all .8s ease 0;
+          transition: all .8s ease 0;
+}
+
+#sidebar-wrapper.active {
+    right: 18em;
+    width: 18em;
+    top: inherit;
 }
 
 .sidebar-nav li a {

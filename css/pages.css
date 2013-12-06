@@ -746,22 +746,23 @@ button#version-selector.btn.dropdown-toggle {
   margin-top: 57px;
   margin-right: -18em;
   overflow-y: auto;
-  background: none repeat scroll 0 0 #262125;
-  -webkit-transition: all .4s ease 0;
-     -moz-transition: all .4s ease 0;
-      -ms-transition: all .4s ease 0;
-       -o-transition: all .4s ease 0;
-          transition: all .4s ease 0;
+  background: none repeat scroll 0 0 #777;
+  -webkit-transition: all .8s ease 0;
+     -moz-transition: all .8s ease 0;
+      -ms-transition: all .8s ease 0;
+       -o-transition: all .8s ease 0;
+          transition: all .8s ease 0;
 }
 
 #sidebar-wrapper.active {
   right: 18em;
   width: 18em;
-  -webkit-transition: all .4s ease 0;
-     -moz-transition: all .4s ease 0;
-      -ms-transition: all .4s ease 0;
-       -o-transition: all .4s ease 0;
-          transition: all .4s ease 0;
+  top: 10px;
+  -webkit-transition: all .8s ease 0;
+     -moz-transition: all .8s ease 0;
+      -ms-transition: all .8s ease 0;
+       -o-transition: all .8s ease 0;
+          transition: all .8s ease 0;
 }
 
 .sidebar-nav {
@@ -781,7 +782,7 @@ button#version-selector.btn.dropdown-toggle {
 
 .sidebar-nav li a {
   display: block;
-  color: #ccc;
+  color: #e5e5e5;
   text-decoration: none;
 }
 
@@ -820,8 +821,8 @@ button#version-selector.btn.dropdown-toggle {
   right: 4px;
   z-index: 1;
   padding-right: 10px;
-  background-color: #262125;
-  border-color: #262125;
+  background-color: #777;
+  border-color: #777;
 }
 
 .toggle {

@@ -28,6 +28,7 @@ twitter: http://twitter.com/softlayerdevs
 permalink: pretty
 exclude: [".gitignore", "README.md", "LICENSE"]
 pygments: true
+safe: false
 
 # Google Analytics
 ga_tracking_id: UA-40037365-2
