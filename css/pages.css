@@ -28,7 +28,7 @@
 body {
   position: relative;
   padding-top: 50px;
-  font-size: 14.25px;
+  font-size: 14px;
 }
 
 a {
@@ -42,7 +42,7 @@ a:focus {
 }
 
 blockquote p {
-  font-size: 13.5px;
+  font-size: 13px;
   color: #777;
 }
 
@@ -53,7 +53,7 @@ ol {
 
 p {
   margin-bottom: 14px;
-  font-size: 14.25px;
+  font-size: 14px;
 }
 
 .table code {
@@ -202,7 +202,7 @@ p {
 .footer a,
 .footer a:hover,
 .footer a:focus {
-  color: #999;
+  color: #ccc;
   text-decoration: none;
 }
 
@@ -374,7 +374,7 @@ a#twitter-icon {
   padding: 5px 20px;
   font-size: 14px;
   letter-spacing: 0;
-  color: #999;
+  color: #7f8c8d;
 }
 
 .sidebar .nav > li > a:hover,
@@ -746,7 +746,7 @@ button#version-selector.btn.dropdown-toggle {
   margin-top: 57px;
   margin-right: -18em;
   overflow-y: auto;
-  background: none repeat scroll 0 0 #aaa;
+  background: none repeat scroll 0 0 #262125;
   -webkit-transition: all .4s ease 0;
      -moz-transition: all .4s ease 0;
       -ms-transition: all .4s ease 0;
@@ -781,7 +781,7 @@ button#version-selector.btn.dropdown-toggle {
 
 .sidebar-nav li a {
   display: block;
-  color: #fff;
+  color: #ccc;
   text-decoration: none;
 }
 
@@ -820,8 +820,8 @@ button#version-selector.btn.dropdown-toggle {
   right: 4px;
   z-index: 1;
   padding-right: 10px;
-  background-color: #aaa;
-  border-color: #aaa;
+  background-color: #262125;
+  border-color: #262125;
 }
 
 .toggle {

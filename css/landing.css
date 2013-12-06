@@ -112,9 +112,9 @@ p {
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #16a085;
+  background-color: #297FC7;
   background-image: none;
-  border: 1px solid #1abc9c;
+  border: 1px solid #3498db;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -303,12 +303,16 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
           transition: all .4s ease 0;
 }
 
+.sidebar-nav li a {
+    color: #e5e5e5;
+}
+
 #menu-toggle {
   position: fixed;
   top: 10px;
   right: 4px;
   z-index: 1;
-  background-color: #f4f4f4;
+  background-color: #fff;
   border-color: #fafafa;
 }
 
