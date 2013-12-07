@@ -1,11 +1,12 @@
 from functools import wraps
-import sys
-import traceback
+import logging
 
 from SoftLayer import SoftLayerAPIError, TransportError
 
 from jumpgate.common.error_handling import (
     bad_request, not_found, compute_fault, unauthorized)
+
+LOG = logging.getLogger(__name__)
 
 FAULT_CODE_ERRORS = [
     ('SoftLayer_Exception_MissingCreationProperty', None, bad_request),
@@ -45,10 +46,12 @@ def convert_errors(handler):
                                    message=msg or e.faultCode,
                                    details=e.faultString)
 
-            traceback.print_exc(file=sys.stderr)
-            return compute_fault(
-                resp, message=e.faultCode, details=e.faultString)
+            LOG.exception(e)
+            return compute_fault(resp,
+                                 message=e.faultCode,
+                                 details=e.faultString)
         except TransportError as e:
+            LOG.exception(e)
             return compute_fault(resp,
                                  message='Service Unavailable',
                                  details='Service Unavailable')
