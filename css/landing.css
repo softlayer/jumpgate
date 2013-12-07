@@ -12,15 +12,20 @@
 
 /*-- Scaffolding --*/
 
-html,
-body {
+html {
   width: 100%;
   height: 100%;
 }
 
+body {
+  width: 100%;
+  height: 100%;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
 h3,
 .h3 {
-  font-family: "dejarip", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 1.5em;
   text-rendering: optimizeLegibility;
 }
@@ -32,7 +37,7 @@ a:focus {
 }
 
 p {
-  font-family: "dejarip", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans", Verdana, sans-serif;
   font-size: 1.05em;
   text-rendering: optimizeLegibility;
 }
@@ -61,7 +66,7 @@ p#pull-status {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
-  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 12px;
   color: #fff;
   text-rendering: optimizeLegibility;
@@ -79,7 +84,7 @@ p#pull-status {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
-  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 12px;
   color: #262125;
   text-rendering: optimizeLegibility;
@@ -117,15 +122,15 @@ p#pull-status {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
-  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 12px;
   color: #fff;
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #297FC7;
+  background-color: #2779ba;
   background-image: none;
-  border: 1px solid #3498db;
+  border: 1px solid #2a81c7;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -140,7 +145,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     height: 3.5em;
     margin-top: 0;
     margin-right: 1em;
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: inherit;
     letter-spacing: 1px;
   }
@@ -151,18 +156,18 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     height: 3.5em;
     margin-top: 0;
     margin-right: 1em;
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: inherit;
     letter-spacing: 1px;
     color: #fff;
-    background-color: #95a5a6;
-    border-color: #95a5a6;
+    background-color: #2570ad;
+    border-color: #2a81c7;
   }
   .btn-info {
     width: 14em;
     height: 3.5em;
     margin-right: 1.5em;
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: inherit;
     letter-spacing: 1px;
   }
@@ -172,13 +177,13 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     width: 14em;
     height: 3.5em;
     margin-right: 1.5em;
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: inherit;
     letter-spacing: 1px;
   }
   p {
-    font-size: 1.25em;
-    line-height: 0.5;
+    font-size: 1.13em;
+    line-height: 1;
   }
   p#milestone-status {
     margin-bottom: 10px;
@@ -224,14 +229,14 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 /*-- Background --*/
 
-.docs-home, .masthead {
+.docs-home {
   background: url("../images/bg@768.png");
   background-color: #262125;
   background-repeat: repeat;
 }
 
 @media (min-width: 768px) {
-  .docs-home, .masthead {
+  .docs-home {
     background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1280.jpg");
     background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1280.jpg");
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1280.jpg");
@@ -249,7 +254,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   padding: 0;
   margin-top: -30px;
   margin-left: 0;
-  font-family: "freight-sans-pro", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 3em;
   font-weight: 700;
   line-height: 1;
@@ -262,7 +267,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 .masthead .lead {
   margin-right: 0;
   margin-bottom: 1em;
-  font-family: "dejarip", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 1.5em;
   font-weight: 500;
   line-height: 1.1;
@@ -282,19 +287,19 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     padding: 0;
     margin-top: 0;
     margin-left: 0;
-    font-family: "freight-sans-pro", helvetica, arial, sans-serif;
-    font-size: 5.75em;
+    font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    font-size: 5em;
     font-weight: 700;
     line-height: 1.1;
-    letter-spacing: -3px;
+    letter-spacing: -5px;
     text-rendering: optimizeLegibility;
     text-transform: none;
   }
   .masthead .lead {
     margin-right: 0;
     margin-bottom: 1.25em;
-    font-family: "dejarip", helvetica, arial, sans-serif;
-    font-size: 2.35em;
+    font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    font-size: 2em;
     line-height: 1.1;
     letter-spacing: -0.5px;
     text-rendering: optimizeLegibility;
@@ -313,17 +318,11 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   margin-right: -18em;
   overflow-y: auto;
   background: none repeat scroll 0 0 #777;
-  -webkit-transition: all .8s ease 0;
-     -moz-transition: all .8s ease 0;
-      -ms-transition: all .8s ease 0;
-       -o-transition: all .8s ease 0;
-          transition: all .8s ease 0;
-}
-
-#sidebar-wrapper.active {
-    right: 18em;
-    width: 18em;
-    top: inherit;
+  -webkit-transition: all .6s ease 0;
+     -moz-transition: all .6s ease 0;
+      -ms-transition: all .6s ease 0;
+       -o-transition: all .6s ease 0;
+          transition: all .6s ease 0;
 }
 
 .sidebar-nav li a {

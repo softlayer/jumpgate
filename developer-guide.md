@@ -5,29 +5,31 @@ slug: developer-guide
 baseurl: "../"
 ---
 
-# Summary
+# Introduction
 
-The primary purpose of this project is to provide an easy way to add OpenStack API compatibility to existing cloud products. This is accomplished through a series of drivers that are specific to each cloud provider. If you're reading this document, it's assumed that you are interested in using this project to add OpenStack API compatibility to an existing public or private cloud provider via drivers.
+Our intent is to provide an easy way to make the OpenStack API compatible with any existing cloud products. This is accomplished through a series of drivers that are specific to each cloud provider.
 
-## Before Getting Started
+If you're reading this, we assume you’re interested in adding OpenStack API compatible driver to an existing public or private cloud provider.
 
-When creating a new driver, there are only a few things you need to understand:
+## Before You Start
 
-1. Jumpgate has been written primarily for Python 2.7/Python 3.3 and assumes your drivers will work with these versions as well.
-2. Drivers are built as a series of objects for the [Falcon framework](http://falconframework.org). You should be familiar with both Falcon and REST APIs in general.
-3. You need to be familiar with the expected [OpenStack API](http://api.openstack.org/api-ref.html) JSON. Jumpgate will provide the endpoint mappings for you, but does not handle building valid responses.
+Here are a few things to take into account before creating a new driver:
 
-Once you have these things, you are ready to begin building your driver.
+1. Jumpgate was written primarily for Python 2.7/Python 3.3. Your drivers will need to work with these versions as well.
+2. Drivers are created as a series of objects for the [Falcon framework](http://falconframework.org). You should be familiar with both Falcon and REST APIs in general.
+3. You need to be familiar with the expected [OpenStack API](http://api.openstack.org/api-ref.html) JSON. Jumpgate provides the endpoint mappings for you, but doesn’t handle the building of valid responses.
+
+Once you have these things, you’re ready to begin creating your driver.
 
 # Creating Your Driver
 
-There are many places where you could begin building your first driver, but we've generally found starting with the compute index and the Identity driver (Keystone) to be the easiest. We're going to cover how to build out a couple endpoints to give you an idea. From there, you can use the SoftLayer driver that ships with this project as a further example of other endpoints, should you need it.
+You have many places where you could begin creating your first driver, but we've found starting with the compute index and the Identity driver (Keystone) to be the easiest. We're going to cover how to create a couple endpoints to give you an idea. From there, you can use the SoftLayer driver as a further example of other endpoints, should you need it.
 
-Note that there are no restrictions on how you build your driver as long as you make it work with the Falcon framework. You are free to use whatever libraries, tools, and folder layout you are most comfortable with. This document will use the same style as the SoftLayer driver for consistency, but you are not required to do this for your driver.
+Note that there are no restrictions on how you create your driver as long as you make it work with the Falcon framework. You are free to use whatever libraries, tools, and folder layout you are most comfortable with. For consistency, we’ll use the same style as the SoftLayer driver, but you are not required to do this for your driver.
 
 ## Getting Started
 
-The first step in creating your driver is deciding where to create it. You can create it almost anywhere, just as long as: 
+The first step in creating your driver is deciding where to create it. You can create it almost anywhere as long as: 
 
 * It will be in your Python path
 * It can be imported by Jumpgate
@@ -38,7 +40,9 @@ We'll start by creating a small compute driver that implements the index endpoin
 $ mkdir jumpgate/compute/drivers/my_driver
 {% endhighlight %}
 
-Next, we're going to create an \_\_init\_\_.py within that directory. This is the file that Jumpgate is going to load. We could jam all of our code into it, but that's going to get extremely large for some projects, such as Nova Compute. So instead, we're mostly going to be importing classes from other modules into scope. To start, make this the contents of your \_\_init\_\_.py file:
+Next, we're going to create a \_\_init\_\_.py within that directory. Here, you could jam all of your code into it, but that's going to get extremely clunky for some projects (such as Nova Compute). And since Jumpgate loads this file, we're going to be importing classes from other modules instead.
+
+To start, make this the contents of your \_\_init\_\_.py file:
 
 {% highlight python %}
 from .index import IndexV2
@@ -141,63 +145,61 @@ class TokensV2(object):
 This is the starting point for the driver. If you refer to the Identity API documentation, you'll see that the /v2.0/tokens endpoint responds to POST, so we've created an `on_post()` method. Next, we pull the body out of the request stream. After that, we should authenticate the user. The implementation of this is going to be specific to your API, but hopefully you know how to authenticate someone. We're going to assume that you've successfully authenticated the person and put information about him into a dictionary called *user*, information about his tenant account into a dictionary called *account* and a string which represents enough information to represent an authenticated session called *token*. From there, we just need to build the response body based upon what the driver supports and what the API expects.
 
 {% highlight python %}
-        index_url = self.app.get_dispatcher('identity').get_endpoint_url(req, 'v2_auth_index')
-        v2_url = self.app.get_dispatcher('compute').get_endpoint_url(req, 'v2_index')
+index_url = self.app.get_dispatcher('identity').get_endpoint_url(req, 'v2_auth_index')
+v2_url = self.app.get_dispatcher('compute').get_endpoint_url(req, 'v2_index')
 
-        service_catalog = [{
-           'endpoint_links': [],
-           'endpoints': [{
-                'region': 'RegionOne',
-                'publicURL': v2_url + '/%s' % account['id'],
-                'privateURL': v2_url + '/v2/%s' % account['id'],
-                'adminURL': v2_url + '/v2/%s' % account['id'],
-                'internalURL': v2_url + '/v2/%s' % account['id'],
-                'id': 1,
-           }],
-           'type': 'compute',
-           'name': 'nova',
-        }, {
-           'endpoint_links': [],
-           'endpoints': [
-               {
-                   'region': 'RegionOne',
-                   'publicURL': index_url,
-                   'privateURL': index_url,
-                   'adminURL': index_url,
-                   'internalURL': index_url,
-                   'id': 1,
-               },
-           ],
-           'type': 'identity',
-           'name': 'keystone',
+service_catalog = [{
+    'endpoint_links': [],
+    'endpoints': [{
+        'region': 'RegionOne',
+        'publicURL': v2_url + '/%s' % account['id'],
+        'privateURL': v2_url + '/v2/%s' % account['id'],
+        'adminURL': v2_url + '/v2/%s' % account['id'],
+        'internalURL': v2_url + '/v2/%s' % account['id'],
+        'id': 1,
+    }],
+    'type': 'compute',
+    'name': 'nova',
+}, {
+    'endpoint_links': [],
+    'endpoints': [
+        {
+            'region': 'RegionOne',
+            'publicURL': index_url,
+            'privateURL': index_url,
+            'adminURL': index_url,
+            'internalURL': index_url,
+            'id': 1,
         },
-        ]
-
-        expiration = datetime.datetime.now() + datetime.timedelta(days=1)
-        access = {
-            'token': {
-                'expires': expiration.isoformat(),
-                'id': token,
-                'tenant': {
-                    'id': account['id'],
-                    'enabled': True,
-                    'description': account['companyName'],
-                    'name': account['id'],
-                },
-            },
-            'serviceCatalog': service_catalog,
-            'user': {
-                'username': user['username'],
-                'id': user['id'],
-                'roles': [
-                    {'name': 'user'},
-                ],
-                'role_links': [],
-                'name': user['username'],
-            },
-        }
-
-        resp.body = {'access': access}
+    ],
+    'type': 'identity',
+    'name': 'keystone',
+},
+]
+expiration = datetime.datetime.now() + datetime.timedelta(days=1)
+access = {
+    'token': {
+        'expires': expiration.isoformat(),
+        'id': token,
+        'tenant': {
+            'id': account['id'],
+            'enabled': True,
+            'description': account['companyName'],
+            'name': account['id'],
+        },
+    },
+    'serviceCatalog': service_catalog,
+    'user': {
+        'username': user['username'],
+        'id': user['id'],
+        'roles': [
+            {'name': 'user'},
+            ],
+            'role_links': [],
+            'name': user['username'],
+        },
+    }
+    resp.body = {'access': access}
 {% endhighlight %}
 
 You'll notice that this is a lot smaller than what you get back from a native OpenStack Keystone call and that's because we're not going to support many modules right now. As you add more drivers, you'll want to update this dictionary. Lastly, as before, we assign it to the response body and we're done.

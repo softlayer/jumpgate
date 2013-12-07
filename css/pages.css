@@ -450,7 +450,7 @@ h1,
 .h1 {
   padding-bottom: 6px;
   margin-bottom: 20px;
-  font-family: "dejarip", helvetica, arial, sans-serif;
+  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
   font-size: 36px;
   font-weight: bold;
   text-rendering: optimizeLegibility;
@@ -461,21 +461,27 @@ h2,
 .h2 {
   padding-bottom: 0;
   margin: 40px 0 10px;
+  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
   font-size: 30px;
+  text-rendering: optimizeLegibility;
 }
 
 h3,
 .h3 {
   padding-top: 10px;
+  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
   font-size: 24px;
   font-weight: 700;
+  text-rendering: optimizeLegibility;
 }
 
 h4,
 .h4 {
   margin: 20px 0 4px;
+  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
   font-size: 18px;
   font-weight: 600;
+  text-rendering: optimizeLegibility;
 }
 
 /*-- Grid --*/
@@ -666,7 +672,7 @@ table#no-borders.table.table-hover > thead > tr > th {
 .table thead > tr > th {
   color: #fff;
   text-align: center;
-  border-color: #777;
+  border-color: #333;
 }
 
 .table-bordered > tbody > tr > th,
@@ -747,22 +753,21 @@ button#version-selector.btn.dropdown-toggle {
   margin-right: -18em;
   overflow-y: auto;
   background: none repeat scroll 0 0 #777;
-  -webkit-transition: all .8s ease 0;
-     -moz-transition: all .8s ease 0;
-      -ms-transition: all .8s ease 0;
-       -o-transition: all .8s ease 0;
-          transition: all .8s ease 0;
+  -webkit-transition: all .6s ease 0;
+     -moz-transition: all .6s ease 0;
+      -ms-transition: all .6s ease 0;
+       -o-transition: all .6s ease 0;
+          transition: all .6s ease 0;
 }
 
 #sidebar-wrapper.active {
   right: 18em;
   width: 18em;
-  top: 10px;
-  -webkit-transition: all .8s ease 0;
-     -moz-transition: all .8s ease 0;
-      -ms-transition: all .8s ease 0;
-       -o-transition: all .8s ease 0;
-          transition: all .8s ease 0;
+  -webkit-transition: all .6s ease 0;
+     -moz-transition: all .6s ease 0;
+      -ms-transition: all .6s ease 0;
+       -o-transition: all .6s ease 0;
+          transition: all .6s ease 0;
 }
 
 .sidebar-nav {
