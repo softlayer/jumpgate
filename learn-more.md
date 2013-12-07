@@ -5,9 +5,9 @@ slug: learn-more
 baseurl: "../"
 ---
 
-# Learn More
+# Our Work
 
-Our combustion begins at the grassroots level with free and open source software. Not only do we use it regularly, we’re firm believers in the openness of development and collaboration in order to make viable and sustainable products. That’s why we’re thrilled to be contributors toward the development of OpenStack.
+Our combustion begins at the grassroots level with free and open source software. Not only do we use it, we’re also firm believers in the openness of development and collaboration in order to make viable and sustainable products. That’s why we’re thrilled to be contributors toward the development of OpenStack.
 
 All our work is happening publicly on GitHub, and we invite everyone to join in.
 
@@ -44,15 +44,15 @@ When contributing to a driver, your changes should not break any currently passi
 
 ##  Versioning
 
-For transparency and insight into our release cycle, and for striving to maintain backward compatibility, we use the [Semantic Versioning](http://semver.org) guidelines.
+For transparency and insight into our release cycle, and to maintain backward compatibility, we use the [Semantic Versioning](http://semver.org) guidelines.
 
-This means that releases will be pegged with and follow the `<major>.<minor>.<patch>` format. It also means releases will follow these guidelines:
+This means that each release will be pegged using the `<major>.<minor>.<patch>` format. It also means each release will follow these guidelines:
 
 * Breaking backward compatibility bumps the major (and resets the minor and patch)
 * New additions without breaking backward compatibility bumps the minor (and resets the patch)
 * Bug fixes and misc changes bumps the patch
 
-# Developer Guide
+# Our Documentation
 
 We treat our docs like we treat our code. And like our code, we invite everyone to join in.
 
