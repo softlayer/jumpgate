@@ -145,55 +145,55 @@ class TokensV2(object):
 This is the starting point for the driver. If you refer to the Identity API documentation, you'll see that the /v2.0/tokens endpoint responds to POST, so we've created an `on_post()` method. Next, we pull the body out of the request stream. After that, we should authenticate the user. The implementation of this is going to be specific to your API, but hopefully you know how to authenticate someone. We're going to assume that you've successfully authenticated the person and put information about him into a dictionary called *user*, information about his tenant account into a dictionary called *account* and a string which represents enough information to represent an authenticated session called *token*. From there, we just need to build the response body based upon what the driver supports and what the API expects.
 
 {% highlight python %}
-index_url = self.app.get_dispatcher('identity').get_endpoint_url(req, 'v2_auth_index')
-v2_url = self.app.get_dispatcher('compute').get_endpoint_url(req, 'v2_index')
+    index_url = self.app.get_dispatcher('identity').get_endpoint_url(req, 'v2_auth_index')
+    v2_url = self.app.get_dispatcher('compute').get_endpoint_url(req, 'v2_index')
 
-service_catalog = [{
-    'endpoint_links': [],
-    'endpoints': [{
-        'region': 'RegionOne',
-        'publicURL': v2_url + '/%s' % account['id'],
-        'privateURL': v2_url + '/v2/%s' % account['id'],
-        'adminURL': v2_url + '/v2/%s' % account['id'],
-        'internalURL': v2_url + '/v2/%s' % account['id'],
-        'id': 1,
-    }],
-    'type': 'compute',
-    'name': 'nova',
-}, {
-    'endpoint_links': [],
-    'endpoints': [
-        {
+    service_catalog = [{
+      'endpoint_links': [],
+      'endpoints': [{
             'region': 'RegionOne',
-            'publicURL': index_url,
-            'privateURL': index_url,
-            'adminURL': index_url,
-            'internalURL': index_url,
+            'publicURL': v2_url + '/%s' % account['id'],
+            'privateURL': v2_url + '/v2/%s' % account['id'],
+            'adminURL': v2_url + '/v2/%s' % account['id'],
+            'internalURL': v2_url + '/v2/%s' % account['id'],
             'id': 1,
+        }],
+        'type': 'compute',
+        'name': 'nova',
+    }, {
+        'endpoint_links': [],
+        'endpoints': [
+            {
+                'region': 'RegionOne',
+                'publicURL': index_url,
+                'privateURL': index_url,
+                'adminURL': index_url,
+                'internalURL': index_url,
+                'id': 1,
+            },
+        ],
+        'type': 'identity',
+        'name': 'keystone',
+      },
+    ]
+    expiration = datetime.datetime.now() + datetime.timedelta(days=1)
+    access = {
+        'token': {
+            'expires': expiration.isoformat(),
+            'id': token,
+            'tenant': {
+                'id': account['id'],
+                'enabled': True,
+                'description': account['companyName'],
+                'name': account['id'],
+            },
         },
-    ],
-    'type': 'identity',
-    'name': 'keystone',
-},
-]
-expiration = datetime.datetime.now() + datetime.timedelta(days=1)
-access = {
-    'token': {
-        'expires': expiration.isoformat(),
-        'id': token,
-        'tenant': {
-            'id': account['id'],
-            'enabled': True,
-            'description': account['companyName'],
-            'name': account['id'],
-        },
-    },
-    'serviceCatalog': service_catalog,
-    'user': {
-        'username': user['username'],
-        'id': user['id'],
-        'roles': [
-            {'name': 'user'},
+        'serviceCatalog': service_catalog,
+        'user': {
+            'username': user['username'],
+            'id': user['id'],
+            'roles': [
+                {'name': 'user'},
             ],
             'role_links': [],
             'name': user['username'],
@@ -248,7 +248,7 @@ driver=jumpgate.network.drivers.openstack
 
 ## Next Steps
 
-At this point, you have the basics of building a driver and it’s a matter of expanding the functionality. Where you go next is up to you and what your goals are. Regardless of what you build next, here are a few things to help you to be more successful.
+At this point, you have the basics of creating a driver. Now, it’s just a matter of expanding the functionality. Where you go next is up to you and what your goals are. Regardless of what you create next, here are a few things to help you to be more successful.
 
 * Use [Horizon](https://github.com/openstack/horizon) in debug mode to test your functionality. Horizon provides a good, standard GUI for interacting with OpenStack and will give you a list of target endpoints to prioritize when implementing your drivers.
 * If Horizon is too broad for you, you can also use the various CLI tools provided by Nova and other modules for the same purpose. Just add the `-debug` flag.
@@ -264,7 +264,7 @@ Building any compatibility driver is going to be a large amount of work for any 
 
 # Compatibility
 
-Each section below includes compatibility references for the following components for the SoftLayer driver.
+Each section below includes the following compatibility references for the SoftLayer driver:
 
 * Identity (Keystone)
 * Compute (Nova)
