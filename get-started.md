@@ -11,7 +11,7 @@ Jumpgate is a library, which acts as a translation layer to convert incoming Ope
 
 # Quick Start
 
-Browse these sections to start downloading, installing, configuring, and creating drivers. Read our [Developer Guide]({{ page.baseurl }}developer-guide) for more about configuring, deploying, and supporting Jumpgate.
+Browse these sections to start downloading, installing, configuring, and creating drivers. To learn more about configuring, deploying, and supporting Jumpgate, check out our [Developer Guide]({{ page.baseurl }}developer-guide).
 
 ## Specification
 
@@ -34,8 +34,6 @@ $ python setup.py install
 
 ## Configure
 
-Configure Jumpgate to use the appropriate drivers for your chosen API. 
-
 Jumpgate ships with two default drivers:
 
 1. An OpenStack passthrough driver (primarily as an example)
@@ -44,7 +42,7 @@ Jumpgate ships with two default drivers:
 You can install or develop additional drivers to suit your particular needs. To configure Jumpgate to use a particular driver, open the `jumpgate.conf` file in the root of your installation and change the *driver* properties for each section you wish to use. If you don't want or need a particular set of endpoints, you can comment out that section and Jumpgate will not expose them.
 
 ## Start the Server
-Jumpgate provides a WSGI-compatible interface so any web server which supports WSGI can be used including nginx, Apache, gunicorn, uwsgi, etc. The server we've been using to test with is gunicorn. An example command to get started is located in `test_server.sh`. This requires gunicorn to be installed to run.
+Jumpgate provides a WSGI-compatible interface. Any web server that supports WSGI can be used, such as nginx, Apache, gunicorn, uwsgi, etc. The server we've been using to test with is [gunicorn](http://gunicorn.org). An example command to get started is located in `test_server.sh`. Note: This requires [gunicorn to be installed](http://gunicorn.org/#quickstart) in order to run.
 
 {% highlight bash %}
 $ ./test_server.sh
