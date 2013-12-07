@@ -5,17 +5,17 @@ slug: get-started
 baseurl: "../"
 ---
 
-# About
+# About Jumpgate
 
 Jumpgate is a library, which acts as a translation layer to convert incoming OpenStack calls to different cloud provider's API calls.
 
-# Specification
+# Quick Start
 
-This library has been tested on **Python 2.7** and **Python 3.3**.
+Browse these sections to start downloading, installing, configuring, and creating drivers. Read our [Developer Guide]({{ page.baseurl }}developer-guide) for more about configuring, deploying, and supporting Jumpgate.
 
-# Get Started
+## Specification
 
-Browse the following sections to learn how to download, install, configure, and create drivers.
+This library has been tested on Python 2.7 and Python 3.3.
 
 ## Download
 
@@ -26,7 +26,7 @@ Two download options are available.
 
 ## Install
 
-After downloading the source, run the following command.
+Run the following command.
 
 {% highlight bash %}
 $ python setup.py install
@@ -34,7 +34,7 @@ $ python setup.py install
 
 ## Configure
 
-After you download Jumpgate, configure it to use the appropriate drivers for your chosen target API. 
+Configure Jumpgate to use the appropriate drivers for your chosen API. 
 
 Jumpgate ships with two default drivers:
 
@@ -43,13 +43,12 @@ Jumpgate ships with two default drivers:
 
 You can install or develop additional drivers to suit your particular needs. To configure Jumpgate to use a particular driver, open the `jumpgate.conf` file in the root of your installation and change the *driver* properties for each section you wish to use. If you don't want or need a particular set of endpoints, you can comment out that section and Jumpgate will not expose them.
 
-## Start the server
+## Start the Server
 Jumpgate provides a WSGI-compatible interface so any web server which supports WSGI can be used including nginx, Apache, gunicorn, uwsgi, etc. The server we've been using to test with is gunicorn. An example command to get started is located in `test_server.sh`. This requires gunicorn to be installed to run.
 
 {% highlight bash %}
 $ ./test_server.sh
 {% endhighlight %}
-
 
 # Developer Guide
 

@@ -3,6 +3,7 @@
  * Table of Contents
  *
  * Scaffolding
+ * Buttons
  * Navigation
  * Footer
  * Social
@@ -60,6 +61,8 @@ p {
   font-size: 13px;
   font-weight: normal;
 }
+
+/*-- Buttons --*/
 
 .btn-outline {
   color: #563d7c;
@@ -450,18 +453,19 @@ h1,
 .h1 {
   padding-bottom: 6px;
   margin-bottom: 20px;
-  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 36px;
   font-weight: bold;
   text-rendering: optimizeLegibility;
   border-bottom: 1px solid #e5e5e5;
+  letter-spacing: -0.08px;
 }
 
 h2,
 .h2 {
   padding-bottom: 0;
   margin: 40px 0 10px;
-  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 30px;
   text-rendering: optimizeLegibility;
 }
@@ -469,7 +473,7 @@ h2,
 h3,
 .h3 {
   padding-top: 10px;
-  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 24px;
   font-weight: 700;
   text-rendering: optimizeLegibility;
@@ -478,7 +482,7 @@ h3,
 h4,
 .h4 {
   margin: 20px 0 4px;
-  font-family: "jaf-bernino-sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 18px;
   font-weight: 600;
   text-rendering: optimizeLegibility;
@@ -548,7 +552,7 @@ output pre {
 
 output pre.nowrap {
   display: none;
-  /* hidden until > 1280px */
+  /* hidden until > 1200px */
 
   white-space: pre;
 }
@@ -569,9 +573,9 @@ output pre.nowrap {
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1200px) {
   {
-    /* hidden until >= 1280px */
+    /* hidden until = 1200px */
   
   }
   output pre.nowrap {

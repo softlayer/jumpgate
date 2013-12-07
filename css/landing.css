@@ -44,14 +44,17 @@ p {
 
 p#milestone-status {
   margin-bottom: 0;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
 }
 
 p#commit-status {
   margin-bottom: 0;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
 }
 
 p#pull-status {
   margin-bottom: 0;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
 }
 
 .grid-slogan {
@@ -68,13 +71,13 @@ p#pull-status {
   margin-bottom: 1.5em;
   font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 12px;
-  color: #fff;
+  color: #262125;
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #95a5a6;
+  background-color: #e5e5e5;
   background-image: none;
-  border: 1.5px solid #95a5a6;
+  border: 1.5px solid #fafafa;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -182,7 +185,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     letter-spacing: 1px;
   }
   p {
-    font-size: 1.13em;
+    font-size: 1.25em;
     line-height: 1;
   }
   p#milestone-status {
@@ -237,9 +240,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1280.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1280.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1280.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1200.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1200.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg@1200.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;

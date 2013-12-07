@@ -42,6 +42,16 @@ Have an issue to report? Here are some guidelines to read first.
 
 When contributing to a driver, your changes should not break any currently passing Tempest tests. If you introduce new functionality, please update the Tempest test whitelist to test the new functionality.
 
+##  Versioning
+
+For transparency and insight into our release cycle, and for striving to maintain backward compatibility, we use the [Semantic Versioning](http://semver.org) guidelines.
+
+This means that releases will be pegged with and follow the `<major>.<minor>.<patch>` format. It also means releases will follow these guidelines:
+
+* Breaking backward compatibility bumps the major (and resets the minor and patch)
+* New additions without breaking backward compatibility bumps the minor (and resets the patch)
+* Bug fixes and misc changes bumps the patch
+
 # Developer Guide
 
 We treat our docs like we treat our code. And like our code, we invite everyone to join in.

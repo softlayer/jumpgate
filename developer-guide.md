@@ -23,11 +23,11 @@ Once you have these things, you’re ready to begin creating your driver.
 
 # Creating Your Driver
 
-You have many places where you could begin creating your first driver, but we've found starting with the compute index and the Identity driver (Keystone) to be the easiest. We're going to cover how to create a couple endpoints to give you an idea. From there, you can use the SoftLayer driver as a further example of other endpoints, should you need it.
+You have many places where you could begin creating your first driver, but we've found starting with the compute index and the Identity driver (Keystone) to be the easiest. To give you the general idea, we're going to cover how to create a couple endpoints. From there, you can use the SoftLayer driver as a further example of other endpoints, should you need it.
 
 Note that there are no restrictions on how you create your driver as long as you make it work with the Falcon framework. You are free to use whatever libraries, tools, and folder layout you are most comfortable with. For consistency, we’ll use the same style as the SoftLayer driver, but you are not required to do this for your driver.
 
-## Getting Started
+## The Starting Point
 
 The first step in creating your driver is deciding where to create it. You can create it almost anywhere as long as: 
 
