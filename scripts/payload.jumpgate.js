@@ -1,21 +1,21 @@
 // Milestones
-// Fetch date and title of latest milestone
+// Fetch date and title of last milestone closed
 
 var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
-    url: "https://api.github.com/repos/softlayer/jumpgate/milestones?callback?",
+    url: "https://api.github.com/repos/softlayer/jumpgate/milestones?state=closed/callback?",
     dataType: 'jsonp',
     success: function (json) {
-        var latest = json.data[0];
-        if (!latest) {
+        var lastMilestone = json.data[0];
+        if (!lastMilestone) {
             $('#milestone-status').hide();
         } else {
             $('#milestone-status').show();
 
-            var stamp = new Date(latest.due_on),
+            var stamp = new Date(lastMilestone.due_on),
                 stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
             $('#milestone-date').text(stampString);
-            $('#milestone-title').text(latest.title);
+            $('#milestone-title').text(lastMilestone.title);
         }
     }
 });
@@ -25,16 +25,16 @@ $.ajax({
 
 var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
-    url: "https://api.github.com/repos/softlayer/jumpgate/commits?",
+    url: "https://api.github.com/repos/softlayer/jumpgate/commits?state=closed/callback?",
     dataType: 'jsonp',
     success: function (json) {
-        var latest = json.data[0];
-        if (!latest) {
+        var lastCommit = json.data[0];
+        if (!lastCommit) {
             $('#commit-status').hide();
         } else {
             $('#commit-status').show();
 
-            var stamp = new Date(latest.commit.committer.date),
+            var stamp = new Date(lastCommit.commit.committer.date),
                 stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
             $('#commit-date').text(stampString);
         }
@@ -45,15 +45,15 @@ $.ajax({
 // Fetch # of pull requests
 
 $.ajax({
-    url: "https://api.github.com/repos/softlayer/jumpgate/pulls?state=closed?",
+    url: "https://api.github.com/repos/softlayer/jumpgate/pulls?state=closed/callback?",
     dataType: 'jsonp',
     success: function (json) {
-        var latest = json.data[0];
-        if (!latest) {
+        var countPulls = json.data[0];
+        if (!countPulls) {
             $('#pull-status').hide();
         } else {
             $('#pull-status').show();
-            $('#closed-pulls').text(latest.number);
+            $('#closed-pulls').text(countPulls.number);
         }
     }
 });
