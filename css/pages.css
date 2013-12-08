@@ -178,10 +178,9 @@ p {
   padding: 3em 0;
   margin-top: 100px;
   font-weight: 300;
-  color: #777;
   text-align: center;
-  background: #262125;
-  border-top: 1px solid #999;
+  background: transparent;
+  border-top: 1px solid #eee;
 }
 
 .footer-links {
@@ -202,11 +201,14 @@ p {
   margin-bottom: 0;
 }
 
-.footer a,
+.footer a {
+  color: #aaa;
+  text-decoration: none;
+}
+
 .footer a:hover,
 .footer a:focus {
-  color: #ccc;
-  text-decoration: none;
+  color: #777;
 }
 
 @media (min-width: 768px) {
@@ -868,10 +870,4 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 .service-icon:hover {
   font-size: 5em;
-}
-
-.alert-info {
-  color: #21759b;
-  background-color: #e3ebff;
-  border-color: #ccd3e5;
 }
