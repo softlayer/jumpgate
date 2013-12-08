@@ -869,3 +869,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 .service-icon:hover {
   font-size: 5em;
 }
+
+.alert-info {
+  color: #21759b;
+  background-color: #e3ebff;
+  border-color: #ccd3e5;
+}

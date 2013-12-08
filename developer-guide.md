@@ -144,6 +144,10 @@ class TokensV2(object):
 
 This is the starting point for the driver. If you refer to the Identity API documentation, you'll see that the /v2.0/tokens endpoint responds to POST, so we've created an `on_post()` method. Next, we pull the body out of the request stream. After that, we should authenticate the user. The implementation of this is going to be specific to your API, but hopefully you know how to authenticate someone. We're going to assume that you've successfully authenticated the person and put information about him into a dictionary called *user*, information about his tenant account into a dictionary called *account* and a string which represents enough information to represent an authenticated session called *token*. From there, we just need to build the response body based upon what the driver supports and what the API expects.
 
+<div class="alert alert-info">
+Note: This is a continuation of the previous snippet.
+</div>
+
 {% highlight python %}
     index_url = self.app.get_dispatcher('identity').get_endpoint_url(req, 'v2_auth_index')
     v2_url = self.app.get_dispatcher('compute').get_endpoint_url(req, 'v2_index')
