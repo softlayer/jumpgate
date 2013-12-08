@@ -233,9 +233,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 /*-- Background --*/
 
 .docs-home {
-  background: url("../images/bg@768.png");
-  background-color: #262125;
-  background-repeat: repeat;
+  background-color: #222122;
 }
 
 @media (min-width: 768px) {
