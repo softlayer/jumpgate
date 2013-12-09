@@ -2,20 +2,18 @@
 
 All our public content is built from minimal static webpages made using [Bootstrap CSS](http://getboostrap.com) and [Jekyll](http://jekyllrb.com).
 
-# Getting Started
-
 ## Before You Start
 
 You do not have to install Ruby, Rails, or Jekyll to make your own page. The `_config.yml` file contains everything necessary to make a page on-the-fly in minutes. Scroll down to [Configuration](#configuration) for more information.
 
 Of course, should you prefer to test your work locally before committing, keep reading from here.
 
-## Download
+# Download
 
 * [Download the latest release](https://github.com/softlayer/jumpgate/archive/gh-pages.zip)
 * Clone the repo via `git clone -b gh-pages https://github.com/softlayer/jumpgate.git`
 
-## Configuration
+# Configuration
 
 The `_config.yml` file contains everything necessary to make a page on-the-fly. Open it using any editor and update the vars (defined below) before push it up to the `gh-pages` branch.
 
@@ -61,7 +59,7 @@ The `_config.yml` file contains everything necessary to make a page on-the-fly. 
 * `ga_tracking_id` SoftLayer's UA ID
 * `ga_tracking_domain` SoftLayer's domain for GitHub Pages
 
-## Directory
+# Directory
 
 This is the basic layout of our `gh-pages` directory (not including content specifically written for this project).
 
@@ -112,7 +110,7 @@ This is the basic layout of our `gh-pages` directory (not including content spec
 8 directories, 34 files
 </pre>
 
-## Support
+# Support
 
 Here are a few known issues and solutions that we came across during development. 
 
@@ -142,7 +140,7 @@ Getting a "Liquid Exception: Cannot find /bin/sh" on Windows. Make sure pygments
     $ gem uninstall pygments.rb --version "=0.5.1"
     $ gem install pygments.rb --version "=0.5.0"
 
-## Useful Resources
+# Useful Resources
 
 * [Jekyll's Wiki](https://github.com/mojombo/jekyll/wiki)
 * [GitHub Pages](http://pages.github.com)
@@ -150,4 +148,4 @@ Getting a "Liquid Exception: Cannot find /bin/sh" on Windows. Make sure pygments
 * [Recess](http://twitter.github.io/recess)
 * [Spur](http://www.spurapp.com)
 * [Setup Jekyll on Windows](http://yizeng.me/2013/05/10/setup-jekyll-on-windows)
-* [Jquery UI Bootstrap](https://github.com/addyosmani/jquery-ui-bootstrap)
+* [jQuery UI Bootstrap](https://github.com/addyosmani/jquery-ui-bootstrap)
