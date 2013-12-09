@@ -20,7 +20,7 @@ html {
 body {
   width: 100%;
   height: 100%;
-  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-family: Helvetica, sans-serif;
 }
 
 h3,
@@ -30,7 +30,10 @@ h3,
   text-rendering: optimizeLegibility;
 }
 
-a,
+a {
+  color: #f4f4f4;
+}
+
 a:hover,
 a:focus {
   color: #fff;
@@ -58,9 +61,9 @@ p#pull-status {
 }
 
 .grid-slogan {
-  font-size: 92%;
   margin-top: 0;
-} 
+  font-size: 92%;
+}
 
 .btn-info:hover,
 .btn-info:focus,
@@ -75,9 +78,9 @@ p#pull-status {
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #e5e5e5;
+  background-color: #fff;
   background-image: none;
-  border: 1.5px solid #fafafa;
+  border: 1.5px solid #fff;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -93,9 +96,9 @@ p#pull-status {
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #f4f4f4;
+  background-color: #fafafa;
   background-image: none;
-  border: 1px solid #fafafa;
+  border: 1px solid #fff;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -131,9 +134,9 @@ p#pull-status {
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #2779ba;
+  background-color: #2d89c7;
   background-image: none;
-  border: 1px solid #2a81c7;
+  border: 1px solid #3092d4;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -163,8 +166,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     line-height: inherit;
     letter-spacing: 1px;
     color: #fff;
-    background-color: #2570ad;
-    border-color: #2a81c7;
+    background-color: #3092d4;
+    border-color: #3092d4;
   }
   .btn-info {
     width: 14em;
@@ -289,16 +292,16 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     margin-top: 0;
     margin-left: 0;
     font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-    font-size: 5em;
+    font-size: 5.5em;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1;
     letter-spacing: -5px;
     text-rendering: optimizeLegibility;
     text-transform: none;
   }
   .masthead .lead {
     margin-right: 0;
-    margin-bottom: 1.25em;
+    margin-bottom: 0.5em;
     font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
     font-size: 2em;
     line-height: 1.1;
@@ -327,7 +330,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 }
 
 .sidebar-nav li a {
-    color: #e5e5e5;
+  color: #e5e5e5;
 }
 
 #menu-toggle {

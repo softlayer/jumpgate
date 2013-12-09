@@ -1153,4 +1153,4 @@ This table includes compatibility references for Block Storage (Cinder).
   </table>
 </div>
 
-{% include additional-docs.md %}
+{% include docs.md %}

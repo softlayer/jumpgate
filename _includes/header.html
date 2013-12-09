@@ -6,7 +6,7 @@
 <meta name="author" content="SoftLayer, an IBM Company">
 
 <!-- Typekit -->
-<script type="text/javascript" src="{{ page.baseurl }}scripts/typekit.js"></script>
+<script type="text/javascript" src="{{ page.baseurl }}fonts/font.js"></script>
 
 <title>
   {% if page.title == "Jumpgate" %}
@@ -17,20 +17,18 @@
 </title>
 
 <!-- Scripts -->
-<script type="text/javascript" src="{{ page.baseurl }}scripts/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="{{ page.baseurl }}scripts/bootstrap.min.js"></script>
-<script type="text/javascript" src="{{ page.baseurl }}scripts/application.js"></script>
-{% if page.slug == "landing" %}<script type="text/javascript" src="{{ page.baseurl }}scripts/payload.jumpgate.js"></script>{% endif %}
+<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/jquery-1.10.2.js"></script>
+{% if page.slug == "landing" %}
+<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/payload.js"></script>
+{% endif %}
 
-<!-- Styles -->
+<!-- Styling -->
 <link type="image/png" href="{{ page.baseurl }}images/favicon.png" rel="icon">
-<link type="text/css" href="{{ page.baseurl }}css/bootstrap.min.css" rel="stylesheet">
-<link type="text/css" href="{{ page.baseurl }}css/font-awesome.min.css" rel="stylesheet">
-<link type="text/css" href="{{ page.baseurl }}css/syntax.min.css" rel="stylesheet">
+<link type="text/css" href="{{ page.baseurl }}css/bootstrap.css" rel="stylesheet">
+<link type="text/css" href="{{ page.baseurl }}css/font-awesome.css" rel="stylesheet">
+<link type="text/css" href="{{ page.baseurl }}css/syntax.css" rel="stylesheet">
 <link type="text/css" href="{{ page.baseurl }}css/pages.css" rel="stylesheet">
 {% if page.slug == "landing" %}<link type="text/css" href="{{ page.baseurl }}css/landing.css" rel="stylesheet">{% endif %}
-
-<!--[if lt IE 9]><script src="{{ page.baseurl }}scripts/ie8-responsive-file-warning.js"></script><![endif]-->
 
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>

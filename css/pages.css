@@ -29,6 +29,7 @@
 body {
   position: relative;
   padding-top: 50px;
+  font-family: Helvetica, sans-serif;
   font-size: 14px;
 }
 
@@ -279,13 +280,13 @@ a#twitter-icon {
 .masthead h1 {
   font-size: 100px;
   line-height: 1;
-  color: #fff;
+  color: #fafafa;
 }
 
 .masthead .lead {
   margin-right: 0;
   font-size: 30px;
-  color: #fff;
+  color: #fafafa;
 }
 
 .masthead .btn-outline-inverse {
@@ -458,9 +459,9 @@ h1,
   font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 36px;
   font-weight: bold;
+  letter-spacing: -0.1px;
   text-rendering: optimizeLegibility;
   border-bottom: 1px solid #e5e5e5;
-  letter-spacing: -0.08px;
 }
 
 h2,
@@ -469,6 +470,7 @@ h2,
   margin: 40px 0 10px;
   font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 30px;
+  letter-spacing: -0.4px;
   text-rendering: optimizeLegibility;
 }
 
@@ -846,6 +848,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 /*-- Services --*/
 
+/*-- 
 .services {
   padding: 3.5em 0;
   color: #fff;
@@ -871,3 +874,4 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 .service-icon:hover {
   font-size: 5em;
 }
+--*/
