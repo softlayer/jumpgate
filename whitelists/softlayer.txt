@@ -18,6 +18,7 @@ tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.t
 # Skipped due to non-admin users able to see availability zone listing
 # tempest.api.compute.admin.test_availability_zone:AvailabilityZoneAdminTestJSON.test_get_availability_zone_list_detail_with_non_admin_user
 
+
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_list_servers_with_detail
 tempest.api.compute.servers.test_create_server:ServersTestJSON.test_create_server_response
@@ -61,6 +62,12 @@ tempest.api.compute.servers.test_servers_negative:ServersNegativeTestJSON.test_u
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_created_server_vcpus
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_can_log_into_created_server
 
+tempest.api.compute.servers.test_server_addresses:ServerAddressesTest.create_test_server
+tempest.api.compute.servers.test_server_addresses:ServerAddressesTest.test_list_server_addresses
+tempest.api.compute.servers.test_server_addresses:ServerAddressesTest.test_list_server_addresses_by_network
+tempest.api.compute.servers.test_server_addresses:ServerAddressesTest.test_list_server_addresses_by_network_neg
+tempest.api.compute.servers.test_server_addresses:ServerAddressesTest.test_list_server_addresses_invalid_server_id
+
 # These might be skipped until these issues are fixed: 1014647, 1014683
 tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_pause_unpause_server
 tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_reboot_server_hard
@@ -79,6 +86,7 @@ tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_stop_
 # tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_resize_server_revert
 # tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_resize_server_using_nonexist_flavor
 # tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_resize_server_using_null_flavor
+
 
 # Skipped due to SL not having support for specifying default password
 # tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_server_with_admin_password

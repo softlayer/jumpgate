@@ -18,9 +18,7 @@ def get_whitelist_from_file(path):
         whitelist = [test.strip() for test in f.readlines()]
 
     # filter commented-out tests
-    whitelist = filter(lambda t: not t.startswith('#') and len(t) > 0,
-                       whitelist)
-    return whitelist
+    return [t for t in whitelist if not t.startswith('#') and len(t) > 0]
 
 
 def main():

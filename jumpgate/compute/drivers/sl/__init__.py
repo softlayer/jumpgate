@@ -8,6 +8,7 @@ from .keypairs import KeypairsV2, KeypairV2
 from .limits import LimitsV2
 from .quota_sets import OSQuotaSetsV2
 from .servers import ServerV2, ServersV2, ServersDetailV2, ServerActionV2
+from .server_ips import ServerIpsV2, ServerIpsNetworkV2
 from .security_groups import OSSecurityGroupsV2
 from .usage import UsageV2
 from .volumes import OSVolumeAttachmentsV2
@@ -72,6 +73,9 @@ def setup_routes(app, disp):
     disp.set_handler('v2_servers_detail', ServersDetailV2(app))
     disp.set_handler('v2_server_action', ServerActionV2(app))
     disp.set_handler('v2_os_instance_actions', InstanceActionsV2())
+
+    disp.set_handler('v2_server_ips', ServerIpsV2())
+    disp.set_handler('v2_server_ips_network', ServerIpsNetworkV2())
 
     disp.set_handler('v2_tenant_flavor', flavor)
     disp.set_handler('v2_tenant_flavors', flavors)

@@ -28,9 +28,10 @@ def add_endpoints(disp):
 
     # Server Addresses
     disp.add_endpoint('v2_server_ips',
-                      '/v2/{tenant_id}/servers{server_id}/ips')
-    disp.add_endpoint('v2_server_ips_network',
-                      '/v2/{tenant_id}/servers{server_id}/ips/{network_label}')
+                      '/v2/{tenant_id}/servers/{server_id}/ips')
+    disp.add_endpoint(
+        'v2_server_ips_network',
+        '/v2/{tenant_id}/servers/{server_id}/ips/{network_label}')
 
     # Server Actions
     disp.add_endpoint('v2_server_action',
