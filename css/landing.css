@@ -299,7 +299,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   .masthead h1 {
     padding: 0;
     margin-top: 0;
-    margin-left: 0;
+    margin-bottom: 10px;
+    margin-left: -46px;
     font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
     font-size: 5em;
     font-weight: 700;
