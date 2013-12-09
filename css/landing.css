@@ -25,7 +25,7 @@ body {
 
 h3,
 .h3 {
-  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 1.5em;
   text-rendering: optimizeLegibility;
 }
@@ -40,24 +40,24 @@ a:focus {
 }
 
 p {
-  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans", Verdana, sans-serif;
+  font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans", Verdana, sans-serif;
   font-size: 1.05em;
   text-rendering: optimizeLegibility;
 }
 
 p#milestone-status {
   margin-bottom: 0;
-  font-family: "dejarip", "Lucida Grande", sans-serif;
+  font-family: "Open Sans", "dejarip", "Lucida Grande", sans-serif;
 }
 
 p#commit-status {
   margin-bottom: 0;
-  font-family: "dejarip", "Lucida Grande", sans-serif;
+  font-family: "Open Sans", "dejarip", "Lucida Grande", sans-serif;
 }
 
 p#pull-status {
   margin-bottom: 0;
-  font-family: "dejarip", "Lucida Grande", sans-serif;
+  font-family: "Open Sans", "dejarip", "Lucida Grande", sans-serif;
 }
 
 .grid-slogan {
@@ -72,7 +72,7 @@ p#pull-status {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
-  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 12px;
   color: #262125;
   text-rendering: optimizeLegibility;
@@ -90,7 +90,7 @@ p#pull-status {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
-  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 12px;
   color: #262125;
   text-rendering: optimizeLegibility;
@@ -128,7 +128,7 @@ p#pull-status {
   padding: 1em;
   margin-right: 10px;
   margin-bottom: 1.5em;
-  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 12px;
   color: #fff;
   text-rendering: optimizeLegibility;
@@ -259,7 +259,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   padding: 0;
   margin-top: -30px;
   margin-left: 0;
-  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 3em;
   font-weight: 700;
   line-height: 1;
@@ -272,7 +272,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 .masthead .lead {
   margin-right: 0;
   margin-bottom: 1em;
-  font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   font-size: 1.5em;
   font-weight: 500;
   line-height: 1.1;
@@ -292,7 +292,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     padding: 0;
     margin-top: 0;
     margin-left: 0;
-    font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
     font-size: 5em;
     font-weight: 700;
     line-height: 1;
@@ -303,7 +303,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   .masthead .lead {
     margin-right: 0;
     margin-bottom: 0.5em;
-    font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    font-family: "Open Sans", "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
     font-size: 2em;
     line-height: 1.1;
     letter-spacing: -0.5px;
