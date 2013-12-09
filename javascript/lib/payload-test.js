@@ -57,3 +57,22 @@ $.ajax({
         }
     }
 });
+
+https://api.github.com/repos/softlayer?callback?
+
+// Repositories
+// Fetch # of repos
+
+$.ajax({
+    url: "https://api.github.com/repos/softlayer?callback?",
+    dataType: 'jsonp',
+    success: function (json) {
+        var countRepos = json.data[0];
+        if (!countRepos) {
+            $('#repos-status').hide();
+        } else {
+            $('#repos-status').show();
+            $('#repos-num').text(countRepos.number);
+        }
+    }
+});
