@@ -10,8 +10,9 @@ def add_endpoints(disp):
     disp.add_endpoint('v1_node', '/v1/nodes/{node_id}')
     disp.add_endpoint('v1_nodes_detail', '/v1/nodes/detail')
 
-    # TODO: CHASSIS SPEC NOT WELL DEFINED??
     disp.add_endpoint('v1_chassis', '/v1/chassis')
+    disp.add_endpoint('v1_chassis_single', '/v1/chassis/{chassis_id}}')
+    disp.add_endpoint('v1_chassis_detail', '/v1/chassis/detail')
 
     disp.add_endpoint('v1_ports', '/v1/ports')
     disp.add_endpoint('v1_port', '/v1/ports/{port_id}')

@@ -28,7 +28,7 @@ def convert_errors(handler):
 
     @wraps(handler)
     def funct(*args, **kwargs):
-        cls, req, resp = args[:3]
+        resp = args[2]
         try:
             return handler(*args, **kwargs)
         except SoftLayerAPIError as e:

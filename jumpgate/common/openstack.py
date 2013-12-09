@@ -31,7 +31,7 @@ class OpenstackStream(object):
         return self.size
 
     def read(self, size=None):
-        return self.stream.read(size=None)
+        return self.stream.read(size=size)
 
     def __iter__(self):
         return self.stream.__iter__()
@@ -46,7 +46,7 @@ class OpenStackResponder(object):
         self.mount = mount
         self.endpoint = endpoint
 
-    def _standard_responder(self, req, resp, **kwargs):
+    def _standard_responder(self, req, resp, **_):
         data = None
         if (req.method == 'POST' or req.method == 'PUT'):
             if req.content_length:

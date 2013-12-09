@@ -42,7 +42,7 @@ class TokensV2(object):
         try:
             self.templates = parse_templates(open(template_file))
         except IOError:
-            LOG.critical('Unable to open template file %s' % template_file)
+            LOG.critical('Unable to open template file %s', template_file)
             raise
 
     def _get_catalog(self, tenant_id, user_id):
@@ -70,7 +70,7 @@ class TokensV2(object):
 
         raw_catalog = self._get_catalog(account['id'], user['id'])
         catalog = []
-        for region, services in raw_catalog.items():
+        for services in raw_catalog.values():
             for service_type, service in services.items():
                 d = {
                     'type': service_type,
@@ -117,7 +117,8 @@ class TokensV2(object):
 class TokenV2(object):
     def on_delete(self, req, resp, token_id):
         # This method is called when OpenStack wants to remove a token's
-        # validity, such as when a cookie expires. Our login tokens don't
-        # expire, so this does nothing.
+        # validity, such as when a cookie expires. Our login tokens can't
+        # be forced to expire yet, so this does nothing.
+        LOG.warning('User attempted to delete token: %s', token_id)
         resp.status = 202
         resp.body = ''

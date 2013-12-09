@@ -89,7 +89,7 @@ def format_keypair(keypair):
 
 def generate_random_key():
     chars = string.digits + string.ascii_letters
-    key = "".join([random.choice(chars) for i in range(8)])
+    key = "".join([random.choice(chars) for _ in range(8)])
     return "ssh-rsa %s %s@invalid" % (NULL_KEY, key)
 
 

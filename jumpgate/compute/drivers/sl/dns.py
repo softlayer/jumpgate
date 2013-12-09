@@ -1,5 +1,5 @@
 import json
-from six.moves.urllib.parse import unquote_plus
+from six.moves.urllib.parse import unquote_plus  # NOQA
 
 from SoftLayer import DNSManager
 

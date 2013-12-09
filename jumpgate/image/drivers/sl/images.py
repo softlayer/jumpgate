@@ -423,10 +423,10 @@ class ImagesV2(object):
         body = json.loads(req.stream.read().decode())
 
         # TODO - Need to determine how to handle this for real
-        id = body.get('id', str(uuid.uuid4()))
+        image_id = body.get('id', str(uuid.uuid4()))
 
         resp.body = {
-            'id': id,
+            'id': image_id,
             'name': body['name'],
             'status': 'queued',
             'visibility': body.get('visibility', 'public'),
@@ -434,10 +434,12 @@ class ImagesV2(object):
             'created_at': '2012-08-11T17:15:52Z',
             'updated_at': '2012-08-11T17:15:52Z',
             'self': self.app.get_endpoint_url(
-                'image', req, 'v2_image', image_guid=id),
+                'image', req, 'v2_image', image_guid=image_id),
             'file': self.app.get_endpoint_url(
-                'image', req, 'v2_image_file', image_guid=id),
-            'schema': self.app.get_endpoint_url('image', req, 'v2_schema_image'),
+                'image', req, 'v2_image_file', image_guid=image_id),
+            'schema': self.app.get_endpoint_url('image',
+                                                req,
+                                                'v2_schema_image'),
         }
 
     def on_get(self, req, resp, tenant_id=None):
@@ -598,16 +600,16 @@ class ImagesV1(object):
             image_details['visibility'] = 'public'
 
         # TODO - Need to determine how to handle this for real
-        id = body.get('id', str(uuid.uuid4()))
+        image_id = body.get('id', str(uuid.uuid4()))
 
         resp.body = {'image': {
-            'id': id,
+            'id': image_id,
             'location': self.app.get_endpoint_url(
-                'image', req, 'v1_image', image_guid=id),
+                'image', req, 'v1_image', image_guid=image_id),
         }}
 
 
-def get_v2_image_details_dict(app, req, image, tenant_id=None):
+def get_v2_image_details_dict(app, req, image):
 
     if not image or not image.get('globalIdentifier'):
         return {}
