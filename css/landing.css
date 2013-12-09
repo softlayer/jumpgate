@@ -230,6 +230,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 @media (min-width: 768px) {
   .container {
     text-align: center;
+    margin-top: -8px;
   }
 }
 
@@ -241,9 +242,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("../images/bg.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
@@ -292,7 +293,7 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     margin-top: 0;
     margin-left: 0;
     font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-    font-size: 5.5em;
+    font-size: 5em;
     font-weight: 700;
     line-height: 1;
     letter-spacing: -5px;
