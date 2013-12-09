@@ -31,8 +31,8 @@ Note that there are no restrictions on how you create your driver as long as you
 
 The first step in creating your driver is deciding where to create it. You can create it almost anywhere as long as: 
 
-* It will be in your Python path
-* It can be imported by Jumpgate
+1. It will be in your Python path
+2. It can be imported by Jumpgate
 
 We'll start by creating a small compute driver that implements the index endpoint (`/v2/`).
 
