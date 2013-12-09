@@ -456,7 +456,7 @@ h1,
 .h1 {
   padding-bottom: 10px;
   margin-bottom: 20px;
-  font-family: "Open Sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 34px;
   font-weight: bold;
   letter-spacing: -0.4px;
@@ -468,7 +468,7 @@ h2,
 .h2 {
   padding-bottom: 0;
   margin: 40px 0 10px;
-  font-family: "Open Sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 30px;
   letter-spacing: -0.2px;
   text-rendering: optimizeLegibility;
@@ -477,7 +477,7 @@ h2,
 h3,
 .h3 {
   padding-top: 10px;
-  font-family: "Open Sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 24px;
   font-weight: 700;
   text-rendering: optimizeLegibility;
@@ -486,7 +486,7 @@ h3,
 h4,
 .h4 {
   margin: 20px 0 4px;
-  font-family: "Open Sans", "Lucida Grande", sans-serif;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
   font-size: 18px;
   font-weight: 600;
   text-rendering: optimizeLegibility;

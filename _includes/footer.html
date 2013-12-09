@@ -1,10 +1,12 @@
 <!-- Javascript Plugins -->
 <script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/bootstrap.js"></script>
+{% if page.slug != "landing" %}
 <script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/bootstrap-application.js"></script>
-<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/holder.js"></script>
-<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/affix.js"></script>
-<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/collapse.js"></script>
-<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/scrollspy.js"></script>
+<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/bootstrap-holder.js"></script>
+<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/bootstrap-affix.js"></script>
+<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/bootstrap-collapse.js"></script>
+<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/bootstrap-scrollspy.js"></script>
+{% endif %}
 
 <!-- Javascript Library -->
 <script type="text/javascript" src="{{ page.baseurl }}javascript/lib/modernizr.js"></script>
