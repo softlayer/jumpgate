@@ -60,6 +60,11 @@ p#pull-status {
   font-family: "dejarip", "Lucida Grande", sans-serif;
 }
 
+p#repo-status {
+  margin-bottom: 0;
+  font-family: "dejarip", "Lucida Grande", sans-serif;
+}
+
 .grid-slogan {
   margin-top: 0;
   font-size: 92%;
@@ -199,6 +204,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   }
   p#pull-status {
     margin-bottom: 10px;
+  }
+  p#repo-status {
+  margin-bottom: 10px;
   }
 }
 
