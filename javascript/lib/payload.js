@@ -8,14 +8,14 @@ $.ajax({
     success: function (json) {
         var lastMilestone = json.data[0];
         if (!lastMilestone) {
-            $('#milestone-status').hide();
+            $('#mstatus').hide();
         } else {
-            $('#milestone-status').show();
+            $('#mstatus').show();
 
-            var stamp = new Date(lastMilestone.due_on),
+            var stamp = new Date(lastMilestone.updated_at),
                 stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
-            $('#milestone-date').text(stampString);
-            $('#milestone-title').text(lastMilestone.title);
+            $('#mdate').text(stampString);
+            $('#mtitle').text(lastMilestone.title);
         }
     }
 });
@@ -30,49 +30,43 @@ $.ajax({
     success: function (json) {
         var lastCommit = json.data[0];
         if (!lastCommit) {
-            $('#commit-status').hide();
+            $('#cstatus').hide();
         } else {
-            $('#commit-status').show();
+            $('#cstatus').show();
 
             var stamp = new Date(lastCommit.commit.committer.date),
                 stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
-            $('#commit-date').text(stampString);
+            $('#cdate').text(stampString);
         }
     }
 });
 
-// Pull Requests
-// Fetch # of pull requests
+// Team/Contributors
+// Fetch # of contributors
 
-$.ajax({
-    url: "https://api.github.com/repos/softlayer/jumpgate/pulls?state=closed/callback?",
-    dataType: 'jsonp',
-    success: function (json) {
-        var countPulls = json.data[0];
-        if (!countPulls) {
-            $('#pull-status').hide();
-        } else {
-            $('#pull-status').show();
-            $('#closed-pulls').text(countPulls.number);
-        }
+$.getJSON("https://api.github.com/repos/softlayer/jumpgate/contributors?callback=?", function (result) {
+    var tcount = result.data;
+    if (!tcount == '') {
+        $('#tstatus').hide();
+    } else {
+        $('#tstatus').show();
+        $(function () {
+            $("#tcount").text(tcount.length);
+        });
     }
 });
-
-https://api.github.com/repos/softlayer?callback?
 
 // Repositories
 // Fetch # of repos
 
-$.ajax({
-    url: "https://api.github.com/repos/softlayer?callback?",
-    dataType: 'jsonp',
-    success: function (json) {
-        var countRepos = json.data[0];
-        if (!countRepos) {
-            $('#repos-status').hide();
-        } else {
-            $('#repos-status').show();
-            $('#repos-num').text(countRepos.number);
-        }
+$.getJSON("https://api.github.com/orgs/softlayer/repos?callback=?", function (result) {
+    var rcount = result.data;
+    if (!rcount == '') {
+        $('#rstatus').hide();
+    } else {
+        $('#rstatus').show();
+        $(function () {
+            $("#rcount").text(rcount.length);
+        });
     }
 });
