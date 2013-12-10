@@ -46,14 +46,10 @@ $.ajax({
 
 $.getJSON("https://api.github.com/repos/softlayer/jumpgate/contributors?callback=?", function (result) {
     var tcount = result.data;
-    if (!tcount == '') {
-        $('#tstatus').hide();
-    } else {
-        $('#tstatus').show();
-        $(function () {
-            $("#tcount").text(tcount.length);
-        });
-    }
+
+    $(function () {
+        $("#tcount").text(tcount.length);
+    });
 });
 
 // Repositories
@@ -61,12 +57,8 @@ $.getJSON("https://api.github.com/repos/softlayer/jumpgate/contributors?callback
 
 $.getJSON("https://api.github.com/orgs/softlayer/repos?callback=?", function (result) {
     var rcount = result.data;
-    if (!rcount == '') {
-        $('#rstatus').hide();
-    } else {
-        $('#rstatus').show();
-        $(function () {
-            $("#rcount").text(rcount.length);
-        });
-    }
+
+    $(function () {
+        $("#rcount").text(rcount.length);
+    });
 });
