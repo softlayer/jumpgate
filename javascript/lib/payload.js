@@ -1,21 +1,6 @@
 // Milestones
 // Fetch date and title of last milestone closed
 
-/* ------> JSON conversion
-var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-$.getJSON("https://api.github.com/repos/softlayer/jumpgate/milestones?state=closed/callback?", function (result) {
-    var lastMilestone = result.data;
-
-    $(function () {
-        var stamp = new Date(lastMilestone.updated_at),
-            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
-        $('#mdate').text(stampString);
-        $('#mtitle').text(lastMilestone.title);
-    });
-});
-----------*/
-
-/* ------> Original AJAX call */
 var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
     url: "https://api.github.com/repos/softlayer/jumpgate/milestones?state=closed/callback?",
@@ -35,22 +20,9 @@ $.ajax({
     }
 });
 
-
 // Commitments
 // Fetch date for last commit
 
-var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-$.getJSON("https://api.github.com/repos/softlayer/jumpgate/commits?state=closed/callback?", function (result) {
-    var lastCommit = result.data;
-
-    $(function () {
-        var stamp = new Date(lastCommit.commit.committer.date),
-            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
-        $('#cdate').text(stampString);
-    });
-});
-
-/* ------> Original AJAX call
 var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
     url: "https://api.github.com/repos/softlayer/jumpgate/commits?state=closed/callback?",
@@ -68,7 +40,6 @@ $.ajax({
         }
     }
 });
-----------*/
 
 // Team/Contributors
 // Fetch # of contributors
