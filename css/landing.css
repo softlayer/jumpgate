@@ -46,24 +46,24 @@ p {
   text-rendering: optimizeLegibility;
 }
 
-p#milestone-status {
+p#mstatus {
   margin-bottom: 0;
-  font-family: "dejarip", "Lucida Grande", sans-serif;
+  font-family: "Open Sans", "Lucida Grande", sans-serif;
 }
 
-p#commit-status {
+p#cstatus {
   margin-bottom: 0;
-  font-family: "dejarip", "Lucida Grande", sans-serif;
+  font-family: "Open Sans", "Lucida Grande", sans-serif;
 }
 
-p#pull-status {
+p#tstatus {
   margin-bottom: 0;
-  font-family: "dejarip", "Lucida Grande", sans-serif;
+  font-family: "Open Sans", "Lucida Grande", sans-serif;
 }
 
-p#repo-status {
+p#rstatus {
   margin-bottom: 0;
-  font-family: "dejarip", "Lucida Grande", sans-serif;
+  font-family: "Open Sans", "Lucida Grande", sans-serif;
 }
 
 .grid-slogan {
@@ -194,19 +194,19 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     letter-spacing: 1px;
   }
   p {
-    font-size: 1.15em;
+    font-size: 1.2em;
     line-height: 1;
   }
-  p#milestone-status {
+  p#mstatus {
     margin-bottom: 10px;
   }
-  p#commit-status {
+  p#cstatus {
     margin-bottom: 10px;
   }
-  p#pull-status {
+  p#tstatus {
     margin-bottom: 10px;
   }
-  p#repo-status {
+  p#rstatus {
   margin-bottom: 10px;
   }
 }
