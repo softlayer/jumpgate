@@ -1,0 +1,57 @@
+---
+layout: landing
+title: Project
+baseurl: "./"
+---
+
+<div class="container">
+  <h1>{{ site.project }}</h1>
+  <p class="lead">{{ site.lead }}</p>
+
+  <div class="row" id="metrics">
+
+    <!-- Milestone Metric -->
+    <div class="col-lg-3 col-md-3">
+      <h3><a href="{{ site.milestones }}"></a></h3>
+
+      <p id="mstatus"><strong><span id="mtitle"><img alt="Waiting..." src=
+      "{{ page.baseurl }}images/spinner.gif"></span> launched <span id="mdate"><img alt="Waiting..." src=
+      "{{ page.baseurl }}images/spinner.gif"></span></strong></p>
+
+      <p class="grid-slogan"><a href="{{ site.milestones }}">See what's coming next</a></p>
+    </div>
+
+    <!-- Commits Metric -->
+    <div class="col-lg-3 col-md-3">
+      <h3><a href="{{ site.commits }}"></a></h3>
+
+      <p id="cstatus"><strong>Last updated on <span id="cdate"><img alt="Waiting..." src=
+      "{{ page.baseurl }}images/spinner.gif"></span></strong></p>
+
+      <p class="grid-slogan"><a href="{{ site.repo }}">Watch our repo to get updates</a></p>
+    </div>
+
+    <!-- Team Metric -->
+    <div class="col-lg-3 col-md-3">
+      <h3><a href="{{ site.pulls }}"></a></h3>
+
+      <p id="tstatus"><strong><span id="tcount"><img alt="Waiting..." src=
+      "{{ page.baseurl }}images/spinner.gif"></span> notable contributors</strong></p>
+
+      <p class="grid-slogan"><a href="{{ page.baseurl }}learn-more#contributor_guidelines" id="heres-how" name=
+      "heres-how">Find out how you can help</a></p>
+    </div>
+
+    <!-- Repo Metric -->
+    <div class="col-lg-3 col-md-3">
+      <h3><a href="{{ site.repo }}"></a></h3>
+
+      <p id="rstatus"><strong><span id="rcount"><img alt="Waiting..." src=
+      "{{ page.baseurl }}images/spinner.gif"></span> repos and counting</strong></p>
+
+      <p class="grid-slogan"><a href="{{ site.repo }}">See {{ site.project }} on GitHub</a></p>
+    </div>
+  </div><a class="btn btn-info btn-lg" href="{{ page.baseurl }}page-1" id="get-started" name="get-started">Get
+  Started</a> <a class="btn btn-info btn-lg" href="{{ page.baseurl }}page-2" id="documents" name=
+  "documents">Learn More</a>
+</div>

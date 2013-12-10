@@ -1,0 +1,37 @@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Typekit -->
+<script type="text/javascript" src="{{ page.baseurl }}fonts/font.js"></script>
+
+<title>
+  {% if page.title == "Project" %}
+    {{ page.title }} &middot; In-Flight Project Page
+  {% else %}
+    {{ page.title }} &middot; Project
+  {% endif %}
+</title>
+
+<!-- Scripts -->
+<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/jquery-1.10.2.js"></script>
+
+<!-- Payload hidden until configured and the repo is public -->
+<!-- {% if page.slug == "landing" %}<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/payload.js"></script>{% endif %} -->
+
+<!-- Styling -->
+<link type="image/png" href="{{ page.baseurl }}images/favicon.png" rel="icon">
+<link type="text/css" href="{{ page.baseurl }}css/bootstrap.css" rel="stylesheet">
+<link type="text/css" href="{{ page.baseurl }}css/font-awesome.css" rel="stylesheet">
+<link type="text/css" href="{{ page.baseurl }}css/syntax.css" rel="stylesheet">
+<link type="text/css" href="{{ page.baseurl }}css/pages.css" rel="stylesheet">
+{% if page.slug == "landing" %}<link type="text/css" href="{{ page.baseurl }}css/landing.css" rel="stylesheet">{% endif %}
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->

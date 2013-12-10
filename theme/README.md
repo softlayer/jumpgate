@@ -1,0 +1,1 @@
+An empty theme to spin up SL-themed GitHub Pages quickly (hopefully)

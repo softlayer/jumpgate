@@ -1,0 +1,16 @@
+<a id="menu-toggle" href="#" class="btn btn-primary btn-lg toggle"><i class="fa fa-reorder"></i></a>
+<div id="sidebar-wrapper">
+	<ul class="sidebar-nav">
+	  <li {% if page.slug == "page-1" %} class="active" {% endif %}><a href="{{ page.baseurl }}page-1"><i class="fa fa-wrench"></i>Page 1</a></li>
+    <li {% if page.slug == "page-2" %} class="active" {% endif %}><a href="{{ page.baseurl }}page-2"><i class="fa fa-cog"></i>Page 2</a></li>
+    <li {% if page.slug == "page-3" %} class="active" {% endif %}><a href="{{ page.baseurl }}page-3"><i class="fa fa-book"></i>Page 3</a></li>
+    <li><a href="{{ site.star }}"><i class="fa fa-star"></i>Star Our Repo</a></li>
+    <li><a href="{{ site.fork }}"><i class="fa fa-code-fork"></i> Fork Our Repo</a></li>
+    <li><a href="{{ site.twitter }}" target="_blank"><i class="fa fa-twitter"></i>Follow @[org]</a></li>
+  </ul>
+</div>
+<div class="container">
+  {% if page.slug == "landing" %}<img src="{{ page.baseurl }}images/logo-reverse.png" class="navbar-brand">
+  {% elsif page.slug != "landing" %}<a type="image/png" href="{{ page.baseurl }}"><img src="{{ page.baseurl }}images/logo.png" class="navbar-brand"></a>
+  {% endif %}
+</div>

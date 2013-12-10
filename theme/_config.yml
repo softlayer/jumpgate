@@ -1,0 +1,35 @@
+# Project
+project: Project Name
+lead: "This is a clever lead for your site"
+public_url: http://yourwebsite.com
+
+# GitHub
+repo: http://github.com/org/project-name
+fork: http://github.com/org/project-name/fork
+star: http://github.com/org/project-name/stargazers
+open_issues: http://github.com/org/project-name/issues?milestone=1;state=open
+closed_issues: http://github.com/org/project-name/issues?milestone=1;state=closed
+milestones: http://github.com/org/project-name/issues/milestones?state=open
+commits: http://github.com/org/project-name/commits
+pulls: http://github.com/org/project-name/pulls?direction=desc&amp;page=1&amp;sort=created&amp;state=open
+
+# Company
+www: http://www.yourcompany.com
+license: http://github.com/org/project-name/blob/master/LICENSE
+forum: http://forum.yourcompany.com
+blog: http://blog.yourcompany.com
+support: http://knowledgelayer.yourcompany.com
+
+# Social
+github: http://github.com/org
+twitter: http://twitter.com/org
+
+# Server
+permalink: pretty
+exclude: [".gitignore", "README.md", "LICENSE"]
+pygments: true
+safe: false
+
+# Google Analytics
+ga_tracking_id: UA-XXXXXXXX-X
+ga_tracking_domain: org.github.io
