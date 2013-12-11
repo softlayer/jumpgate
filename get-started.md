@@ -42,11 +42,13 @@ Jumpgate ships with two default drivers:
 You can install or develop additional drivers to suit your particular needs. To configure Jumpgate to use a particular driver, open the `jumpgate.conf` file in the root of your installation and change the *driver* properties for each section you wish to use. If you don't want or need a particular set of endpoints, you can comment out that section and Jumpgate will not expose them.
 
 ## Start the Server
-Jumpgate provides a WSGI-compatible interface. Any web server that supports WSGI can be used, such as nginx, Apache, gunicorn, uwsgi, etc. The server we've been using to test with is [gunicorn](http://gunicorn.org). An example command to get started is located in `test_server.sh`. Note: This requires [gunicorn to be installed](http://gunicorn.org/#quickstart) in order to run.
+Jumpgate provides a WSGI-compatible interface. Any web server that supports WSGI can be used, such as nginx, Apache, gunicorn, uwsgi, etc. The server we've been using to test with is [gunicorn](http://gunicorn.org). An example command to get started is located in `test_server.sh`. 
 
 {% highlight bash %}
 $ ./test_server.sh
 {% endhighlight %}
+
+> Note: This requires [gunicorn to be installed](http://gunicorn.org/#quickstart) in order to run.
 
 # Developer Guide
 

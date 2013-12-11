@@ -251,9 +251,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg2.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg2.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg2.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url("../images/bg2.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url("../images/bg2.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url("../images/bg2.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
