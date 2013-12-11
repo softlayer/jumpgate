@@ -11,7 +11,7 @@ open_issues: http://github.com/softlayer/jumpgate/issues?milestone=1;state=open
 closed_issues: http://github.com/softlayer/jumpgate/issues?milestone=1;state=closed
 milestones: http://github.com/softlayer/jumpgate/issues/milestones?state=open
 commits: http://github.com/softlayer/jumpgate/commits
-pulls: http://github.com/softlayer/jumpgate/pulls?direction=desc&amp;page=1&amp;sort=created&amp;state=open
+contributors: https://github.com/softlayer/jumpgate/graphs/contributors
 
 # Company
 www: http://www.softlayer.com
@@ -26,7 +26,7 @@ twitter: http://twitter.com/softlayerdevs
 
 # Server
 permalink: pretty
-exclude: [".gitignore", "README.md", "LICENSE", "theme"]
+exclude: [".gitignore", "README.md", "LICENSE"]
 pygments: true
 safe: false
 
