@@ -140,9 +140,9 @@ p#rstatus {
   text-rendering: optimizeLegibility;
   text-shadow: none;
   text-transform: uppercase;
-  background-color: #2d89c7;
+  background-color: #00aba9;
   background-image: none;
-  border: 1px solid #3092d4;
+  border: 1px solid #00aba9;
   border-radius: 4px;
   box-shadow: none;
 }
@@ -172,8 +172,8 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
     line-height: inherit;
     letter-spacing: 1px;
     color: #fff;
-    background-color: #3092d4;
-    border-color: #3092d4;
+    background-color: #00b8b6;
+    border-color: #00b8b6;
   }
   .btn-info {
     width: 14em;
@@ -251,9 +251,9 @@ a#menu-toggle.btn.btn-primary.btn-lg.toggle {
 
 @media (min-width: 768px) {
   .docs-home {
-    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg.jpg");
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg.jpg");
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg.jpg");
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg2.jpg");
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg2.jpg");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../images/bg2.jpg");
     background-repeat: no-repeat;
     -webkit-background-size: cover;
        -moz-background-size: cover;
