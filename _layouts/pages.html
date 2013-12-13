@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head> 
-    {% include header.html %}
+  {% include header.html %}
   </head>
   <body>
     <header class="navbar navbar-inverse navbar-fixed-top docs-nav" role="banner">
-      {% include main.html %}
+    {% include main.html %}
     </header>
     <div class="header" id="content"></div>
     <div class="container docs-container">
@@ -13,13 +13,13 @@
         <div class="col-md-3">
           <div class="sidebar hidden-print" role="complementary">
             <ul class="nav sidenav">    
-              {% if page.slug == "developer-guide" %}
-                {% include nav-developer-guide.html %}
-              {% elsif page.slug == "learn-more" %}
-                {% include nav-learn-more.html %}
-              {% elsif page.slug == "get-started" %}
-                {% include nav-get-started.html %}
-              {% endif %}
+          {% if page.slug == "developer-guide" %}
+            {% include nav-developer-guide.html %}
+          {% elsif page.slug == "learn-more" %}
+            {% include nav-learn-more.html %}
+          {% elsif page.slug == "get-started" %}
+              {% include nav-get-started.html %}
+          {% endif %}
             </ul>
           </div>
         </div>
@@ -38,7 +38,7 @@
           <a href="{{ site.kb }}">KnowledgeLayer</a>    
         </div>
       </div>
-        {% include footer.html %}
+      {% include footer.html %}
     </footer>
   </body>
 </html>
