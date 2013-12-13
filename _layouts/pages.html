@@ -5,7 +5,7 @@
   </head>
   <body>
     <header class="navbar navbar-inverse navbar-fixed-top docs-nav" role="banner">
-    {% include main.html %}
+    {% include nav.html %}
     </header>
     <div class="header" id="content"></div>
     <div class="container docs-container">
@@ -14,17 +14,17 @@
           <div class="sidebar hidden-print" role="complementary">
             <ul class="nav sidenav">    
           {% if page.slug == "developer-guide" %}
-            {% include nav-developer-guide.html %}
+            {% include affix-developer-guide.html %}
           {% elsif page.slug == "learn-more" %}
-            {% include nav-learn-more.html %}
+            {% include affix-learn-more.html %}
           {% elsif page.slug == "get-started" %}
-              {% include nav-get-started.html %}
+              {% include affix-get-started.html %}
           {% endif %}
             </ul>
           </div>
         </div>
         <div class="col-md-9" role="main">
-          {{ content }}
+        {{ content }}
         </div>
       </div>
     </div>

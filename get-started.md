@@ -58,5 +58,5 @@ Our [Developer Guide]({{ page.baseurl }}developer-guide) provides an overview fo
 
 All known open issues are listed on [our GitHub public repo]({{ site.open_issues }}).
 
-{% include docs.md %}
-{% include copyright.md %}
+{% include snippet-docs.md %}
+{% include snippet-copyright.md %}

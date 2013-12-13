@@ -11,7 +11,7 @@ Our combustion begins at the grassroots level with free and open source software
 
 All our work is happening publicly on GitHub, and we invite everyone to join in.
 
-{% include community.md %}
+{% include snippet-community.md %}
 
 # Contributor Guidelines
 
@@ -59,4 +59,4 @@ We treat our docs like we treat our code. And like our code, we invite everyone 
 * We publish all our content on [GitHub Pages](http://pages.github.com) and use GitHub to track and manage changes.
 * We manage our web resources under the `gh-pages` [branch](https://github.com/softlayer/jumpgate/tree/gh-pages).
 
-{% include copyright.md %}
+{% include snippet-copyright.md %}
