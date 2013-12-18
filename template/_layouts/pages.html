@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head> 
+  {% include header.html %}
+  </head>
+  <body>
+    <header class="navbar navbar-inverse navbar-fixed-top docs-nav" role="banner">
+    {% include nav.html %}
+    </header>
+    <div class="header" id="content"></div>
+    <div class="container docs-container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="sidebar hidden-print" role="complementary">
+            <ul class="nav sidenav">    
+          {% if page.slug == "developer-guide" %}
+            {% include affix-developer-guide.html %}
+          {% elsif page.slug == "learn-more" %}
+            {% include affix-learn-more.html %}
+          {% elsif page.slug == "get-started" %}
+              {% include affix-get-started.html %}
+          {% endif %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9" role="main">
+        {{ content }}
+        </div>
+      </div>
+    </div>
+    <footer class="footer" role="contentinfo">
+      <div class="container">
+        <div class="masthead-links">
+          <a href="{{ site.www }}">© 2013 SoftLayer, an IBM Company</a> &middot; 
+          <a href="{{ site.license }}">License</a> &middot; 
+          <a href="{{ site.sldn }}">SLDN</a> &middot; 
+          <a href="{{ site.blog }}">Blog</a> &middot; 
+          <a href="{{ site.kb }}">KnowledgeLayer</a>    
+        </div>
+      </div>
+      {% include footer.html %}
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+# Project
+project: project-name  # Change "project-name" to name of the project in GitHub
+lead: "Insert a clever leading message here" # Change message
+public_url: http://softlayer.github.io/project-name  # Change "project-name" to name of the project in GitHub
+
+# GitHub
+license: http://github.com/softlayer/project-name/blob/master/LICENSE  # Change "project-name" to name of the project in GitHub
+repo: http://github.com/softlayer/project-name  # Change "project-name" to name of the project in GitHub
+fork: http://github.com/softlayer/project-name/fork  # Change "project-name" to name of the project in GitHub
+star: http://github.com/softlayer/project-name/stargazers  # Change "project-name" to name of the project in GitHub
+open_issues: http://github.com/softlayer/project-name/issues?milestone=1;state=open  # Change "project-name" to name of the project in GitHub
+closed_issues: http://github.com/softlayer/project-name/issues?milestone=1;state=closed  # Change "project-name" to name of the project in GitHub
+milestones: http://github.com/softlayer/project-name/issues/milestones?state=open  # Change "project-name" to name of the project in GitHub
+commits: http://github.com/softlayer/project-name/commits  # Change "project-name" to name of the project in GitHub
+contributors: https://github.com/softlayer/project-name/graphs/contributors  # Change "project-name" to name of the project in GitHub
+
+# Company
+www: http://www.softlayer.com
+sldn: http://sldn.softlayer.com
+kb: http://knowledgelayer.softlayer.com
+blog: http://blog.softlayer.com
+
+# Social
+github: http://github.com/softlayer
+twitter: http://twitter.com/softlayerdevs
+
+# Server
+permalink: pretty
+exclude: [".gitignore", "README.md", "LICENSE"]
+pygments: true
+safe: false
+
+# Google Analytics
+ga_tracking_id: UA-XXXXXXXXX-X  # Change to the ID provided by Google
+ga_tracking_domain: softlayer.github.io
