@@ -6,19 +6,18 @@ All our public content is built from minimal static webpages made using [Bootstr
 
 Configuring each setting for a particular project is fairly straightforward. Below is a short list that shows where you have to make updates to its configuration, including:
 
-1. [../_config.yml](#_config.yml)
-2. [../learn-more.md](#learn-more.md)
-3. [../index.html](#index.html)
-4. [../get-started.md](#get-started.md)
-5. [../developer-guide.md](#developer-guide.md)
-6. [../_includes/header.html](#header.html)
-7. [../includes/affix-*.html](#affix-*.html)
-8. [../javascript/lib/payload.js](#payload.js)
+* config.yml
+* learn-more.md
+* index.html
+* get-started.md
+* developer-guide.md
+* includes/header.html
+* includes/affix-*.html
+* javascript/lib/payload.js
 
+> Note: This list only addresses content that needs to be updated/changed. 
 
-> Note: This list only points out content that needs to be updates/changed. 
-
-### _config.yml
+### config.yml
 
 The `_config.yml` file contains *almost* everything necessary to make a page on-the-fly. Open it using any editor and update the vars (defined below) before push it up to the `gh-pages` branch.
 
@@ -122,17 +121,14 @@ This is the basic layout of our `gh-pages` directory (not including content spec
 │   │   └── sidemenu.js
 │   ├── plugins
 │   │   ├── bootstrap.js
-│   │   ├── bootstrap-affix.js
-│   │   ├── bootstrap-application.js
-│   │   ├── bootstrap-collapse.js
-│   │   ├── bootstrap-holder.js
-│   │   └── bootstrap-scrollspy.js
+│   │   ├── affix.js
+│   │   └── application.js
 ├── _config.yml
 ├── index.html
 ├── LICENSE
 └── README.md
 
-8 directories, 34 files
+8 directories, 31 files
 </pre>
 
 # Support
