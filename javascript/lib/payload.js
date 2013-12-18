@@ -3,20 +3,15 @@
 
 var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
-    url: "https://api.github.com/repos/softlayer/jumpgate/milestones?state=closed/callback?",
+    url: "https://api.github.com/repos/softlayer/jumpgate/milestones?state=closed/callback?", 
     dataType: 'jsonp',
     success: function (json) {
         var lastMilestone = json.data[0];
-        if (!lastMilestone) {
-            $('#mstatus').hide();
-        } else {
-            $('#mstatus').show();
 
-            var stamp = new Date(lastMilestone.updated_at),
-                stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
-            $('#mdate').text(stampString);
-            $('#mtitle').text(lastMilestone.title);
-        }
+        var stamp = new Date(lastMilestone.updated_at),
+            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
+        $('#mdate').text(stampString);
+        $('#mtitle').text(lastMilestone.title);
     }
 });
 
@@ -25,26 +20,21 @@ $.ajax({
 
 var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 $.ajax({
-    url: "https://api.github.com/repos/softlayer/jumpgate/commits?state=closed/callback?",
+    url: "https://api.github.com/repos/softlayer/jumpgate/commits?state=closed/callback?", 
     dataType: 'jsonp',
     success: function (json) {
         var lastCommit = json.data[0];
-        if (!lastCommit) {
-            $('#cstatus').hide();
-        } else {
-            $('#cstatus').show();
 
-            var stamp = new Date(lastCommit.commit.committer.date),
-                stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
-            $('#cdate').text(stampString);
-        }
+        var stamp = new Date(lastCommit.commit.committer.date),
+            stampString = month[stamp.getMonth()] + ' ' + stamp.getDate();
+        $('#cdate').text(stampString);
     }
 });
 
 // Team/Contributors
 // Fetch # of contributors
 
-$.getJSON("https://api.github.com/repos/softlayer/jumpgate/contributors?callback=?", function (result) {
+$.getJSON("https://api.github.com/repos/softlayer/jumpgate/contributors?callback=?", function (result) { 
     var tcount = result.data;
 
     $(function () {
@@ -55,7 +45,7 @@ $.getJSON("https://api.github.com/repos/softlayer/jumpgate/contributors?callback
 // Repositories
 // Fetch # of repos
 
-$.getJSON("https://api.github.com/orgs/softlayer/repos?callback=?", function (result) {
+$.getJSON("https://api.github.com/orgs/jumpgate/repos?callback=?", function (result) { 
     var rcount = result.data;
 
     $(function () {
