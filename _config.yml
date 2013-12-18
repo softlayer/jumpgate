@@ -12,10 +12,10 @@ closed_issues: http://github.com/softlayer/jumpgate/issues?milestone=1;state=clo
 milestones: http://github.com/softlayer/jumpgate/issues/milestones?state=open
 commits: http://github.com/softlayer/jumpgate/commits
 contributors: https://github.com/softlayer/jumpgate/graphs/contributors
+license: http://github.com/softlayer/jumpgate/blob/master/LICENSE
 
 # Company
 www: http://www.softlayer.com
-license: http://github.com/softlayer/jumpgate/blob/master/LICENSE
 sldn: http://sldn.softlayer.com
 kb: http://knowledgelayer.softlayer.com
 blog: http://blog.softlayer.com
