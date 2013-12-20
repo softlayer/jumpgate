@@ -14,17 +14,17 @@ samp {
 // Inline code
 code {
   padding: 2px 4px;
-  font-size: 90%;
+  font-size: 93%;
   color: @code-color;
   background-color: @code-bg;
-  white-space: nowrap;
+  white-space: normal;
   border-radius: @border-radius-base;
 }
 
 // User input typically entered via keyboard
 kbd {
   padding: 2px 4px;
-  font-size: 90%;
+  font-size: 93%;
   color: @kbd-color;
   background-color: @kbd-bg;
   border-radius: @border-radius-small;
@@ -35,8 +35,8 @@ kbd {
 pre {
   display: block;
   padding: ((@line-height-computed - 1) / 2);
-  margin: 0 0 (@line-height-computed / 2);
-  font-size: (@font-size-base - 1); // 14px to 13px
+  margin: 10px 0 20px;
+  font-size: 96%; // 14px to 13px
   line-height: @line-height-base;
   word-break: break-all;
   word-wrap: break-word;
@@ -60,4 +60,19 @@ pre {
 .pre-scrollable {
   max-height: @pre-scrollable-max-height;
   overflow-y: scroll;
+}
+
+output pre {  
+  display: block;
+  margin: -10px 0 20px;
+  font-size: 13px;
+  color: #777;
+  background: #f4f4f4;
+  border: #e5e5e5 solid 1px;
+  border-radius: 6px;
+}
+
+output pre.nowrap {
+  display: block;
+  white-space: pre;
 }

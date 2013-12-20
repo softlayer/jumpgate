@@ -5,6 +5,16 @@
 		<meta name="description" content="Founded in 2005, SoftLayer is a cloud infrastructure provider.">
 		<meta name="author" content="SoftLayer, an IBM Company">
 
+    <!-- CSS -->
+    <link type="text/css" href="{{ page.baseurl }}css/bootstrap.css" rel="stylesheet">
+    <link type="text/css" href="{{ page.baseurl }}css/font-awesome.css" rel="stylesheet">
+    <link type="text/css" href="{{ page.baseurl }}css/pages.css" rel="stylesheet">
+    {% if page.slug != "landing" %}<link type="text/css" href="{{ page.baseurl }}css/syntax.css" rel="stylesheet">
+    {% elsif page.slug == "landing" %}<link type="text/css" href="{{ page.baseurl }}css/landing.css" rel="stylesheet">{% endif %}
+
+    <!-- Icon -->
+    <link type="image/png" href="{{ page.baseurl }}images/favicon.png" rel="icon">
+
 		<title>
   	{% if page.title == "Jumpgate" %}
     	{{ page.title }} &middot; In-Flight Project Page
@@ -12,26 +22,3 @@
     	{{ page.title }} &middot; Jumpgate
   	{% endif %}
 		</title>
-
-		<!-- Javascript -->
-		<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/jquery-1.10.2.js"></script>
-		<script type="text/javascript" src="{{ page.baseurl }}fonts/font.js"></script>
-		{% if page.slug == "landing" %}
-		<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/payload.js"></script>
-		{% endif %}
-
-		<!-- CSS -->
-		<link type="text/css" href="{{ page.baseurl }}css/bootstrap.css" rel="stylesheet">
-		<link type="text/css" href="{{ page.baseurl }}css/font-awesome.css" rel="stylesheet">
-		<link type="text/css" href="{{ page.baseurl }}css/syntax.css" rel="stylesheet">
-		<link type="text/css" href="{{ page.baseurl }}css/pages.css" rel="stylesheet">
-		{% if page.slug == "landing" %}<link type="text/css" href="{{ page.baseurl }}css/landing.css" rel="stylesheet">{% endif %}
-
-		<!-- Icon -->
-		<link type="image/png" href="{{ page.baseurl }}images/favicon.png" rel="icon">
-
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-  		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-  		<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-		<![endif]-->

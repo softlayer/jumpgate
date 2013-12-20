@@ -1,13 +1,16 @@
-		<!-- Plugins -->
+    <!-- Javascript -->
+    <script type="text/javascript" src="{{ page.baseurl }}javascript/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="{{ page.baseurl }}javascript/modernizr.js"></script>
+    <script type="text/javascript" src="{{ page.baseurl }}javascript/sidemenu.js"></script>
+    <script type="text/javascript" src="{{ page.baseurl }}javascript/fonts.js"></script>
 		<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/bootstrap.js"></script>
-		{% if page.slug != "landing" %}
+  {% if page.slug != "landing" %}
 		<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/application.js"></script>
 		<script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/affix.js"></script>
-		{% endif %}
-
-		<!-- Library -->
-		<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/modernizr.js"></script>
-		<script type="text/javascript" src="{{ page.baseurl }}javascript/lib/sidemenu.js"></script>
+    <script type="text/javascript" src="{{ page.baseurl }}javascript/plugins/scrollspy.js"></script>
+  {% elsif page.slug == "landing" %}
+    <script type="text/javascript" src="{{ page.baseurl }}javascript/payload.js"></script>
+  {% endif %}
 
 		<!-- Google Universal Analytics -->
 		<script>

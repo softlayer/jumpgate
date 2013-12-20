@@ -3,7 +3,6 @@
  * Table of Contents
  *
  * Scaffolding
- * Buttons
  * Navigation
  * Footer
  * Social
@@ -58,40 +57,13 @@ p {
   font-size: 14px;
 }
 
+.header {
+  padding: 0 0 35px;
+}
+
 .table code {
   font-size: 13px;
   font-weight: normal;
-}
-
-/*-- Buttons --*/
-
-.btn-outline {
-  color: #563d7c;
-  background-color: #fff;
-  border-color: #e5e5e5;
-}
-
-.btn-outline:hover,
-.btn-outline:focus,
-.btn-outline:active {
-  color: #fff;
-  background-color: #563d7c;
-  border-color: #563d7c;
-}
-
-.btn-outline-inverse {
-  color: #fff;
-  background-color: transparent;
-  border-color: #cdbfe3;
-}
-
-.btn-outline-inverse:hover,
-.btn-outline-inverse:focus,
-.btn-outline-inverse:active {
-  color: #563d7c;
-  text-shadow: none;
-  background-color: #fff;
-  border-color: #fff;
 }
 
 /*-- Navigation --*/
@@ -105,71 +77,19 @@ p {
           box-shadow: 0 0 6px rgba(52, 73, 94, 0.1);
 }
 
-.navbar-nav {
-  float: left;
-  margin: 10px 0;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0;
-  cursor: pointer;
-}
-
-.navbar-inverse .navbar-nav > .active > a,
-.navbar-inverse .navbar-nav > .active > a:focus,
-.navbar-inverse .navbar-nav > .active > a:hover {
-  color: #999;
-  background-color: #f2f2f2;
-  background-image: none;
-  border-radius: 15px;
-  box-shadow: none;
-}
-
-.navbar-inverse .navbar-toggle:hover,
-.navbar-inverse .navbar-toggle:focus {
-  background: #999;
-  border-color: #999;
-}
-
 .navbar > .container .navbar-brand {
   margin-top: 5px;
   margin-right: 20px;
   margin-left: 0;
 }
 
-.navbar-nav > .active > a {
-  border-radius: 4px;
-}
-
-.docs-nav .navbar-collapse {
-  border-color: #aaa;
-}
-
 .docs-nav .navbar-brand {
   color: #fff;
-}
-
-.docs-nav .navbar-nav > li > a {
-  margin-top: 0;
-  line-height: 0;
-  color: #262125;
-  text-shadow: none;
-}
-
-.docs-nav .navbar-nav > li > a:hover {
-  color: #262125;
 }
 
 @media (min-width: 768px) {
   .navbar > .container .navbar-brand {
     margin-left: -12px;
-  }
-  .navbar-nav {
-    float: right;
-    margin-top: 18px;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0;
-    cursor: pointer;
   }
 }
 
@@ -182,24 +102,6 @@ p {
   text-align: center;
   background: transparent;
   border-top: 1px solid #eee;
-}
-
-.footer-links {
-  padding-left: 0;
-  margin: 10px 0;
-}
-
-.footer-links li {
-  display: inline;
-  padding: 0 2px;
-}
-
-.footer-links li:first-child {
-  padding-left: 0;
-}
-
-.footer p {
-  margin-bottom: 0;
 }
 
 .footer a {
@@ -219,82 +121,7 @@ p {
   }
 }
 
-/*-- Social --*/
-
-.social-buttons {
-  display: inline-block;
-  padding-left: 0;
-  margin: 24px 0 0 0;
-  list-style: none;
-}
-
-.social-buttons li {
-  display: inline-block;
-  padding: 5px 8px;
-  line-height: 1;
-}
-
-.social-buttons .twitter-follow-button {
-  width: 225px !important;
-}
-
-.social-buttons .twitter-share-button {
-  width: 98px !important;
-}
-
-.github-btn {
-  overflow: hidden;
-  border: 0;
-}
-
-a#github-icon {
-  position: absolute;
-  margin-top: -4px;
-  margin-left: -15px;
-}
-
-a#twitter-icon {
-  position: absolute;
-  margin-top: -4px;
-}
-
-/*-- Background --*/
-
-.docs-home {
-  color: #fff;
-  background: transparent;
-  background-color: #563d7c;
-}
-
 /*-- Homepage --*/
-
-.masthead {
-  position: relative;
-  padding-top: 140px;
-  padding-right: 0;
-  padding-bottom: 0;
-  text-align: left;
-  background: transparent;
-}
-
-.masthead h1 {
-  font-size: 100px;
-  line-height: 1;
-  color: #fafafa;
-}
-
-.masthead .lead {
-  margin-right: 0;
-  font-size: 30px;
-  color: #fafafa;
-}
-
-.masthead .btn-outline-inverse {
-  width: auto;
-  padding: 18px 24px;
-  margin: 20px 5px 20px 0;
-  font-size: 21px;
-}
 
 .masthead-links {
   padding: 0 65px 0 0;
@@ -308,29 +135,9 @@ a#twitter-icon {
   cursor: pointer;
 }
 
-.masthead-links li {
-  display: inline;
-}
-
-.masthead-links li + li {
-  margin-left: 20px;
-}
-
 @media (min-width: 768px) {
   .masthead-links {
     font-size: 13.5px;
-  }
-  .masthead {
-    padding-top: 140px;
-    padding-bottom: 140px;
-    text-align: left;
-  }
-  .masthead h1 {
-    font-size: 80px;
-  }
-  .masthead .lead {
-    margin-right: 0;
-    font-size: 36px;
   }
 }
 
@@ -339,26 +146,6 @@ a#twitter-icon {
     padding: 0;
     font-size: 13.5px;
   }
-  .masthead {
-    padding-top: 5em;
-    padding-bottom: 2.5em;
-    text-align: left;
-  }
-  .masthead h1 {
-    font-size: 40px;
-    line-height: 1.2;
-    letter-spacing: -1px;
-  }
-  .masthead .lead {
-    margin-right: 0;
-    font-size: 21px;
-  }
-}
-
-/* Page headers */
-
-.header {
-  padding: 0 0 35px;
 }
 
 /*-- Side navigation --*/
@@ -440,10 +227,10 @@ a#twitter-icon {
 }
 
 /*-- Sections --*/
-
+/*
 .docs-section + .docs-section {
   padding-top: 40px;
-}
+} */
 
 /*-- Headings --*/
 
@@ -548,25 +335,21 @@ pre {
   border-radius: 4px;
 }
 
+/* hidden until > 480px */
 output pre {
   display: none;
-  /* hidden until > 480px */
-
 }
 
+/* hidden until > 1200px */
 output pre.nowrap {
   display: none;
-  /* hidden until > 1200px */
-
   white-space: pre;
 }
 
 /* Reveals code only when we have real estate to do so */
-
+/* hidden until > 480px */
 @media (min-width: 481px) {
   output pre {
-    /* hidden until > 480px */
-  
     display: block;
     margin: -10px 0 20px;
     font-size: 13px;
@@ -577,11 +360,8 @@ output pre.nowrap {
   }
 }
 
+/* hidden until = 1200px */
 @media (min-width: 1200px) {
-  {
-    /* hidden until = 1200px */
-  
-  }
   output pre.nowrap {
     display: block;
     white-space: pre;
@@ -708,10 +488,6 @@ img#no-height.img-thumbnail {
 img#custom-height.img-thumbnail {
   height: 500px;
   margin-top: 0;
-}
-
-.fa-2x {
-  margin-left: 40px;
 }
 
 .fa {
@@ -845,33 +621,3 @@ button#version-selector.btn.dropdown-toggle {
 a#menu-toggle.btn.btn-primary.btn-lg.toggle {
   color: #fafafa;
 }
-
-/*-- Services --*/
-
-/*-- 
-.services {
-  padding: 3.5em 0;
-  color: #fff;
-  background: #7fbbda;
-}
-
-.service-item {
-  margin-bottom: 1em;
-}
-
-.service-icon {
-  display: inline-block;
-  width: 10em;
-  height: 10em;
-  font-size: 5px;
-  line-height: 13px;
-  text-align: center;
-  vertical-align: middle;
-  border: 3px solid #fff;
-  border-radius: 50%;
-}
-
-.service-icon:hover {
-  font-size: 5em;
-}
---*/
