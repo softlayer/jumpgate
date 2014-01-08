@@ -46,11 +46,13 @@ def convert_errors(handler):
                                    message=msg or e.faultCode,
                                    details=e.faultString)
 
+            print(str(e))
             LOG.exception(e)
             return compute_fault(resp,
                                  message=e.faultCode,
                                  details=e.faultString)
         except TransportError as e:
+            print(str(e))
             LOG.exception(e)
             return compute_fault(resp,
                                  message='Service Unavailable',
