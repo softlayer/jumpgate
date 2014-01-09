@@ -51,7 +51,7 @@ class DNSDomainEntryV2(object):
             record = mgr.get_records(zone_id, host=entry)[0]
 
         result = get_dns_entry_dict(domain, record['host'], record['data'],
-                                    record['type'], record['id'])
+                                    record['type'], entry_id=record['id'])
 
         resp.body = {'dns_entry': result}
 
@@ -60,34 +60,27 @@ class DNSDomainEntryV2(object):
         mgr = DNSManager(client)
 
         body = json.loads(req.stream.read().decode())
-
         ip = lookup(body, 'dns_entry', 'ip')
-
         record_type = lookup(body, 'dns_entry', 'type')
-
         if not record_type:
             record_type = 'A'
 
         domain = unquote_plus(domain)
-
         zone_id = mgr._get_zone_id_from_name(domain)[0]
-
         mgr.create_record(zone_id=zone_id, record=entry, type=record_type,
                           data=ip)
-
         new_record = mgr.get_records(zone_id, host=entry)[0]
-
         result = get_dns_entry_dict(domain, entry, ip, record_type,
-                                    new_record['id'])
+                                    entry_id=new_record['id'])
 
         resp.body = {'dns_entry': result}
 
 
-def get_dns_entry_dict(domain, name, ip, type, id=None):
+def get_dns_entry_dict(domain, name, ip, entry_type, entry_id=None):
     return {
         'ip': ip,
         'domain': domain,
-        'type': type,
-        'id': id,
+        'type': entry_type,
+        'id': entry_id,
         'name': name,
     }

@@ -9,28 +9,29 @@ from jumpgate.common.utils import lookup
 def get_password_auth(req, body=None):
     headers = req.headers
 
-    if 'x-auth-token' in headers:
-        (userId, hash) = headers['x-auth-token'].split(':')
+    if 'X-AUTH-TOKEN' in headers:
+        (userId, tokenHash) = headers['X-AUTH-TOKEN'].split(':')
     elif body:
         body = json.loads(body)
         username = lookup(body, 'auth', 'passwordCredentials', 'username')
         password = lookup(body, 'auth', 'passwordCredentials', 'password')
 
         client = Client()
-        (userId, hash) = client.authenticate_with_password(username, password)
+        (userId, tokenHash) = client.authenticate_with_password(username,
+                                                                password)
     else:
         return None, None, None
 
-    auth = TokenAuthentication(userId, hash)
-    token = str(userId) + ':' + hash
+    auth = TokenAuthentication(userId, tokenHash)
+    token = str(userId) + ':' + tokenHash
     return auth, token, None
 
 
 def get_api_key_auth(req, body=None):
     headers = req.headers
 
-    if 'x-auth-token' in headers:
-        username, api_key = headers['x-auth-token'].split(':')
+    if 'X-AUTH-TOKEN' in headers:
+        username, api_key = headers['X-AUTH-TOKEN'].split(':')
     elif body:
         body = json.loads(body)
         username = lookup(body, 'auth', 'passwordCredentials', 'username')

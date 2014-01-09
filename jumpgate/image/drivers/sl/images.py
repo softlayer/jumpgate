@@ -416,7 +416,9 @@ class ImagesV2(object):
         if not results:
             return not_found(resp, 'Image could not be found')
 
-        # TODO - What should this do?
+        client['Virtual_Guest_Block_Device_Template_Group'].deleteObject(
+            id=results['id'])
+
         resp.status = 204
 
     def on_post(self, req, resp, tenant_id=None):
@@ -494,7 +496,9 @@ class ImageV1(object):
         if not results:
             return not_found(resp, 'Image could not be found')
 
-        # TODO - What should this do?
+        client['Virtual_Guest_Block_Device_Template_Group'].deleteObject(
+            id=results['id'])
+
         resp.status = 204
 
     def on_get(self, req, resp, image_guid, tenant_id=None):
