@@ -17,7 +17,7 @@ def hook_get_client(req, resp, kwargs):
     client.auth = None
     req.env['tenant_id'] = None
 
-    if req.headers.get('x-auth-token'):
+    if req.headers.get('X-AUTH-TOKEN'):
         auth, _, _ = get_auth(req, resp)
         client.auth = auth
 
