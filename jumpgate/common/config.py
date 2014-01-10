@@ -2,15 +2,15 @@ from oslo.config import cfg
 
 FILE_OPTIONS = {
     None: [
-        cfg.ListOpt('enabled_services', default=[
-            'identity',
-            'compute',
-            'image',
-            'block_storage',
-            'network,'
-            'baremetal',
-        ]),
-        cfg.StrOpt('some_test_value', default='jumpgate.identity.drivers.sl'),
+        cfg.ListOpt('enabled_services', default=['identity',
+                                                 'compute',
+                                                 'image',
+                                                 'block_storage',
+                                                 'network,'
+                                                 'baremetal']),
+        cfg.StrOpt('log_level', default='INFO',
+                   help='Log level to report. '
+                        'Options: DEBUG, INFO, WARNING, ERROR, CRITICAL'),
     ],
     'identity': [
         cfg.StrOpt('driver', default='jumpgate.identity.drivers.sl'),

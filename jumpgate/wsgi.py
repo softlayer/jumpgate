@@ -1,5 +1,6 @@
 import os.path
 import os
+import logging
 
 from jumpgate.api import Jumpgate
 from jumpgate.config import CONF
@@ -14,6 +15,8 @@ def make_api():
     CONF(project='jumpgate',
          args=[],  # We don't want CLI arguments to pass through here
          default_config_files=config_files)
+
+    logging.basicConfig(level=getattr(logging, CONF['log_level']))
     app = Jumpgate()
     app.load_endpoints()
     app.load_drivers()
