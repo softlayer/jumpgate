@@ -1,4 +1,5 @@
-falcon==0.1.8rc2
+falcon>=0.1.8
 requests
 six>=1.4.1
 oslo.config>=1.2.0
+softlayer

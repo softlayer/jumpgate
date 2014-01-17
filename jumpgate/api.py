@@ -36,7 +36,7 @@ class Jumpgate(object):
         api = API(before=self.before_hooks, after=self.after_hooks)
 
         # Set the default route to the NYI object
-        api.set_default_route(self.default_route or NYI())
+        api.add_sink(self.default_route or NYI())
 
         # Add all the routes collected thus far
         for _, disp in self._dispatchers.items():

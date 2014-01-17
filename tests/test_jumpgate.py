@@ -55,13 +55,6 @@ class TestJumpgate(unittest.TestCase):
         self.assertIsInstance(api, falcon.API)
         self.assertEqual(len(api._routes), 10)
 
-        # Make sure the default route is set correctly
-        nyi = NYI()
-        route_map, _ = api._default_route
-        for verb, handler in route_map.items():
-            self.assertEqual(handler.__name__,
-                             getattr(nyi, 'on_' + verb.lower()).__name__)
-
     def test_add_get_dispatcher(self):
         disp = Dispatcher()
         self.app.add_dispatcher('SERVICE', disp)

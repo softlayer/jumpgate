@@ -16,10 +16,11 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'falcon',
+        'falcon>=0.1.8',
         'requests',
         'six>=1.4.1',
         'oslo.config>=1.2.0',
+        'softlayer'
     ],
     setup_requires=[],
     test_suite='nose.collector',
