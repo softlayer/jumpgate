@@ -1,7 +1,10 @@
+
 from SoftLayer import Client, API_PUBLIC_ENDPOINT
 from oslo.config import cfg
 
-from jumpgate.common.sl.auth import get_auth
+from jumpgate.common.sl.auth import get_auth, get_token_details
+from jumpgate.common.sl.errors import handle_softlayer_errors
+from SoftLayer import SoftLayerAPIError
 
 
 opts = [
@@ -18,14 +21,15 @@ def hook_get_client(req, resp, kwargs):
     req.env['tenant_id'] = None
 
     if req.headers.get('X-AUTH-TOKEN'):
-        auth, _, _ = get_auth(req, resp)
-        client.auth = auth
+        if 'X-AUTH-TOKEN' in req.headers:
+            tenant_id = kwargs.get('tenant_id',
+                                   req.headers.get('X-AUTH-PROJECT-ID'))
+            token_details = get_token_details(req.headers['X-AUTH-TOKEN'],
+                                              tenant_id=tenant_id)
 
-        account_id = kwargs.get('tenant_id')
-        if not account_id:
-            account = client['Account'].getObject()
-            account_id = str(account['id'])
-        req.env['tenant_id'] = account_id
+            client.auth = get_auth(token_details)
+
+            req.env['tenant_id'] = token_details['tenant_id']
 
     req.env['sl_client'] = client
 
@@ -33,3 +37,5 @@ def hook_get_client(req, resp, kwargs):
 def add_hooks(app):
     if hook_get_client not in app.before_hooks:
         app.before_hooks.append(hook_get_client)
+
+    app.add_error_handler(SoftLayerAPIError, handle_softlayer_errors)

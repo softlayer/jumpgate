@@ -3,7 +3,6 @@ import json
 from SoftLayer import CCIManager, SshKeyManager, SoftLayerAPIError
 
 from jumpgate.common.utils import lookup
-from jumpgate.common.sl.errors import convert_errors
 from jumpgate.common.error_handling import (bad_request, duplicate,
                                             compute_fault, not_found)
 from .flavors import FLAVORS
@@ -25,7 +24,6 @@ class ServerActionV2(object):
     def __init__(self, app):
         self.app = app
 
-    @convert_errors
     def on_post(self, req, resp, tenant_id, instance_id):
         body = json.loads(req.stream.read().decode())
 
@@ -125,7 +123,6 @@ class ServersV2(object):
     def __init__(self, app):
         self.app = app
 
-    @convert_errors
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
         cci = CCIManager(client)
@@ -153,7 +150,6 @@ class ServersV2(object):
         resp.status = 200
         resp.body = {'servers': results}
 
-    @convert_errors
     def on_post(self, req, resp, tenant_id):
         client = req.env['sl_client']
         body = json.loads(req.stream.read().decode())
@@ -289,7 +285,6 @@ class ServersDetailV2(object):
     def __init__(self, app):
         self.app = app
 
-    @convert_errors
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
         cci = CCIManager(client)
@@ -312,7 +307,6 @@ class ServerV2(object):
     def __init__(self, app):
         self.app = app
 
-    @convert_errors
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
         cci = CCIManager(client)
@@ -324,7 +318,6 @@ class ServerV2(object):
 
         resp.body = {'server': results}
 
-    @convert_errors
     def on_delete(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
         cci = CCIManager(client)
@@ -340,7 +333,6 @@ class ServerV2(object):
             raise
         resp.status = 204
 
-    @convert_errors
     def on_put(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
         cci = CCIManager(client)

@@ -32,3 +32,7 @@ def error(resp, error_type, message, details=None, code=500):
         error_dict['details'] = details
     resp.status = code
     resp.body = {error_type: error_dict}
+
+
+def handle_error(ex, req, resp, params):
+    error(resp, ex.error_type, ex.msg, details=ex.details, code=ex.code)

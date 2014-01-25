@@ -16,7 +16,9 @@ def make_api():
          args=[],  # We don't want CLI arguments to pass through here
          default_config_files=config_files)
 
-    logging.basicConfig(level=getattr(logging, CONF['log_level']))
+    logger = logging.getLogger('jumpgate')
+    logger.setLevel(getattr(logging, CONF['log_level'].upper()))
+    logger.addHandler(logging.StreamHandler())
     app = Jumpgate()
     app.load_endpoints()
     app.load_drivers()
