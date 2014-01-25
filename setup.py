@@ -20,7 +20,8 @@ setup(
         'requests',
         'six>=1.4.1',
         'oslo.config>=1.2.0',
-        'softlayer'
+        'softlayer',
+        'pycrypto',
     ],
     setup_requires=[],
     test_suite='nose.collector',
