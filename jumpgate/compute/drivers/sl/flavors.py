@@ -77,7 +77,7 @@ class FlavorsDetailV2(object):
         self.app = app
 
     def on_get(self, req, resp, tenant_id=None):
-        flavor_refs = [flavor for _, flavor in FLAVORS.items()]
+        flavor_refs = get_listing_flavors()
         flavor_refs = filter_flavor_refs(req, resp, flavor_refs)
         if flavor_refs is None:
             return
