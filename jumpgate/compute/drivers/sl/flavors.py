@@ -2,35 +2,35 @@ from jumpgate.common.error_handling import bad_request, not_found
 
 FLAVORS = {
     1: {
-        'id': 1,
+        'id': '1',
         'name': '1 vCPU, 1GB ram, 25GB',
         'ram': 1024,
         'disk': 25,
         'cpus': 1,
     },
     2: {
-        'id': 2,
+        'id': '2',
         'name': '1 vCPU, 1GB ram, 100GB',
         'ram': 1024,
         'disk': 100,
         'cpus': 1,
     },
     3: {
-        'id': 3,
+        'id': '3',
         'name': '2 vCPU, 2GB ram, 100GB',
         'ram': 2 * 1024,
         'disk': 100,
         'cpus': 2,
     },
     4: {
-        'id': 4,
+        'id': '4',
         'name': '4 vCPU, 4GB ram, 100GB',
         'ram': 4 * 1024,
         'disk': 100,
         'cpus': 4,
     },
     5: {
-        'id': 5,
+        'id': '5',
         'name': '8 vCPU, 8GB ram, 100GB',
         'ram': 8 * 1024,
         'disk': 100,

@@ -11,6 +11,9 @@ FILE_OPTIONS = {
         cfg.StrOpt('log_level', default='INFO',
                    help='Log level to report. '
                         'Options: DEBUG, INFO, WARNING, ERROR, CRITICAL'),
+        cfg.StrOpt('secret_key',
+                   default='SET ME',
+                   help='Secret key used to encrypt tokens'),
     ],
     'identity': [
         cfg.StrOpt('driver', default='jumpgate.identity.drivers.sl'),

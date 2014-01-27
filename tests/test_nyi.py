@@ -8,14 +8,7 @@ class TestNYI(unittest.TestCase):
     def setUp(self):
         self.nyi = NYI()
 
-    def test_all_verbs(self):
-        methods = [
-            self.nyi.on_get,
-            self.nyi.on_post,
-            self.nyi.on_put,
-            self.nyi.on_delete,
-            self.nyi.on_head,
-        ]
+    def test_call(self):
         not_implemented_response = {
             'notImplemented': {
                 'message': 'Not Implemented',
@@ -24,9 +17,8 @@ class TestNYI(unittest.TestCase):
             }
         }
 
-        for method in methods:
-            req, resp = MagicMock(), MagicMock()
-            method(req, resp)
+        req, resp = MagicMock(), MagicMock()
+        self.nyi(req, resp)
 
-            self.assertEquals(resp.status, 501)
-            self.assertEquals(resp.body, not_implemented_response)
+        self.assertEquals(resp.status, '501 Not Implemented')
+        self.assertEquals(resp.body, not_implemented_response)

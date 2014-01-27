@@ -1,11 +1,13 @@
 import datetime
 import logging
+import json
+import base64
+
+from jumpgate.common.sl.auth import get_new_token, get_token_details, get_auth
+from jumpgate.common.aes import encode_aes
 
 from SoftLayer import Client
-
-from jumpgate.common.sl.errors import convert_errors
-from jumpgate.common.sl.auth import get_auth
-from jumpgate.config import CONF
+from oslo.config import cfg
 
 LOG = logging.getLogger(__name__)
 
@@ -34,6 +36,29 @@ def parse_templates(template_lines):
     return o
 
 
+def get_access(token_id, token_details, user):
+    return {
+        'token': {
+            'expires': datetime.datetime.fromtimestamp(
+                token_details['expires']).isoformat(),
+            'id': token_id,
+            'tenant': {
+                'id': token_details['tenant_id'],
+                'name': token_details['tenant_id'],
+            },
+        },
+        'user': {
+            'username': user['username'],
+            'id': user['id'],
+            'roles': [
+                {'name': 'user'},
+            ],
+            'role_links': [],
+            'name': user['username'],
+        },
+    }
+
+
 class TokensV2(object):
     def __init__(self, template_file):
         self._load_templates(template_file)
@@ -57,18 +82,16 @@ class TokensV2(object):
                     o[region][service][k] = v.replace('$(', '%(') % d
         return o
 
-    @convert_errors
     def on_post(self, req, resp):
         body = req.stream.read().decode()
-        auth, token, err = get_auth(req, resp, body=body)
-        if err:
-            return err
-        client = Client(auth=auth, endpoint_url=CONF['softlayer']['endpoint'])
+        credentials = json.loads(body)
+        token_details, user = get_new_token(credentials)
+        token_id = base64.b64encode(encode_aes(json.dumps(token_details)))
 
-        user = client['Account'].getCurrentUser(mask='id, account, username')
-        account = user['account']
+        access = get_access(token_id, token_details, user)
 
-        raw_catalog = self._get_catalog(account['id'], user['id'])
+        # Add catalog to the access data
+        raw_catalog = self._get_catalog(token_details['tenant_id'], user['id'])
         catalog = []
         for services in raw_catalog.values():
             for service_type, service in services.items():
@@ -85,36 +108,25 @@ class TokensV2(object):
                 }
                 catalog.append(d)
 
-        # Set expiration for a day
-        expiration = datetime.datetime.now() + datetime.timedelta(days=1)
-        access = {
-            'token': {
-                'expires': expiration.isoformat(),
-                'id': token,
-                'tenant': {
-                    'id': account['id'],
-                    'enabled': True,
-                    'description': account['companyName'],
-                    'name': account['id'],
-                },
-            },
-            'serviceCatalog': catalog,
-            'user': {
-                'username': user['username'],
-                'id': user['id'],
-                'roles': [
-                    {'name': 'user'},
-                ],
-                'role_links': [],
-                'name': user['username'],
-            },
-        }
+        access['serviceCatalog'] = catalog
 
         resp.status = 200
         resp.body = {'access': access}
 
 
 class TokenV2(object):
+    def on_get(self, req, resp, token_id):
+        token_details = get_token_details(token_id,
+                                          tenant_id=req.get_param('belongsTo'))
+        client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
+        client.auth = get_auth(token_details)
+
+        user = client['Account'].getCurrentUser(mask='id, username')
+        access = get_access(token_id, token_details, user)
+
+        resp.status = 200
+        resp.body = {'access': access}
+
     def on_delete(self, req, resp, token_id):
         # This method is called when OpenStack wants to remove a token's
         # validity, such as when a cookie expires. Our login tokens can't

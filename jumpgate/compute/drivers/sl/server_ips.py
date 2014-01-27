@@ -1,11 +1,9 @@
 from SoftLayer import CCIManager
 
-from jumpgate.common.sl.errors import convert_errors
 from jumpgate.common.error_handling import not_found
 
 
 class ServerIpsV2(object):
-    @convert_errors
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
         cci = CCIManager(client)
@@ -30,7 +28,6 @@ class ServerIpsV2(object):
 
 
 class ServerIpsNetworkV2(object):
-    @convert_errors
     def on_get(self, req, resp, tenant_id, server_id, network_label):
         network_label = network_label.lower()
 
