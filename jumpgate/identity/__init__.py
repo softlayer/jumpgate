@@ -1,6 +1,9 @@
 
 
 def add_endpoints(disp):
+    # Versions
+    disp.add_endpoint('versions', '/')
+
     # V3 API - http://api.openstack.org/api-ref-identity.html#identity-v3
 
     # Tokens
