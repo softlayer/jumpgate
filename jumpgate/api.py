@@ -96,8 +96,7 @@ class Jumpgate(object):
 
 
 def handle_unexpected_errors(ex, req, resp, params):
-    print(str(ex))
-    LOG.exception(ex)
+    LOG.exception('Unexpected Error')
     return compute_fault(resp,
                          message='Service Unavailable',
                          details='Service Unavailable')
