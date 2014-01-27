@@ -1,3 +1,4 @@
+from jumpgate.common.error_handling import error
 
 
 class ResponseException(Exception):
@@ -10,6 +11,10 @@ class ResponseException(Exception):
         self.error_type = error_type or self.error_type
         self.details = details
         self.code = code or self.code
+
+    @staticmethod
+    def handle(ex, req, resp, params):
+        error(resp, ex.error_type, ex.msg, details=ex.details, code=ex.code)
 
 
 class Unauthorized(ResponseException):

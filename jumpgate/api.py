@@ -9,7 +9,7 @@ from jumpgate.common.nyi import NYI
 from jumpgate.common.hooks import hook_format, hook_set_uuid, hook_log_request
 from jumpgate.common.dispatcher import Dispatcher
 from jumpgate.common.exceptions import ResponseException
-from jumpgate.common.error_handling import handle_error, compute_fault
+from jumpgate.common.error_handling import compute_fault
 
 LOG = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class Jumpgate(object):
 
         # Add Error Handlers - ordered generic to more specific
         built_in_handlers = [(Exception, handle_unexpected_errors),
-                             (ResponseException, handle_error)]
+                             (ResponseException, ResponseException.handle)]
 
         for ex, handler in built_in_handlers + self._error_handlers:
             api.add_error_handler(ex,

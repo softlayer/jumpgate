@@ -11,13 +11,15 @@ FAULT_CODE_ERRORS = [
     ('SoftLayer_Exception_InvalidDataLength', None, bad_request),
     ('SoftLayer_Exception_ObjectNotFound', None, not_found),
     ('SoftLayer_Exception_NotFound', None, not_found),
-    ('SoftLayer_Exception_InvalidLegacyToken', 'Invalid Credentials',
-     unauthorized)
+    ('SoftLayer_Exception_InvalidLegacyToken',
+     'Invalid Credentials', unauthorized)
 ]
 
 FAULT_STRING_ERRORS = [
     ('must be alphanumeric strings', 'Invalid hostname', bad_request),
     ('Invalid API token', 'Invalid credentials', unauthorized),
+    ('No valid authentication headers found',
+     'Invalid credentials', unauthorized)
 ]
 
 
@@ -36,8 +38,7 @@ def handle_softlayer_errors(ex, req, resp, params):
                            message=msg or ex.faultCode,
                            details=ex.faultString)
 
-    print(str(ex))
-    LOG.exception(ex)
+    LOG.exception('Unexpected SoftLayer Error')
     return compute_fault(resp,
                          message=ex.faultCode,
                          details=ex.faultString)
