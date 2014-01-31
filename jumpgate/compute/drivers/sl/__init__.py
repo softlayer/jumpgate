@@ -13,7 +13,7 @@ from .security_groups import OSSecurityGroupsV2
 from .usage import UsageV2
 from .volumes import OSVolumeAttachmentsV2
 from .networks import OSNetworksV2, OSNetworkV2
-from .instance_actions import InstanceActionsV2
+from .instance_actions import InstanceActionsV2, InstanceActionV2
 from .index import IndexV2
 
 from jumpgate.image.drivers.sl import ImageV1, ImagesV2
@@ -73,6 +73,7 @@ def setup_routes(app, disp):
     disp.set_handler('v2_servers_detail', ServersDetailV2(app))
     disp.set_handler('v2_server_action', ServerActionV2(app))
     disp.set_handler('v2_os_instance_actions', InstanceActionsV2())
+    disp.set_handler('v2_os_instance_action', InstanceActionV2())
 
     disp.set_handler('v2_server_ips', ServerIpsV2())
     disp.set_handler('v2_server_ips_network', ServerIpsNetworkV2())
