@@ -91,9 +91,11 @@ tempest.api.compute.servers.test_server_actions:ServerActionsTestJSON.test_stop_
 # Skipped due to IP Address Checks (Not applicable to SL Network)
 # tempest.api.compute.servers.test_create_server:ServersTestJSON.test_verify_server_details
 
-# Skipped due to CCIs not tracking shutdowns/restarts/etc. events
+# Skipped due to CCIs tracking restart as 'power on' and 'power off' events
 # tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions
-# tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_list_instance_actions_invalid_server
+# tempest.api.compute.servers.test_instance_actions:InstanceActionsTestJSON.test_get_instance_action
+tempest.api.compute.servers.test_instance_actions_negative:InstanceActionsNegativeTestJSON.test_list_instance_actions_non_existent_server
+tempest.api.compute.servers.test_instance_actions_negative:InstanceActionsNegativeTestJSON.test_get_instance_action_invalid_request
 
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_specify_keypair
 tempest.api.compute.servers.test_servers:ServersTestJSON.test_create_with_existing_server_name

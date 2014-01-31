@@ -4,3 +4,4 @@ six>=1.4.1
 oslo.config>=1.2.0
 softlayer
 pycrypto
+iso8601

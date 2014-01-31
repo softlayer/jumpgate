@@ -22,6 +22,7 @@ setup(
         'oslo.config>=1.2.0',
         'softlayer',
         'pycrypto',
+        'iso8601',
     ],
     setup_requires=[],
     test_suite='nose.collector',
