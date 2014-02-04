@@ -39,6 +39,9 @@ def add_endpoints(disp):
     disp.add_endpoint(
         'v2_os_instance_actions',
         '/v2/{tenant_id}/servers/{server_id}/os-instance-actions')
+    disp.add_endpoint(
+        'v2_os_instance_action',
+        '/v2/{tenant_id}/servers/{server_id}/os-instance-actions/{action_id}')
 
     # Images
     disp.add_endpoint('v2_image', '/v2/{tenant_id}/images/{image_guid}')
