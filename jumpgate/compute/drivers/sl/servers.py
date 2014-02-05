@@ -183,7 +183,11 @@ class ServersV2(object):
 
         user_data = {}
         if lookup(body, 'server', 'metadata'):
-            user_data = lookup(body, 'server', 'metadata')
+            user_data['metadata'] = lookup(body, 'server', 'metadata')
+        if lookup(body, 'server', 'user_data'):
+            user_data['user_data'] = lookup(body, 'server', 'user_data')
+        if lookup(body, 'server', 'personality'):
+            user_data['personality'] = lookup(body, 'server', 'personality')
 
         datacenter = None
         if lookup(body, 'server', 'availability_zone'):
