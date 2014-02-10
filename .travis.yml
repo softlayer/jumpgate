@@ -1,10 +1,10 @@
 language: python
-python:
-  - "2.7"
-  - "3.3"
-  - "pypy"
-# command to install dependencies
-install:
-  - "pip install -r requirements.txt --use-mirrors"
-# command to run tests
-script: python setup.py nosetests
+python: 2.7
+env:
+  - TOX_ENV=py27
+  - TOX_ENV=py33
+  - TOX_ENV=pypy
+  - TOX_ENV=pep8
+  - TOX_ENV=pylint
+install: pip install tox --use-mirrors
+script: tox -e $TOX_ENV
