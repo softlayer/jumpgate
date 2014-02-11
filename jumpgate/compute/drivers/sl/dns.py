@@ -1,5 +1,5 @@
 import json
-from six.moves.urllib.parse import unquote_plus  # NOQA
+from six.moves.urllib.parse import unquote_plus  # pylint: disable=E0611
 
 from SoftLayer import DNSManager
 
@@ -67,8 +67,8 @@ class DNSDomainEntryV2(object):
 
         domain = unquote_plus(domain)
         zone_id = mgr._get_zone_id_from_name(domain)[0]
-        mgr.create_record(zone_id=zone_id, record=entry, type=record_type,
-                          data=ip)
+        mgr.create_record(zone_id=zone_id, record=entry,
+                          record_type=record_type, data=ip)
         new_record = mgr.get_records(zone_id, host=entry)[0]
         result = get_dns_entry_dict(domain, entry, ip, record_type,
                                     entry_id=new_record['id'])
