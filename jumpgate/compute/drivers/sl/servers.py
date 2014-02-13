@@ -415,7 +415,7 @@ def get_server_details_dict(app, req, instance):
     image_name = ''
 
     results = {
-        'id': instance['id'],
+        'id': str(instance['id']),
         'accessIPv4': '',
         'accessIPv6': '',
         'addresses': addresses,
