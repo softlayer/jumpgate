@@ -27,7 +27,8 @@ def hook_get_client(req, resp, kwargs):
         if 'X-AUTH-TOKEN' in req.headers:
             admin_token = cfg.CONF['DEFAULT']['admin_token']
             if admin_token and admin_token == req.headers.get('X-AUTH-TOKEN'):
-                # authn for jumpgate api, but no mapping into slapi
+                # admin_token authenticates to Jumpgate API, but does not
+                # provide SLAPI access
                 return
             tenant_id = kwargs.get('tenant_id',
                                    req.headers.get('X-AUTH-PROJECT-ID'))
