@@ -446,6 +446,10 @@ def get_server_details_dict(app, req, instance):
         'security_groups': [{'name': 'default'}],
         'status': status,
         'tenant_id': tenant_id,
+        # NOTE(bodenr): userRecordId accessibility determined by permissions
+        # of API caller's user id and api key. Otherwise it will be None
+        'user_id': lookup(instance, 'billingItem', 'orderItem', 'order',
+                          'userRecordId'),
         'updated': instance['modifyDate'],
         'image_name': image_name,
     }
@@ -487,6 +491,7 @@ def get_virtual_guest_mask():
         'modifyDate',
         'provisionDate',
         'sshKeys',
+        'billingItem.orderItem.order.userRecordId'
     ]
 
     return 'mask[%s]' % ','.join(mask)
