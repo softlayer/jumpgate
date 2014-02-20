@@ -18,6 +18,8 @@ FILE_OPTIONS = {
     'identity': [
         cfg.StrOpt('driver', default='jumpgate.identity.drivers.sl'),
         cfg.StrOpt('mount', default=None),
+        cfg.StrOpt('token_auth_driver', default='jumpgate.identity.'
+                   'drivers.sl.tokens.SLAuthTokenDriver')
     ],
     'compute': [
         cfg.StrOpt('driver', default='jumpgate.compute.drivers.sl'),
