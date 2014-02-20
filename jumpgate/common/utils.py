@@ -30,7 +30,7 @@ def wrap_handler_with_hooks(handler, after):
 
 def import_class(canonical_name):
     segs = canonical_name.split('.')
-    module_name, clazz = '.'.join(segs[0: len(segs) -1]), segs[-1]
+    module_name, clazz = '.'.join(segs[0: len(segs) - 1]), segs[-1]
     module = importlib.import_module(module_name)
     class_ref = getattr(module, clazz, None)
     if class_ref is None:

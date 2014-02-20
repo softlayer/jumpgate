@@ -6,7 +6,7 @@ DEFAULT_TOKEN_DURATION = 60 * 60 * 24
 class AuthTokenDriver(object):
 
     def _build_api_token(self, user, api_key, tenant,
-                     expires=DEFAULT_TOKEN_DURATION):
+                         expires=DEFAULT_TOKEN_DURATION):
         return {'username': user,
                 'api_key': api_key,
                 'auth_type': 'api_key',
@@ -24,7 +24,7 @@ class AuthTokenDriver(object):
     def get_new_token(self, credentials):
         """Authenticates credentials against identity provider and
         returns a jumpgate compatible token upon successful authentication.
-        
+
         :param credentials: A dict containing the authentication credentials
         in keystone auth body request format."""
         raise NotImplementedError()
