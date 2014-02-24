@@ -1,16 +1,15 @@
-import datetime
-import logging
-import json
 import base64
+import datetime
+import json
+import logging
+import time
 
-import jumpgate.identity.drivers.driver as token_driver
-
+from jumpgate.common.sl.auth import get_token_details, get_auth
 from jumpgate.common.aes import encode_aes
 from jumpgate.common.exceptions import Unauthorized
-from jumpgate.common.sl.auth import get_new_token, get_token_details, get_auth
 from jumpgate.common.utils import lookup
 
-from SoftLayer import (Client, SoftLayerAPIError)
+from SoftLayer import Client, SoftLayerAPIError
 from oslo.config import cfg
 
 LOG = logging.getLogger(__name__)
@@ -64,46 +63,6 @@ def get_access(token_id, token_details, user):
     }
 
 
-class SLAuthTokenDriver(token_driver.AuthTokenDriver):
-    """Authenticates credentials or API key against SLAPI."""
-
-    def __init__(self):
-        super(SLAuthTokenDriver, self).__init__()
-
-    def get_new_token(self, credentials):
-        username = lookup(credentials, 'auth', 'passwordCredentials', 'username')
-        credential = lookup(credentials, 'auth', 'passwordCredentials', 'password')
-
-        def assert_tenant(user):
-            tenant = lookup(credentials, 'auth', 'tenantId')
-            if tenant and str(user['accountId']) != tenant:
-                raise Unauthorized('Invalid username, password or tenant id')
-
-        # If the 'password' is the right length, treat it as an API api_key
-        if len(credential) == 64:
-            client = Client(username=username, api_key=credential)
-            user = client['Account'].getCurrentUser(mask=USER_MASK)
-            assert_tenant(user)
-            return self._build_api_token(username, credential,
-                                         str(user['accountId'])), user
-        else:
-            client = Client()
-            client.auth = None
-            try:
-                userId, tokenHash = client.authenticate_with_password(username,
-                                                                      credential)
-                user = client['Account'].getCurrentUser(mask=USER_MASK)
-                assert_tenant(user)
-                return self._build_credential_token(userId,
-                                                    tokenHash,
-                                                    str(user['accountId'
-                                                             ])), user
-            except SoftLayerAPIError as e:
-                if e.faultCode == 'SoftLayer_Exception_User_Customer_LoginFailed':
-                    raise Unauthorized(e.faultString)
-                raise
-
-
 class TokensV2(object):
     def __init__(self, template_file):
         self._load_templates(template_file)
@@ -127,10 +86,56 @@ class TokensV2(object):
                     o[region][service][k] = v.replace('$(', '%(') % d
         return o
 
+    def _authenticate(self, credentials):
+        username = lookup(credentials, 'auth', 'passwordCredentials',
+                          'username')
+        credential = lookup(credentials, 'auth', 'passwordCredentials',
+                            'password')
+
+        def assert_tenant(user):
+            tenant = lookup(credentials, 'auth', 'tenantId')
+            if tenant and str(user['accountId']) != tenant:
+                raise Unauthorized('Invalid username, password or tenant id')
+
+        # If the 'password' is the right length, treat it as an API api_key
+        if len(credential) == 64:
+            client = Client(username=username, api_key=credential)
+            user = client['Account'].getCurrentUser(mask=USER_MASK)
+            assert_tenant(user)
+            return user, credential, 'api_key'
+        else:
+            client = Client()
+            client.auth = None
+            try:
+                userId, tokenHash = client.\
+                    authenticate_with_password(username, credential)
+                user = client['Account'].getCurrentUser(mask=USER_MASK)
+                assert_tenant(user)
+                return user, tokenHash, 'token'
+            except SoftLayerAPIError as e:
+                if (e.faultCode == "SoftLayer_Exception_User_Customer"
+                        "_LoginFailed"):
+                    raise Unauthorized(e.faultString)
+                raise
+
+    def _build_auth_token(self, user_id, username, tenant, credential,
+                          auth_type):
+        return {'user_id': user_id,
+                'username': username,
+                'api_key': credential,
+                'auth_type': auth_type,
+                'tenant_id': tenant,
+                'expires': time.time() + (60 * 60 * 24)}
+
     def on_post(self, req, resp):
         body = req.stream.read().decode()
         credentials = json.loads(body)
-        token_details, user = get_new_token(credentials)
+        user, api_token, auth_type = self._authenticate(credentials)
+        token_details = self._build_auth_token(str(user['id']),
+                                               str(user['username']),
+                                               str(user['accountId']),
+                                               api_token,
+                                               auth_type)
         token_id = base64.b64encode(encode_aes(json.dumps(token_details)))
 
         access = get_access(token_id, token_details, user)

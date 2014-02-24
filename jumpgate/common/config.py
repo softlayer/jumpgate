@@ -1,4 +1,5 @@
 from oslo.config import cfg
+from SoftLayer import API_PUBLIC_ENDPOINT
 
 FILE_OPTIONS = {
     None: [
@@ -14,6 +15,12 @@ FILE_OPTIONS = {
         cfg.StrOpt('secret_key',
                    default='SET ME',
                    help='Secret key used to encrypt tokens'),
+        cfg.ListOpt('request_hooks', default=[]),
+        cfg.ListOpt('response_hooks', default=[])
+    ],
+    'softlayer': [
+        cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
+        cfg.StrOpt('catalog_template_file', default='identity.templates'),
     ],
     'identity': [
         cfg.StrOpt('driver', default='jumpgate.identity.drivers.sl'),

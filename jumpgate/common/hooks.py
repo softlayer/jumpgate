@@ -21,14 +21,5 @@ def hook_format(req, resp):
     resp.set_header('X-Compute-Request-Id', req.env['REQUEST_ID'])
 
 
-def hook_log_request(req, resp):
-    LOG.info('%s %s %s %s [ReqId: %s]',
-             req.method,
-             req.path,
-             req.query_string,
-             resp.status,
-             req.env['REQUEST_ID'])
-
-
 def hook_set_uuid(req, resp, kwargs):
     req.env['REQUEST_ID'] = 'req-' + str(uuid.uuid1())
