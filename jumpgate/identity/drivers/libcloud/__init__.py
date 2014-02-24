@@ -1,9 +1,27 @@
-from libcloud.compute.types import Provider
-from libcloud.compute.providers import get_driver
-from jumpgate.config import CONF
+import os.path
+
+#from .tenants import TenantsV2
+from .tokens import TokensV2  # , TokenV2
+#from .versions import Versions
+#from jumpgate.common.sl import add_hooks
 
 
-cls = get_driver(Provider.CONF['libcloud.provider'])
+def setup_routes(app, disp):
+    # V3 Routes
+    # None currently supported
 
-driver = cls(CONF['libcloud.client_id'], CONF['libcloud.secret'],
-             project=CONF['libcloud.project_id'])
+    # V2 Routes
+#    disp.set_handler('v2_tenants', TenantsV2())
+#    disp.set_handler('v2_token', TokenV2())
+#    disp.set_handler('versions', Versions(disp))
+
+    template_file = app.config.softlayer.catalog_template_file
+    if not os.path.exists(template_file):
+        template_file = app.config.find_file(template_file)
+
+    if template_file is None:
+        raise ValueError('Template file not found')
+
+    disp.set_handler('v2_tokens', TokensV2(template_file))
+
+#    add_hooks(app)
