@@ -1,7 +1,8 @@
 from mock import patch, MagicMock
 import unittest
 
-from jumpgate.common.hooks import hook_format, hook_set_uuid, hook_log_request
+from jumpgate.common.hooks.core import hook_format, hook_set_uuid
+from jumpgate.common.hooks.log import log_request
 
 
 class TestHookFormat(unittest.TestCase):
@@ -36,7 +37,7 @@ class TestHookFormat(unittest.TestCase):
 
 
 class TestHookLogRequest(unittest.TestCase):
-    @patch('jumpgate.common.hooks.LOG')
+    @patch('jumpgate.common.hooks.log.LOG')
     def test_log_request(self, log):
         req = MagicMock()
         req.method = 'GET'
@@ -45,7 +46,7 @@ class TestHookLogRequest(unittest.TestCase):
         req.env = {'REQUEST_ID': '123456'}
         resp = MagicMock()
         resp.status = '200 OK'
-        hook_log_request(req, resp)
+        log_request(req, resp)
 
         log.info.assert_called_with(
             '%s %s %s %s [ReqId: %s]',

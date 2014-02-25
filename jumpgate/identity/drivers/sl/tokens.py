@@ -1,13 +1,10 @@
-import base64
 import datetime
 import json
 import logging
-import time
 
-from jumpgate.common.sl.auth import get_token_details, get_auth
-from jumpgate.common.aes import encode_aes
 from jumpgate.common.exceptions import Unauthorized
 from jumpgate.common.utils import lookup
+from jumpgate.identity.drivers import core as identity
 
 from SoftLayer import Client, SoftLayerAPIError
 from oslo.config import cfg
@@ -41,14 +38,15 @@ def parse_templates(template_lines):
 
 
 def get_access(token_id, token_details, user):
+    tokens = identity.token_driver()
     return {
         'token': {
             'expires': datetime.datetime.fromtimestamp(
-                token_details['expires']).isoformat(),
+                tokens.expires(token_details)).isoformat(),
             'id': token_id,
             'tenant': {
-                'id': token_details['tenant_id'],
-                'name': token_details['tenant_id'],
+                'id': tokens.tenant_id(token_details),
+                'name': tokens.tenant_id(token_details),
             },
         },
         'user': {
@@ -61,6 +59,49 @@ def get_access(token_id, token_details, user):
             'name': user['username'],
         },
     }
+
+
+class SLAuthDriver(identity.AuthDriver):
+
+    def __init__(self):
+        super(SLAuthDriver, self).__init__()
+
+    def authenticate(self, creds):
+        username = lookup(creds, 'auth', 'passwordCredentials',
+                          'username')
+        credential = lookup(creds, 'auth', 'passwordCredentials',
+                            'password')
+
+        def assert_tenant(user):
+            tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,
+                                                                 'auth',
+                                                                 'tenantName')
+            if tenant and str(user['accountId']) != tenant:
+                raise Unauthorized('Invalid username, password or tenant id')
+
+        # If the 'password' is the right length, treat it as an API api_key
+        if len(credential) == 64:
+            client = Client(username=username, api_key=credential,
+                            endpoint_url=cfg.CONF['softlayer']['endpoint'])
+            user = client['Account'].getCurrentUser(mask=USER_MASK)
+            assert_tenant(user)
+            return {'user': user, 'credential': credential,
+                    'auth_type': 'api_key'}
+        else:
+            client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
+            client.auth = None
+            try:
+                userId, tokenHash = client.\
+                    authenticate_with_password(username, credential)
+                user = client['Account'].getCurrentUser(mask=USER_MASK)
+                assert_tenant(user)
+                return {'user': user, 'credential': tokenHash,
+                        'auth_type': 'token'}
+            except SoftLayerAPIError as e:
+                if (e.faultCode == "SoftLayer_Exception_User_Customer"
+                        "_LoginFailed"):
+                    raise Unauthorized(e.faultString)
+                raise
 
 
 class TokensV2(object):
@@ -86,62 +127,19 @@ class TokensV2(object):
                     o[region][service][k] = v.replace('$(', '%(') % d
         return o
 
-    def _authenticate(self, credentials):
-        username = lookup(credentials, 'auth', 'passwordCredentials',
-                          'username')
-        credential = lookup(credentials, 'auth', 'passwordCredentials',
-                            'password')
-
-        def assert_tenant(user):
-            tenant = lookup(credentials, 'auth', 'tenantId')
-            if tenant and str(user['accountId']) != tenant:
-                raise Unauthorized('Invalid username, password or tenant id')
-
-        # If the 'password' is the right length, treat it as an API api_key
-        if len(credential) == 64:
-            client = Client(username=username, api_key=credential)
-            user = client['Account'].getCurrentUser(mask=USER_MASK)
-            assert_tenant(user)
-            return user, credential, 'api_key'
-        else:
-            client = Client()
-            client.auth = None
-            try:
-                userId, tokenHash = client.\
-                    authenticate_with_password(username, credential)
-                user = client['Account'].getCurrentUser(mask=USER_MASK)
-                assert_tenant(user)
-                return user, tokenHash, 'token'
-            except SoftLayerAPIError as e:
-                if (e.faultCode == "SoftLayer_Exception_User_Customer"
-                        "_LoginFailed"):
-                    raise Unauthorized(e.faultString)
-                raise
-
-    def _build_auth_token(self, user_id, username, tenant, credential,
-                          auth_type):
-        return {'user_id': user_id,
-                'username': username,
-                'api_key': credential,
-                'auth_type': auth_type,
-                'tenant_id': tenant,
-                'expires': time.time() + (60 * 60 * 24)}
-
     def on_post(self, req, resp):
         body = req.stream.read().decode()
         credentials = json.loads(body)
-        user, api_token, auth_type = self._authenticate(credentials)
-        token_details = self._build_auth_token(str(user['id']),
-                                               str(user['username']),
-                                               str(user['accountId']),
-                                               api_token,
-                                               auth_type)
-        token_id = base64.b64encode(encode_aes(json.dumps(token_details)))
+        tokens = identity.token_driver()
 
-        access = get_access(token_id, token_details, user)
+        auth = identity.auth_driver().authenticate(credentials)
+        token = tokens.create_token(credentials, auth)
+        tok_id = identity.token_id_driver().create_token_id(token)
+        user = auth['user']
+        access = get_access(tok_id, token, user)
 
         # Add catalog to the access data
-        raw_catalog = self._get_catalog(token_details['tenant_id'], user['id'])
+        raw_catalog = self._get_catalog(tokens.tenant_id(token), user['id'])
         catalog = []
         for services in raw_catalog.values():
             for service_type, service in services.items():
@@ -166,13 +164,10 @@ class TokensV2(object):
 
 class TokenV2(object):
     def on_get(self, req, resp, token_id):
-        token_details = get_token_details(token_id,
-                                          tenant_id=req.get_param('belongsTo'))
-        client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
-        client.auth = get_auth(token_details)
-
-        user = client['Account'].getCurrentUser(mask='id, username')
-        access = get_access(token_id, token_details, user)
+        token = identity.token_id_driver().token_from_id(token_id)
+        user = identity.token_driver().validate_access(token, tenant_id=
+                                                       req.get_param('belongsTo'))
+        access = get_access(token_id, token, user)
 
         resp.status = 200
         resp.body = {'access': access}

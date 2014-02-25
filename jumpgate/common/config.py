@@ -25,8 +25,12 @@ FILE_OPTIONS = {
     'identity': [
         cfg.StrOpt('driver', default='jumpgate.identity.drivers.sl'),
         cfg.StrOpt('mount', default=None),
-        cfg.StrOpt('token_auth_driver', default='jumpgate.identity.'
-                   'drivers.sl.tokens.SLAuthTokenDriver')
+        cfg.StrOpt('auth_driver', default='jumpgate.identity.'
+                   'drivers.sl.tokens.SLAuthDriver'),
+        cfg.StrOpt('token_driver', default='jumpgate.identity.drivers.core.'
+                   'JumpgateTokenDriver'),
+        cfg.StrOpt('token_id_driver', default='jumpgate.identity.drivers.core.'
+                   'AESTokenIdDriver')
     ],
     'compute': [
         cfg.StrOpt('driver', default='jumpgate.compute.drivers.sl'),

@@ -1,5 +1,4 @@
 
-
 def add_endpoints(disp):
     # Versions
     disp.add_endpoint('versions', '/')

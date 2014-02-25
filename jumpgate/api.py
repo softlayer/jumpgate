@@ -1,16 +1,15 @@
 import importlib
 import logging
 
-import jumpgate.common.middleware as middleware
+import jumpgate.common.hooks as hooks
 
 from falcon import API
 
 from jumpgate.config import CONF
 from jumpgate.common.utils import wrap_handler_with_hooks
 from jumpgate.common.nyi import NYI
-from jumpgate.common.hooks import hook_format, hook_set_uuid
 from jumpgate.common.dispatcher import Dispatcher
-from jumpgate.common.exceptions import ResponseException
+from jumpgate.common.exceptions import ResponseException, InvalidTokenError
 from jumpgate.common.error_handling import compute_fault
 
 LOG = logging.getLogger(__name__)
@@ -32,8 +31,8 @@ class Jumpgate(object):
         self.installed_modules = {}
 
         # default internal hooks
-        self.before_hooks = [hook_set_uuid]
-        self.after_hooks = [hook_format]
+        self.before_hooks = hooks.required_request_hooks()
+        self.after_hooks = hooks.required_response_hooks()
 
         self.default_route = None
 
@@ -45,8 +44,8 @@ class Jumpgate(object):
             self._error_handlers.insert(0, (ex, handler))
 
     def make_api(self):
-        self.before_hooks.extend(middleware.request_hooks())
-        self.after_hooks.extend(middleware.response_hooks())
+        self.before_hooks.extend(hooks.optional_request_hooks())
+        self.after_hooks.extend(hooks.optional_response_hooks())
 
         api = API(before=self.before_hooks, after=self.after_hooks)
 
@@ -56,7 +55,8 @@ class Jumpgate(object):
 
         # Add Error Handlers - ordered generic to more specific
         built_in_handlers = [(Exception, handle_unexpected_errors),
-                             (ResponseException, ResponseException.handle)]
+                             (ResponseException, ResponseException.handle),
+                             (InvalidTokenError, InvalidTokenError.handle)]
 
         for ex, handler in built_in_handlers + self._error_handlers:
             api.add_error_handler(ex,
