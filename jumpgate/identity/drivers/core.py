@@ -68,7 +68,8 @@ class TokenDriver(object):
 
     def validate_access(self, token, user_id=None,
                         username=None, tenant_id=None):
-        """Validate the specified token still has access.
+        """Validate the specified token still has access. Failure to validate
+        the given token should raise an exception in the method implementation.
 
         :param user_id: If specified the user ID to validate token access for.
         :param username: If specified the username to validate token
@@ -195,7 +196,8 @@ class JumpgateTokenDriver(TokenDriver):
                         username=None, tenant_id=None):
         self.validate_token(token, user_id, username, tenant_id)
         auth = auth_driver().authenticate(self.create_credentials(token))
-        return auth['user']
+        if auth is None:
+            raise exceptions.InvalidTokenError("Token is no longer valid")
 
     def tenant_id(self, token):
         return token['tenant_id']
