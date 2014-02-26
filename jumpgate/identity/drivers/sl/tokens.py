@@ -37,7 +37,7 @@ def parse_templates(template_lines):
     return o
 
 
-def get_access(token_id, token_details, user):
+def get_access(token_id, token_details):
     tokens = identity.token_driver()
     return {
         'token': {
@@ -46,22 +46,26 @@ def get_access(token_id, token_details, user):
             'id': token_id,
             'tenant': {
                 'id': tokens.tenant_id(token_details),
-                'name': tokens.tenant_id(token_details),
+                'name': tokens.tenant_name(token_details),
             },
         },
         'user': {
-            'username': user['username'],
-            'id': user['id'],
-            'roles': [
-                {'name': 'user'},
-            ],
+            'username': tokens.username(token_details),
+            'id': tokens.user_id(token_details),
+            'roles': [{'id': rid, 'name': name} for rid, name in
+                      tokens.roles(token_details).items()],
             'role_links': [],
-            'name': user['username'],
+            'name': tokens.username(token_details),
         },
     }
 
 
 class SLAuthDriver(identity.AuthDriver):
+    """Jumpgate SoftLayer auth driver which authenticates using the SLAPI.
+    Suitable for most implementations who's authentication requests should
+    be validates against SoftLayer's credential system which uses either a
+    username/password scheme or a username/api-key scheme.
+    """
 
     def __init__(self):
         super(SLAuthDriver, self).__init__()
@@ -133,13 +137,15 @@ class TokensV2(object):
         tokens = identity.token_driver()
 
         auth = identity.auth_driver().authenticate(credentials)
+        if auth is None:
+            raise Unauthorized('Unauthorized credentials')
         token = tokens.create_token(credentials, auth)
         tok_id = identity.token_id_driver().create_token_id(token)
-        user = auth['user']
-        access = get_access(tok_id, token, user)
+        access = get_access(tok_id, token)
 
         # Add catalog to the access data
-        raw_catalog = self._get_catalog(tokens.tenant_id(token), user['id'])
+        raw_catalog = self._get_catalog(tokens.tenant_id(token),
+                                        tokens.user_id(token))
         catalog = []
         for services in raw_catalog.values():
             for service_type, service in services.items():

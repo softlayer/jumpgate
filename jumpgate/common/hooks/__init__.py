@@ -6,9 +6,78 @@ from jumpgate.common.config import CONF
 
 LOG = logging.getLogger(__name__)
 
-_req_hooks = {'optional': [], 'required': []}
-_res_hooks = {'optional': [], 'required': []}
-_loaded = False
+
+class APIHooks(object):
+    # singleton pattern: http://goo.gl/1MtF3B
+
+    class __APIHooks:
+
+        def __init__(self):
+            self.reset()
+
+        def reset(self):
+            self._req_hooks = {'optional': [], 'required': []}
+            self._res_hooks = {'optional': [], 'required': []}
+            self._loaded = False
+
+        def load_hooks(self):
+            if not self._loaded:
+                for hook in (['jumpgate.common.hooks.core'] +
+                             CONF['request_hooks'] +
+                             CONF['response_hooks']):
+                    LOG.debug("Importing hook module '%s'" % (hook))
+                    self._load_module(hook)
+            self._loaded = True
+
+        def _load_module(self, module):
+            try:
+                importlib.import_module(module)
+            except ImportError:
+                raise ImportError("Failed to import hook module '%s'. "
+                                  "Verify it exists in PYTHONPATH" % (module))
+
+        def add_request_hook(self, hook, optional=True):
+            LOG.debug("Adding request hook '%s'" % (str(hook)))
+            cache = (self._req_hooks['optional'] if optional
+                     else self._req_hooks['required'])
+            cache.append(hook)
+            return hook
+
+        def add_response_hook(self, hook, optional=True):
+            LOG.debug("Adding response hook '%s'" % (str(hook)))
+            cache = (self._res_hooks['optional'] if optional
+                     else self._res_hooks['required'])
+            cache.append(hook)
+            return hook
+
+        def required_request_hooks(self):
+            self.load_hooks()
+            return list(self._req_hooks['required'])
+
+        def optional_request_hooks(self):
+            self.load_hooks()
+            return list(self._req_hooks['optional'])
+
+        def required_response_hooks(self):
+            self.load_hooks()
+            return list(self._res_hooks['required'])
+
+        def optional_response_hooks(self):
+            self.load_hooks()
+            return list(self._res_hooks['optional'])
+
+    instance = None
+
+    def __new__(cls):
+        if not APIHooks.instance:
+            APIHooks.instance = APIHooks.__APIHooks()
+        return APIHooks.instance
+
+    def __getattr__(self, name):
+        return getattr(self.instance, name)
+
+    def __setattr__(self, name):
+        return setattr(self.instance, name)
 
 
 def request_hook(optional=True):
@@ -19,10 +88,7 @@ def request_hook(optional=True):
     kwargs - Request arg params.
     """
     def _hook(hook):
-        LOG.debug("Adding request hook '%s'" % (str(hook)))
-        cache = _req_hooks['optional'] if optional else _req_hooks['required']
-        cache.append(hook)
-        return hook
+        return APIHooks().add_request_hook(hook, optional)
     return _hook
 
 
@@ -33,46 +99,5 @@ def response_hook(optional=True):
     resp - The response object.
     """
     def _hook(hook):
-        LOG.debug("Adding response hook '%s'" % (str(hook)))
-        cache = _res_hooks['optional'] if optional else _res_hooks['required']
-        cache.append(hook)
-        return hook
+        return APIHooks().add_response_hook(hook, optional)
     return _hook
-
-
-def _load_module(module):
-    try:
-        importlib.import_module(module)
-    except ImportError:
-        raise ImportError("Failed to import hook module '%s'. Verify it "
-                          "exists in PYTHONPATH" % (module))
-
-
-def load_hooks():
-    global _loaded
-    if not _loaded:
-        for hook in (['jumpgate.common.hooks.core'] + CONF['request_hooks'] +
-                     CONF['response_hooks']):
-            LOG.debug("Importing hook module '%s'" % (hook))
-            _load_module(hook)
-    _loaded = True
-
-
-def required_request_hooks():
-    load_hooks()
-    return _req_hooks['required']
-
-
-def optional_request_hooks():
-    load_hooks()
-    return _req_hooks['optional']
-
-
-def required_response_hooks():
-    load_hooks()
-    return _res_hooks['required']
-
-
-def optional_response_hooks():
-    load_hooks()
-    return _res_hooks['optional']
