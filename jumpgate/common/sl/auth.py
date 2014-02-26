@@ -28,8 +28,14 @@ def get_token_details(token, tenant_id=None):
 
 
 def get_new_token(credentials):
-    username = lookup(credentials, 'auth', 'passwordCredentials', 'username')
-    credential = lookup(credentials, 'auth', 'passwordCredentials', 'password')
+    token = lookup(credentials, 'auth', 'token', 'id')
+    if token:
+        token_details = get_token_details(token)
+        username = token_details['username']
+        credential = token_details['api_key']
+    else:
+        username = lookup(credentials, 'auth', 'passwordCredentials', 'username')
+        credential = lookup(credentials, 'auth', 'passwordCredentials', 'password')
 
     def assert_tenant(user):
         tenant = lookup(credentials, 'auth', 'tenantId')
