@@ -46,7 +46,7 @@ def get_new_token(credentials):
     if len(credential) == 64:
         client = Client(username=username, api_key=credential)
         user = client['Account'].getCurrentUser(mask=USER_MASK)
-        #assert_tenant(user)
+        assert_tenant(user)
         return {'username': username,
                 'api_key': credential,
                 'auth_type': 'api_key',

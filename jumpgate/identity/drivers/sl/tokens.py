@@ -83,14 +83,9 @@ class TokensV2(object):
         return o
 
     def on_post(self, req, resp):
-        token = req.get_header('X-Auth-Token')
-        if not token:
-             body = req.stream.read().decode()
-             credentials = json.loads(body)
-        else:
-            credentials = None
- 
-        token_details, user = get_new_token(credentials, token)
+        body = req.stream.read().decode()
+        credentials = json.loads(body)
+        token_details, user = get_new_token(credentials)
         token_id = base64.b64encode(encode_aes(json.dumps(token_details)))
 
         access = get_access(token_id, token_details, user)
