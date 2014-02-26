@@ -10,26 +10,19 @@ from SoftLayer import SoftLayerAPIError
 opts = [
     cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
     cfg.StrOpt('catalog_template_file', default='identity.templates'),
+    cfg.StrOpt('catalog_template_file_v3', default='identity.templates_v3'),
 ]
 
 cfg.CONF.register_opts(opts, group='softlayer')
-cfg.CONF.register_opts([cfg.StrOpt('admin_token', secret=True,
-                                   default='ADMIN')], group='DEFAULT')
 
 
 def hook_get_client(req, resp, kwargs):
     client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
     client.auth = None
     req.env['tenant_id'] = None
-    req.env['sl_client'] = client
 
     if req.headers.get('X-AUTH-TOKEN'):
         if 'X-AUTH-TOKEN' in req.headers:
-            admin_token = cfg.CONF['DEFAULT']['admin_token']
-            if admin_token and admin_token == req.headers.get('X-AUTH-TOKEN'):
-                # admin_token authenticates to Jumpgate API, but does not
-                # provide SLAPI access
-                return
             tenant_id = kwargs.get('tenant_id',
                                    req.headers.get('X-AUTH-PROJECT-ID'))
             token_details = get_token_details(req.headers['X-AUTH-TOKEN'],
@@ -38,6 +31,8 @@ def hook_get_client(req, resp, kwargs):
             client.auth = get_auth(token_details)
 
             req.env['tenant_id'] = token_details['tenant_id']
+
+    req.env['sl_client'] = client
 
 
 def add_hooks(app):
