@@ -266,10 +266,9 @@ def get_list_params(req):
         # TODO: filter on ipv6 address
         pass
 
-    if req.get_param('name') is not None:
-        _filter['virtualGuests']['hostname'] = {
-            'operation': '~ %s' % req.get_param('name'),
-        }
+    name = req.get_param('name') or req.get_param('instance_name')
+    if name is not None:
+        _filter['virtualGuests']['hostname'] = {'operation': '~ %s' % name}
 
     limit = None
     if req.get_param('limit') is not None:
