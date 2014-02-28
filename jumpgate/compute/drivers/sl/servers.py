@@ -403,12 +403,14 @@ def get_server_details_dict(app, req, instance):
         addresses['private'] = [{
             'addr': instance.get('primaryBackendIpAddress'),
             'version': 4,
+            'OS-EXT-IPS:type': 'fixed',
         }]
 
     if instance.get('primaryIpAddress'):
         addresses['public'] = [{
             'addr': instance.get('primaryIpAddress'),
             'version': 4,
+            'OS-EXT-IPS:type': 'public',
         }]
 
     # TODO - Don't hardcode this
