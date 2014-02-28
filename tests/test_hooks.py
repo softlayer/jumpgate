@@ -91,7 +91,8 @@ class TestHookAuthToken(unittest.TestCase):
 
     def test_unprotected(self):
         for api in ['GET:/v2', 'GET:/v2/', 'GET:/v3.0', 'GET:/v3.0/',
-                    'GET:/v10.22', 'POST:/v2/tokens', 'POST:/v2.1/tokens']: 
+                    'GET:/v10.22', 'POST:/v2/tokens', 'POST:/v2.1/tokens',
+                    'GET:/v2/tokens/a8Vs7bS', 'GET:/v2.0/tokens/a8Vs7bS']: 
             req = MagicMock()
             req.headers = {'X-AUTH-TOKEN': None}
             req.method = api.split(':')[0]
