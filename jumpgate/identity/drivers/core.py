@@ -1,3 +1,4 @@
+import base64
 import json
 import logging
 import time
@@ -241,10 +242,10 @@ class AESTokenIdDriver(TokenIdDriver):
         super(AESTokenIdDriver, self).__init__()
 
     def create_token_id(self, token):
-        return aes.encode_aes(json.dumps(token))
+        return base64.b64encode(aes.encode_aes(json.dumps(token)))
 
     def token_from_id(self, token_id):
         try:
-            return json.loads(aes.decode_aes(token_id))
+            return json.loads(aes.decode_aes(base64.b64decode(token_id)))
         except (TypeError, ValueError):
             raise exceptions.InvalidTokenError('Malformed token')
