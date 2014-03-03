@@ -410,7 +410,7 @@ def get_server_details_dict(app, req, instance):
         addresses['public'] = [{
             'addr': instance.get('primaryIpAddress'),
             'version': 4,
-            'OS-EXT-IPS:type': 'public',
+            'OS-EXT-IPS:type': 'floating',
         }]
 
     # TODO - Don't hardcode this
