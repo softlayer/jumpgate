@@ -81,12 +81,10 @@ class SLAuthDriver(identity.AuthDriver):
         token_id = lookup(creds, 'auth', 'token', 'id')
         if self._is_token_auth(username, credential, token_id):
             token = identity.token_id_driver().token_from_id(token_id)
-            try:
-                identity.token_driver().validate_token(token)
-                username = token['username']
-                credential = token['api_key']
-            except exceptions.InvalidTokenError as e:
-                return None
+            token_driver = identity.token_driver()
+            token_driver.validate_token(token)
+            username = token_driver.username(token)
+            credential = token_driver.credential(token)
 
         def assert_tenant(user):
             tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,

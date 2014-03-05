@@ -108,6 +108,13 @@ class TokenDriver(object):
         """
         raise NotImplementedError()
 
+    def credential(self, token):
+        """Extract the credential from the said token.
+
+        :param token: The token to extract the credential from.
+        """
+        raise NotImplementedError()
+
     def user_id(self, token):
         """Extract the user ID from the given token.
 
@@ -211,6 +218,9 @@ class JumpgateTokenDriver(TokenDriver):
 
     def username(self, token):
         return token['username']
+
+    def credential(self, token):
+        return token['api_key']
 
     def user_id(self, token):
         return token['user_id']
