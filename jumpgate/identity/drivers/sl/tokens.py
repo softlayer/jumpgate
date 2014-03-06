@@ -70,16 +70,13 @@ class SLAuthDriver(identity.AuthDriver):
     def __init__(self):
         super(SLAuthDriver, self).__init__()
 
-    def _is_token_auth(self, username, credential, token_id):
-        return not username and not credential and token_id
-
     def authenticate(self, creds):
         username = lookup(creds, 'auth', 'passwordCredentials',
                           'username')
         credential = lookup(creds, 'auth', 'passwordCredentials',
                             'password')
         token_id = lookup(creds, 'auth', 'token', 'id')
-        if self._is_token_auth(username, credential, token_id):
+        if token_id:
             token = identity.token_id_driver().token_from_id(token_id)
             token_driver = identity.token_driver()
             token_driver.validate_token(token)
