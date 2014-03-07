@@ -1,15 +1,16 @@
 import datetime
-import logging
 import json
-import base64
+import logging
 
-from jumpgate.common.sl.auth import get_new_token, get_token_details, get_auth
-from jumpgate.common.aes import encode_aes
+from jumpgate.common.exceptions import Unauthorized
+from jumpgate.common.utils import lookup
+from jumpgate.identity.drivers import core as identity
 
-from SoftLayer import Client
+from SoftLayer import Client, SoftLayerAPIError
 from oslo.config import cfg
 
 LOG = logging.getLogger(__name__)
+USER_MASK = 'id, username, accountId'
 
 
 def parse_templates(template_lines):
@@ -36,27 +37,75 @@ def parse_templates(template_lines):
     return o
 
 
-def get_access(token_id, token_details, user):
+def get_access(token_id, token_details):
+    tokens = identity.token_driver()
     return {
         'token': {
             'expires': datetime.datetime.fromtimestamp(
-                token_details['expires']).isoformat(),
+                tokens.expires(token_details)).isoformat(),
             'id': token_id,
             'tenant': {
-                'id': token_details['tenant_id'],
-                'name': token_details['tenant_id'],
+                'id': tokens.tenant_id(token_details),
+                'name': tokens.tenant_name(token_details),
             },
         },
         'user': {
-            'username': user['username'],
-            'id': user['id'],
-            'roles': [
-                {'name': 'user'},
-            ],
+            'username': tokens.username(token_details),
+            'id': tokens.user_id(token_details),
+            'roles': [{'id': rid, 'name': name} for rid, name in
+                      tokens.roles(token_details).items()],
             'role_links': [],
-            'name': user['username'],
+            'name': tokens.username(token_details),
         },
     }
+
+
+class SLAuthDriver(identity.AuthDriver):
+    """Jumpgate SoftLayer auth driver which authenticates using the SLAPI.
+    Suitable for most implementations who's authentication requests should
+    be validates against SoftLayer's credential system which uses either a
+    username/password scheme or a username/api-key scheme.
+    """
+
+    def __init__(self):
+        super(SLAuthDriver, self).__init__()
+
+    def authenticate(self, creds):
+        username = lookup(creds, 'auth', 'passwordCredentials',
+                          'username')
+        credential = lookup(creds, 'auth', 'passwordCredentials',
+                            'password')
+
+        def assert_tenant(user):
+            tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,
+                                                                 'auth',
+                                                                 'tenantName')
+            if tenant and str(user['accountId']) != tenant:
+                raise Unauthorized('Invalid username, password or tenant id')
+
+        # If the 'password' is the right length, treat it as an API api_key
+        if len(credential) == 64:
+            client = Client(username=username, api_key=credential,
+                            endpoint_url=cfg.CONF['softlayer']['endpoint'])
+            user = client['Account'].getCurrentUser(mask=USER_MASK)
+            assert_tenant(user)
+            return {'user': user, 'credential': credential,
+                    'auth_type': 'api_key'}
+        else:
+            client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
+            client.auth = None
+            try:
+                userId, tokenHash = client.\
+                    authenticate_with_password(username, credential)
+                user = client['Account'].getCurrentUser(mask=USER_MASK)
+                assert_tenant(user)
+                return {'user': user, 'credential': tokenHash,
+                        'auth_type': 'token'}
+            except SoftLayerAPIError as e:
+                if (e.faultCode == "SoftLayer_Exception_User_Customer"
+                        "_LoginFailed"):
+                    raise Unauthorized(e.faultString)
+                raise
 
 
 class TokensV2(object):
@@ -85,13 +134,18 @@ class TokensV2(object):
     def on_post(self, req, resp):
         body = req.stream.read().decode()
         credentials = json.loads(body)
-        token_details, user = get_new_token(credentials)
-        token_id = base64.b64encode(encode_aes(json.dumps(token_details)))
+        tokens = identity.token_driver()
 
-        access = get_access(token_id, token_details, user)
+        auth = identity.auth_driver().authenticate(credentials)
+        if auth is None:
+            raise Unauthorized('Unauthorized credentials')
+        token = tokens.create_token(credentials, auth)
+        tok_id = identity.token_id_driver().create_token_id(token)
+        access = get_access(tok_id, token)
 
         # Add catalog to the access data
-        raw_catalog = self._get_catalog(token_details['tenant_id'], user['id'])
+        raw_catalog = self._get_catalog(tokens.tenant_id(token),
+                                        tokens.user_id(token))
         catalog = []
         for services in raw_catalog.values():
             for service_type, service in services.items():
@@ -116,13 +170,10 @@ class TokensV2(object):
 
 class TokenV2(object):
     def on_get(self, req, resp, token_id):
-        token_details = get_token_details(token_id,
-                                          tenant_id=req.get_param('belongsTo'))
-        client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
-        client.auth = get_auth(token_details)
-
-        user = client['Account'].getCurrentUser(mask='id, username')
-        access = get_access(token_id, token_details, user)
+        token = identity.token_id_driver().token_from_id(token_id)
+        identity.token_driver().validate_access(token, tenant_id=
+                                                req.get_param('belongsTo'))
+        access = get_access(token_id, token)
 
         resp.status = 200
         resp.body = {'access': access}

@@ -5,10 +5,10 @@ from falcon import API
 
 from jumpgate.config import CONF
 from jumpgate.common.utils import wrap_handler_with_hooks
+from jumpgate.common.hooks import APIHooks
 from jumpgate.common.nyi import NYI
-from jumpgate.common.hooks import hook_format, hook_set_uuid, hook_log_request
 from jumpgate.common.dispatcher import Dispatcher
-from jumpgate.common.exceptions import ResponseException
+from jumpgate.common.exceptions import ResponseException, InvalidTokenError
 from jumpgate.common.error_handling import compute_fault
 
 LOG = logging.getLogger(__name__)
@@ -28,9 +28,12 @@ class Jumpgate(object):
     def __init__(self):
         self.config = CONF
         self.installed_modules = {}
+        self.hooks = APIHooks()
 
-        self.before_hooks = [hook_set_uuid]
-        self.after_hooks = [hook_format, hook_log_request]
+        # default internal hooks
+        self.before_hooks = self.hooks.required_request_hooks()
+        self.after_hooks = self.hooks.required_response_hooks()
+
         self.default_route = None
 
         self._dispatchers = {}
@@ -41,14 +44,19 @@ class Jumpgate(object):
             self._error_handlers.insert(0, (ex, handler))
 
     def make_api(self):
+        self.before_hooks.extend(self.hooks.optional_request_hooks())
+        self.after_hooks.extend(self.hooks.optional_response_hooks())
+
         api = API(before=self.before_hooks, after=self.after_hooks)
 
         # Set the default route to the NYI object
-        api.add_sink(self.default_route or NYI())
+        api.add_sink(self.default_route or NYI(before=self.before_hooks,
+                                               after=self.after_hooks))
 
         # Add Error Handlers - ordered generic to more specific
         built_in_handlers = [(Exception, handle_unexpected_errors),
-                             (ResponseException, ResponseException.handle)]
+                             (ResponseException, ResponseException.handle),
+                             (InvalidTokenError, InvalidTokenError.handle)]
 
         for ex, handler in built_in_handlers + self._error_handlers:
             api.add_error_handler(ex,

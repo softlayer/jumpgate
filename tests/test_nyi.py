@@ -20,5 +20,5 @@ class TestNYI(unittest.TestCase):
         req, resp = MagicMock(), MagicMock()
         self.nyi(req, resp)
 
-        self.assertEquals(resp.status, '501 Not Implemented')
+        self.assertEquals(resp.status, 501)
         self.assertEquals(resp.body, not_implemented_response)
