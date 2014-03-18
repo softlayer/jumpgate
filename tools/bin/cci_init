@@ -25,59 +25,19 @@ import os
 import urllib2
 
 
-class JSONRESTClient(object):
-    """a simple json rest client
-    """
-    def __init__(self, token=None):
-        self.token = token
-
-    def get(self, url):
-        """perform a http GET on the url
-
-        :param url: the url to GET
-        """
-        return self._rest_call(url)
-
-    def post(self, url, json_body):
-        """perform a http POST on the url
-
-        :param url: the url to POST
-        :param json_body: the body to POST
-        """
-        return self._rest_call(url, 'POST', json_body)
-
-    def put(self, url, json_body):
-        """perform a http PUT on the url
-
-        :param url: the url to PUT
-        :param json_body: the body to PUT
-        """
-        return self._rest_call(url, 'PUT', json_body)
-
-    def delete(self, url):
-        """perform an http DELETE on the url
-
-        :param url: the url to DELETE
-        """
-        return self._rest_call(url, 'DELETE')
-
-    def _rest_call(self, url, method='GET', json_body=None):
-        request = urllib2.Request(url)
-        request.add_header('Content-Type', 'application/json;charset=utf8')
-        request.add_header('Accept', 'application/json')
-        request.add_header('User-Agent', 'python-client')
-        if self.token:
-            request.add_header('X-Auth-Token', self.token)
-        if json_body:
-            request.add_data(json.dumps(json_body))
-        request.get_method = lambda: method
-        try:
-            response = urllib2.urlopen(request)
-        except urllib2.HTTPError as e:
-            if e.code == 300:
-                return json.loads(e.read())
-            raise e
-        return json.loads(response.read())
+def json_get(url):
+    request = urllib2.Request(url)
+    request.add_header('User-Agent', 'python-client')
+    request.add_header('Content-Type', 'application/json;charset=utf8')
+    request.add_header('Accept', 'application/json')
+    request.get_method = lambda: 'GET'
+    try:
+        response = urllib2.urlopen(request)
+    except urllib2.HTTPError as e:
+        if e.code == 300:
+            return json.loads(e.read())
+        raise e
+    return json.loads(response.read())
 
 
 """example response of cci user and metadata
@@ -95,20 +55,22 @@ example response of cci personality
 
 _cci_data = None
 
+
 def rm(path):
     try:
         os.remove(path)
     except OSError:
         pass
 
+
 def get_cci_data():
     global _cci_data
     if _cci_data is not None:
         return _cci_data
-    client = JSONRESTClient()
-    _cci_data = client.get("https://api.service.softlayer.com/rest/v3/"
-                      "SoftLayer_Resource_Metadata/UserMetadata.txt")
+    _cci_data = json_get("https://api.service.softlayer.com/rest/v3/"
+                         "SoftLayer_Resource_Metadata/UserMetadata.txt")
     return _cci_data
+
 
 def get_cci_personality():
     personality = get_cci_data().get('personality', [])
@@ -116,8 +78,10 @@ def get_cci_personality():
         mapping['contents'] = base64.b64decode(mapping['contents'])
     return personality
 
+
 def get_cci_metadata():
     return get_cci_data().get('metadata', None)
+
 
 def get_cci_userdata():
     userdata = get_cci_data().get('user_data', None)
@@ -125,27 +89,30 @@ def get_cci_userdata():
         return base64.b64decode(userdata)
     return None
 
+
 def process_personalities():
     for personality in get_cci_personality():
         rm(personality['path'])
-        with open(personality['path'], 'w') as file:
-            file.write(personality['contents'])
+        with open(personality['path'], 'w') as f:
+            f.write(personality['contents'])
+
 
 def process_userdata():
     data = get_cci_userdata()
     if data is None:
         return
     rm('/etc/user_data')
-    with open('/etc/user_data', 'w') as file:
-        file.write()
+    with open('/etc/user_data', 'w') as f:
+        f.write()
+
 
 def process_metadata():
     data = get_cci_metadata()
     if data is None:
         return
     rm('/etc/metadata')
-    with open('/etc/metadata', 'w') as file:
-        file.write(data)
+    with open('/etc/metadata', 'w') as f:
+        f.write(data)
 
 
 if __name__ == '__main__':
