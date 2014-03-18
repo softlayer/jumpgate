@@ -1,0 +1,121 @@
+#!/usr/bin/env python
+"""
+This script pulls down SoftLayer CCI user-data and processes it
+as follows:
+
+:personality: realized as the path and contents in the personality
+    userdata.
+:user_data: realized in /etc/user_data
+:metadata: realized in /etc/metadata
+
+For guest activation, make this script executable and put into:
+    /etc/network/if-up.d/
+This will cause the script to be run automatically when networking
+support comes up.
+
+This script does not provide the full active capabilities you would
+find with a config-drive Cloud-Init implementation. Rather it's intent
+is to provide support for raw data realization as a stop-gap mitigation
+until such support is added for SoftLayer CCI metadata.
+"""
+
+import base64
+import json
+import os
+import urllib2
+
+
+def json_get(url):
+    request = urllib2.Request(url)
+    request.add_header('User-Agent', 'python-client')
+    request.add_header('Content-Type', 'application/json;charset=utf8')
+    request.add_header('Accept', 'application/json')
+    request.get_method = lambda: 'GET'
+    try:
+        response = urllib2.urlopen(request)
+    except urllib2.HTTPError as e:
+        if e.code == 300:
+            return json.loads(e.read())
+        raise e
+    return json.loads(response.read())
+
+
+"""example response of cci user and metadata
+
+{"user_data": "W0RFRkFVTFRdCmd1ZXN0X2lkPTEKdGVuYW50X2lkPIIsd77",
+    "metadata": {"key2": "val2", "key1": "val1"}}
+
+example response of cci personality
+
+    {"personality": [{"path": "/etc/guest_info", "contents":
+        "W0RFRkFVTFRdCmd1ZXN0X2lkPTA4MmNjOWZkLTIyMjctNDA3My04NTU4
+        LWE2OTJlNmI5ZWFlNQpk\nYXRhc3RvcmVfbWFuYWdlcj1teXNxbAp0ZW
+        5hbnRfaWQ9Mjc4MTg0Cg==\n"}]}
+"""
+
+_cci_data = None
+
+
+def rm(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+
+
+def get_cci_data():
+    global _cci_data
+    if _cci_data is not None:
+        return _cci_data
+    _cci_data = json_get("https://api.service.softlayer.com/rest/v3/"
+                         "SoftLayer_Resource_Metadata/UserMetadata.txt")
+    return _cci_data
+
+
+def get_cci_personality():
+    personality = get_cci_data().get('personality', [])
+    for mapping in personality:
+        mapping['contents'] = base64.b64decode(mapping['contents'])
+    return personality
+
+
+def get_cci_metadata():
+    return get_cci_data().get('metadata', None)
+
+
+def get_cci_userdata():
+    userdata = get_cci_data().get('user_data', None)
+    if userdata is not None:
+        return base64.b64decode(userdata)
+    return None
+
+
+def process_personalities():
+    for personality in get_cci_personality():
+        rm(personality['path'])
+        with open(personality['path'], 'w') as f:
+            f.write(personality['contents'])
+
+
+def process_userdata():
+    data = get_cci_userdata()
+    if data is None:
+        return
+    rm('/etc/user_data')
+    with open('/etc/user_data', 'w') as f:
+        f.write(str(data))
+
+
+def process_metadata():
+    data = get_cci_metadata()
+    if data is None:
+        return
+    rm('/etc/metadata')
+    with open('/etc/metadata', 'w') as f:
+        f.write(json.dumps(data))
+
+
+if __name__ == '__main__':
+    process_personalities()
+    process_userdata()
+    process_metadata()
