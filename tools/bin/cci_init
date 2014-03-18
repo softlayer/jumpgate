@@ -103,7 +103,7 @@ def process_userdata():
         return
     rm('/etc/user_data')
     with open('/etc/user_data', 'w') as f:
-        f.write()
+        f.write(str(data))
 
 
 def process_metadata():
@@ -112,7 +112,7 @@ def process_metadata():
         return
     rm('/etc/metadata')
     with open('/etc/metadata', 'w') as f:
-        f.write(data)
+        f.write(json.dumps(data))
 
 
 if __name__ == '__main__':
