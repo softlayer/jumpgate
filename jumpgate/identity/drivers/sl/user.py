@@ -1,5 +1,4 @@
-import logging
-LOG = logging.getLogger(__name__)
+from jumpgate.common.error_handling import not_found
 
 
 class UserV2(object):
@@ -9,8 +8,7 @@ class UserV2(object):
         user = client['Account'].getUsers(
             mask='mask[id,username,accountId]', filter={'users': {'id': {'operation': user_id}}})
         if not user or not len(user):
-            raise Exception("User with ID '%s' Doesn't Exists" % user_id)
-
+            return not_found(resp, "Invalid user ID specified.")
         user_response = {'id': str(user[0]['id']),
                          'username': str(user[0]['username']),
                          'email': str(user[0]['username']),
