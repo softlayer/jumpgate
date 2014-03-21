@@ -45,4 +45,3 @@ class UserV2(object):
                                      'enabled': True
                                      }
             resp.body = {'user': user_response}
-
