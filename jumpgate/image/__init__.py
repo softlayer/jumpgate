@@ -2,6 +2,10 @@
 def add_endpoints(disp):
     # V2 API - http://api.openstack.org/api-ref-image.html#os-images-2.0
 
+    disp.add_endpoint('v2_schema_members',
+                      '/v2/schemas/members')
+    disp.add_endpoint('v2_schema_member',
+                      '/v2/schemas/member')
     disp.add_endpoint('v2_schema_image',
                       '/v2/schemas/image')
     disp.add_endpoint('v2_schema_images',
