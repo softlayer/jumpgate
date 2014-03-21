@@ -6,7 +6,8 @@ from jumpgate.common.sl.auth import get_auth
 
 @request_hook(True)
 def bind_client(req, resp, kwargs):
-    client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
+    client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'],
+                    proxy=cfg.CONF['softlayer']['proxy'])
     client.auth = None
     req.env['sl_client'] = client
 

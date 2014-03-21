@@ -20,6 +20,7 @@ FILE_OPTIONS = {
     ],
     'softlayer': [
         cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
+        cfg.StrOpt('proxy', default=None),
         cfg.StrOpt('catalog_template_file', default='identity.templates'),
     ],
     'identity': [

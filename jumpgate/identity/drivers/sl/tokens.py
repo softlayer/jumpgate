@@ -93,13 +93,15 @@ class SLAuthDriver(identity.AuthDriver):
         # If the 'password' is the right length, treat it as an API api_key
         if len(credential) == 64:
             client = Client(username=username, api_key=credential,
-                            endpoint_url=cfg.CONF['softlayer']['endpoint'])
+                            endpoint_url=cfg.CONF['softlayer']['endpoint'],
+                            proxy=cfg.CONF['softlayer']['proxy'])
             user = client['Account'].getCurrentUser(mask=USER_MASK)
             assert_tenant(user)
             return {'user': user, 'credential': credential,
                     'auth_type': 'api_key'}
         else:
-            client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
+            client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'],
+                            proxy=cfg.CONF['softlayer']['proxy'])
             client.auth = None
             try:
                 userId, tokenHash = client.\
