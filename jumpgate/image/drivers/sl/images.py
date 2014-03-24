@@ -637,6 +637,7 @@ def get_v2_image_details_dict(app, req, image, tenant_id):
         'protected': False,
         'properties': {},
         'min_disk': 0,
+        'min_ram': 0,
         # "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
         'tags': [],
         'updated': image.get('createDate'),
@@ -661,9 +662,7 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'updated': image.get('createDate'),
         'created': image.get('createDate'),
         'id': image['globalIdentifier'],
-        'minDisk': 0,
         'progress': 100,
-        'minRam': 0,
         'metaData': None,
         'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
         'OS-EXT-IMG-SIZE:size': None,
@@ -674,6 +673,7 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'protected': False,
         'owner': tenant_id,
         'min_disk': 0,
+        'min_ram': 0,
         'name': image['name'],
         'links': [
             {
