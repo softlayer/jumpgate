@@ -636,7 +636,7 @@ def get_v2_image_details_dict(app, req, image, tenant_id):
         'container_format': 'bare',
         'protected': False,
         'properties': {},
-        "min_disk": 0,
+        'min_disk': 0,
         # "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
         'tags': [],
         'updated': image.get('createDate'),
@@ -673,7 +673,7 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'is_public': True if image.get('visibility') == 'public' else False,
         'protected': False,
         'owner': tenant_id,
-        "min_disk": 0,
+        'min_disk': 0,
         'name': image['name'],
         'links': [
             {
