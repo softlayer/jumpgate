@@ -68,6 +68,7 @@ class Jumpgate(object):
             for endpoint, handler in disp.get_routes():
                 LOG.debug("Loading endpoint %s", endpoint)
                 api.add_route(endpoint, handler)
+                api.add_route('%s.json' % endpoint, handler)
 
         return api
 
