@@ -2,11 +2,8 @@ import unittest
 from mock import MagicMock, call, patch
 
 from jumpgate.api import Jumpgate
-from jumpgate.common.hooks import APIHooks
 from jumpgate.common.hooks.core import hook_format, hook_set_uuid
-from jumpgate.common.hooks.log import log_request
 from jumpgate.common.dispatcher import Dispatcher
-from jumpgate.common.nyi import NYI
 
 import falcon
 
@@ -55,7 +52,7 @@ class TestJumpgate(unittest.TestCase):
         api = self.app.make_api()
         self.assertTrue(hasattr(api, '__call__'))
         self.assertIsInstance(api, falcon.API)
-        self.assertEqual(len(api._routes), 10)
+        self.assertEqual(len(api._routes), 20)
 
     def test_add_get_dispatcher(self):
         disp = Dispatcher()
