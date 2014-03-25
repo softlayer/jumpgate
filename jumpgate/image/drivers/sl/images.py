@@ -3,6 +3,7 @@ import uuid
 
 from SoftLayer.utils import query_filter
 
+from jumpgate.common.utils import lookup
 from jumpgate.common.error_handling import not_found
 
 
@@ -446,6 +447,7 @@ class ImagesV2(object):
 
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
+        tenant_id = tenant_id or lookup(req.env, 'auth', 'tenant_id')
 
         image_obj = SLImages(client)
 
@@ -469,7 +471,8 @@ class ImagesV2(object):
             for image in results:
                 formatted_image = get_v2_image_details_dict(self.app,
                                                             req,
-                                                            image)
+                                                            image,
+                                                            tenant_id)
 
                 if formatted_image:
                     formatted_image['visibility'] = visibility
@@ -549,6 +552,7 @@ class ImagesV1(object):
 
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
+        tenant_id = tenant_id or lookup(req.env, 'auth', 'tenant_id')
 
         image_obj = SLImages(client)
 
@@ -572,7 +576,8 @@ class ImagesV1(object):
             for image in results:
                 formatted_image = get_v2_image_details_dict(self.app,
                                                             req,
-                                                            image)
+                                                            image,
+                                                            tenant_id)
 
                 if formatted_image:
                     formatted_image['visibility'] = visibility
@@ -613,7 +618,7 @@ class ImagesV1(object):
         }}
 
 
-def get_v2_image_details_dict(app, req, image):
+def get_v2_image_details_dict(app, req, image, tenant_id):
 
     if not image or not image.get('globalIdentifier'):
         return {}
@@ -624,7 +629,15 @@ def get_v2_image_details_dict(app, req, image):
         'name': image['name'],
         'status': 'active',
         'visibility': image.get('visibility', 'public'),
+        'is_public': image.get('visibility', 'public') == 'public',
+        'owner': tenant_id,
         'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
+        'disk_format': 'raw',
+        'container_format': 'bare',
+        'protected': False,
+        'properties': {},
+        'min_disk': 0,
+        'min_ram': 0,
         # "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
         'tags': [],
         'updated': image.get('createDate'),
@@ -649,17 +662,18 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'updated': image.get('createDate'),
         'created': image.get('createDate'),
         'id': image['globalIdentifier'],
-        'minDisk': 0,
         'progress': 100,
-        'minRam': 0,
         'metaData': None,
         'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
         'OS-EXT-IMG-SIZE:size': None,
-        'container_format': 'raw',
+        'container_format': 'bare',
         'disk_format': 'raw',
+        'properties': {},
         'is_public': True if image.get('visibility') == 'public' else False,
         'protected': False,
         'owner': tenant_id,
+        'min_disk': 0,
+        'min_ram': 0,
         'name': image['name'],
         'links': [
             {
