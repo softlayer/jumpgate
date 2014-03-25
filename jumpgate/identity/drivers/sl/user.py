@@ -1,47 +1,42 @@
-from jumpgate.common.error_handling import unauthorized, not_found
+from jumpgate.common.error_handling import not_found
 
 
 class UserV2(object):
 
-    def on_get(self, req, resp, user_id):
+    def on_get(self, req, resp, user_id, **kwargs):
+
+        if 'mask' not in kwargs:
+            items = set([
+                'id',
+                'username',
+                'firstName',
+                'lastName',
+                'accountId',
+                'email',
+            ])
+            kwargs['mask'] = "mask[%s]" % ','.join(items)
 
         client = req.env['sl_client']
-        account = client['Account']
-        current_user_id = account.getCurrentUser(mask='mask[id]')['id']
+        current_user = client['Account'].getCurrentUser(**kwargs)
 
-        if int(user_id) == current_user_id:
-            user = account.getCurrentUser(
-                mask='mask[id,accountId,username,firstName,lastName,email]')
-            user_response = {'id': str(user['id']),
-                             'username': user['username'],
-                             'name': user['firstName'] + " " + user['lastName'],
-                             'email': user['email'],
-                             'tenantId': str(user['accountId']),
-                             'enabled': True
-                             }
-            resp.body = {'user': user_response}
-        else:
-            user_customer = client['User_Customer']
-            try:
-                parent_user_id = user_customer.getParent(
-                    mask='mask[id]', id=user_id)['id']
-            except Exception:
-                return not_found(resp, "Invalid user ID Specified")
+        # User can retrieve details of itself and it's subuser only
+        if int(user_id) < current_user['id']:
+            return not_found(resp, "Invalid User ID specified")
 
-            if parent_user_id != current_user_id:
-                return unauthorized(resp, "Unauthorized user to see details of given user")
+        try:
+            user = client['User_Customer'].getObject(id=user_id,
+                                                     **kwargs)
+        except Exception:
+            return not_found(resp, "Invalid User ID specified")
 
-            user_response = {}
-            users = user_customer.getChildUsers(
-                mask='mask[id,accountId,username,firstName,lastName,email]', id=parent_user_id)
-
-            for user in users:
-                if int(user_id) == user['id']:
-                    user_response = {'id': str(user['id']),
-                                     'username': user['username'],
-                                     'name': user['firstName'] + " " + user['lastName'],
-                                     'email': user['email'],
-                                     'tenantId': str(user['accountId']),
-                                     'enabled': True
-                                     }
-            resp.body = {'user': user_response}
+        resp.body = {
+            'user':
+            {
+                'id': str(user['id']),
+                'username': user['username'],
+                'name': user['firstName'] + " " + user['lastName'],
+                'email': user['email'],
+                'tenantId': str(user['accountId']),
+                'enabled': True
+            }
+        }
