@@ -1,8 +1,8 @@
+import time
 from SoftLayer import TimedClient
 from oslo.config import cfg
 from jumpgate.common.hooks import request_hook
 from jumpgate.common.sl.auth import get_auth
-import time
 
 
 @request_hook(True)

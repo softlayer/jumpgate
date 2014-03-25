@@ -1,7 +1,6 @@
-import logging
-
-from jumpgate.common.hooks import response_hook
 import time
+import logging
+from jumpgate.common.hooks import response_hook
 
 LOG = logging.getLogger(__name__)
 
