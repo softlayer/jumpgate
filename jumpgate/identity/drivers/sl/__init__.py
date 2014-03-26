@@ -1,5 +1,6 @@
 import os.path
 
+from .user import UserV2
 from .tenants import TenantsV2
 from .tokens import TokensV2, TokenV2
 from .versions import Versions
@@ -14,6 +15,7 @@ def setup_routes(app, disp):
     disp.set_handler('v2_tenants', TenantsV2())
     disp.set_handler('v2_token', TokenV2())
     disp.set_handler('versions', Versions(disp))
+    disp.set_handler('v2_user', UserV2())
 
     template_file = app.config.softlayer.catalog_template_file
     if not os.path.exists(template_file):
