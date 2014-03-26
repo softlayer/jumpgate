@@ -1,4 +1,5 @@
 from jumpgate.common.error_handling import not_found
+from SoftLayer import SoftLayerAPIError
 
 
 class UserV2(object):
@@ -10,33 +11,32 @@ class UserV2(object):
                 'id',
                 'username',
                 'firstName',
-                'lastName',
                 'accountId',
                 'email',
             ])
             kwargs['mask'] = "mask[%s]" % ','.join(items)
 
         client = req.env['sl_client']
-        current_user = client['Account'].getCurrentUser(**kwargs)
-
-        # User can retrieve details of itself and it's subuser only
-        if int(user_id) < current_user['id']:
-            return not_found(resp, "Invalid User ID specified")
 
         try:
             user = client['User_Customer'].getObject(id=user_id,
                                                      **kwargs)
-        except Exception:
-            return not_found(resp, "Invalid User ID specified")
-
+        except SoftLayerAPIError as ex:
+            if ex.faultCode == 'SoftLayer_Exception_ObjectNotFound':
+                return not_found(resp, "Invalid User ID specified")
+            raise
+        fieldMap = {
+            # SL-Field : OpenStack-Field
+            'id': 'id',
+            'username': 'username',
+            'email': 'email',
+            'accountId': 'tenantId',
+            'firstName': 'name'
+        }
+        user_detail = {}
+        for field in fieldMap.keys():
+            if user.get(field, None):
+                user_detail[fieldMap[field]] = user[field]
         resp.body = {
-            'user':
-            {
-                'id': str(user['id']),
-                'username': user['username'],
-                'name': user['firstName'] + " " + user['lastName'],
-                'email': user['email'],
-                'tenantId': str(user['accountId']),
-                'enabled': True
-            }
+            'user': user_detail
         }
