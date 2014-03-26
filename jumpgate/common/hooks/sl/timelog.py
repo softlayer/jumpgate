@@ -16,8 +16,7 @@ def log_request(req, resp):
     timed_client = req.env['sl_client']
     overall = end_time - start_time
     sl_total = 0
-    for timed_call in timed_client.get_last_calls():
-        call, time_stamp, duration = timed_call
+    for call, time_stamp, duration in timed_client.get_last_calls():
         LOG.info(
             "[ReqId: %s] %s %s %s",
             req.env['REQUEST_ID'],
