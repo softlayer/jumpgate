@@ -176,6 +176,28 @@ class TokensV2(object):
         resp.status = 200
         resp.body = {'access': access}
 
+    def on_get(self, req, resp, token_id):
+        tokens = identity.token_driver()
+        token = identity.token_id_driver().token_from_id(token_id)
+        identity.token_driver().validate_token(token)
+        raw_endpoints = self._get_catalog(tokens.tenant_id(token),
+                                          tokens.user_id(token))
+        endpoints = []
+        for services in raw_endpoints.values():
+            for service_type, service in services.items():
+                d = {
+                    'adminURL': service.get('adminURL'),
+                    'name': service.get('name', 'Unknown'),
+                    'publicURL': service.get('publicURL'),
+                    'privateURL': service.get('privateURL'),
+                    'region': service.get('region', 'RegionOne'),
+                    'tenantId': tokens.tenant_id(token),
+                    'type': service_type,
+                }
+                endpoints.append(d)
+        resp.status = 200
+        resp.body = {'endpoints': endpoints, 'endpoints_links': []}
+
 
 class TokenV2(object):
     def on_get(self, req, resp, token_id):
