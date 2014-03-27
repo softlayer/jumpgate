@@ -23,5 +23,5 @@ def setup_routes(app, disp):
         raise ValueError('Template file not found')
 
     disp.set_handler('v2_tokens', TokensV2(template_file))
-
+    disp.set_handler('v2_token_endpoints', TokensV2(template_file))
     add_hooks(app)
