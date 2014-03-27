@@ -2,6 +2,7 @@ import json
 
 from SoftLayer import CCIManager, SshKeyManager, SoftLayerAPIError
 
+from jumpgate.common.config import CONF
 from jumpgate.common.utils import lookup
 from jumpgate.common.error_handling import (bad_request, duplicate,
                                             compute_fault, not_found)
@@ -197,7 +198,7 @@ class ServersV2(object):
 
         payload = {
             'hostname': body['server']['name'],
-            'domain': 'jumpgate.com',  # TODO - Don't hardcode this
+            'domain': CONF['default_domain'] or 'jumpgate.com',
             'cpus': flavor['cpus'],
             'memory': flavor['ram'],
             'hourly': True,  # TODO - How do we set this accurately?
