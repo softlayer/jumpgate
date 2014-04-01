@@ -16,7 +16,8 @@ FILE_OPTIONS = {
                    default='SET ME',
                    help='Secret key used to encrypt tokens'),
         cfg.ListOpt('request_hooks', default=[]),
-        cfg.ListOpt('response_hooks', default=[])
+        cfg.ListOpt('response_hooks', default=[]),
+        cfg.StrOpt('default_domain', default='jumpgate.com')
     ],
     'softlayer': [
         cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
