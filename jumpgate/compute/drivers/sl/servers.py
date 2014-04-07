@@ -369,7 +369,8 @@ def get_server_details_dict(app, req, instance):
     transaction = lookup(
         instance, 'activeTransaction', 'transactionStatus', 'name')
 
-    if transaction and 'RECLAIM' in transaction:
+    if transaction and any(['RECLAIM' in transaction,
+                            'TEAR_DOWN' in transaction]):
         task_state = 'deleting'
     else:
         task_state = transaction
