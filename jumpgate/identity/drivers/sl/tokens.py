@@ -202,8 +202,8 @@ class TokensV2(object):
 class TokenV2(object):
     def on_get(self, req, resp, token_id):
         token = identity.token_id_driver().token_from_id(token_id)
-        identity.token_driver().validate_access(token, tenant_id=
-                                                req.get_param('belongsTo'))
+        identity.token_driver().validate_access(token, tenant_id=req.get_param(
+            'belongsTo'))
         access = get_access(token_id, token)
 
         resp.status = 200
