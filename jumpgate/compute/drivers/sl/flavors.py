@@ -87,7 +87,8 @@ FLAVORS = {
 
 
 def encode_tob64_id(name):
-    return base64.b64encode((name.replace(" ", "")).replace(",", ":"))
+    name = bytearray(name.replace(" ", "").replace(",", ":"), 'utf-8')
+    return base64.b64encode(name)
 
 
 def decode_fromb64_string(idstr):
