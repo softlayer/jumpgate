@@ -87,7 +87,8 @@ FLAVORS = {
 
 
 def encode_tob64_id(name):
-    return base64.b64encode((name.replace(" ", "")).replace(",", ":"))
+    name = bytearray(name.replace(" ", "").replace(",", ":"), 'utf-8')
+    return base64.b64encode(name)
 
 
 def decode_fromb64_string(idstr):
@@ -201,10 +202,10 @@ def get_flavor_details(app, req, flavor_ref, detail=False):
 
     }
     idstr = decode_fromb64_string(flavor_ref['id'])
-    #id is delimited by :
+    # id is delimited by :
     s = idstr.split(":")
-    cpu= int(re.match(r'\d+', s[0]).group())
-    ram = int(re.match(r'\d+', s[1]).group())*1024
+    cpu = int(re.match(r'\d+', s[0]).group())
+    ram = int(re.match(r'\d+', s[1]).group()) * 1024
     disk = int(re.match(r'\d+', s[2]).group())
     disk_type = s[3]
     names = "%d vCPU, %dGB ram, %dGB, %s" % (cpu, ram, disk, disk_type)
@@ -240,7 +241,7 @@ def get_flavor_details_old(app, req, flavor_ref, detail=False):
         flavor['disk'] = flavor_ref['disk']
         flavor['ram'] = flavor_ref['ram']
         flavor['vcpus'] = flavor_ref['cpus']
-        flavor['OS-FLV-DISK-TYPE:disk_type']= flavor_ref['disk-type']
+        flavor['OS-FLV-DISK-TYPE:disk_type'] = flavor_ref['disk-type']
         flavor['swap'] = ''
         flavor['rxtx_factor'] = 1
         flavor['os-flavor-access:is_public'] = True
@@ -248,4 +249,3 @@ def get_flavor_details_old(app, req, flavor_ref, detail=False):
         flavor['OS-FLV-DISABLED:disabled'] = False
 
     return flavor
-
