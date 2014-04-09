@@ -1,6 +1,4 @@
 from jumpgate.common.error_handling import bad_request, not_found
-import base64
-import re
 
 FLAVORS = {
     1: {
@@ -89,7 +87,6 @@ FLAVORS = {
 FLAVORS[None] = FLAVORS[1]
 
 
-
 class FlavorV2(object):
     def __init__(self, app):
         self.app = app
@@ -172,8 +169,6 @@ def filter_flavor_refs(req, resp, flavor_refs):
     return flavor_refs
 
 
-
-
 def get_flavor_details(app, req, flavor_ref, detail=False):
     flavor = {
         'id': flavor_ref['id'],
@@ -191,13 +186,11 @@ def get_flavor_details(app, req, flavor_ref, detail=False):
         flavor['disk'] = flavor_ref['disk']
         flavor['ram'] = flavor_ref['ram']
         flavor['vcpus'] = flavor_ref['cpus']
-        flavor['OS-FLV-DISK-TYPE:disk_type']= flavor_ref['disk-type']
+        flavor['OS-FLV-DISK-TYPE:disk_type'] = flavor_ref['disk-type']
         flavor['swap'] = ''
         flavor['rxtx_factor'] = 1
         flavor['os-flavor-access:is_public'] = True
         flavor['OS-FLV-EXT-DATA:ephemeral'] = 0
         flavor['OS-FLV-DISABLED:disabled'] = False
-        flavor['OS-FLV-DISK-TYPE:disk_type']= flavor_ref['disk-type']
 
     return flavor
-
