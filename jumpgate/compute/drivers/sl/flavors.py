@@ -1,6 +1,4 @@
 from jumpgate.common.error_handling import bad_request, not_found
-import base64
-import re
 
 FLAVORS = {
     1: {
@@ -86,23 +84,8 @@ FLAVORS = {
 }
 
 
-def encode_tob64_id(name):
-    return base64.b64encode((name.replace(" ", "")).replace(",", ":"))
-
-
-def decode_fromb64_string(idstr):
-    return base64.b64decode(idstr)
-
-
-def set_flavors_base64_id():
-    for flavor_id, flavor in FLAVORS.items():
-        flavor['id'] = encode_tob64_id(flavor['name'])
-
-
 # Set flavor '1' as the default
 FLAVORS[None] = FLAVORS[1]
-# Encode flavor ids
-set_flavors_base64_id()
 
 
 class FlavorV2(object):
@@ -188,42 +171,6 @@ def filter_flavor_refs(req, resp, flavor_refs):
 
 
 def get_flavor_details(app, req, flavor_ref, detail=False):
-    # extract details by decoding the id string
-    flavor = {
-        'id': flavor_ref['id'],
-        'links': [
-            {
-                'href': app.get_endpoint_url('compute', req, 'v2_flavor',
-                                             flavor_id=flavor_ref['id']),
-                'rel': 'self',
-            }
-        ],
-
-    }
-    idstr = decode_fromb64_string(flavor_ref['id'])
-    #id is delimited by :
-    s = idstr.split(":")
-    cpu= int(re.match(r'\d+', s[0]).group())
-    ram = int(re.match(r'\d+', s[1]).group())*1024
-    disk = int(re.match(r'\d+', s[2]).group())
-    disk_type = s[3]
-    names = "%d vCPU, %dGB ram, %dGB, %s" % (cpu, ram, disk, disk_type)
-    flavor['name'] = names
-    if detail:
-        flavor['disk'] = disk
-        flavor['ram'] = ram
-        flavor['vcpus'] = cpu
-        flavor['OS-FLV-DISK-TYPE:disk_type'] = disk_type
-        flavor['swap'] = ''
-        flavor['rxtx_factor'] = 1
-        flavor['os-flavor-access:is_public'] = True
-        flavor['OS-FLV-EXT-DATA:ephemeral'] = 0
-        flavor['OS-FLV-DISABLED:disabled'] = False
-
-    return flavor
-
-
-def get_flavor_details_old(app, req, flavor_ref, detail=False):
     flavor = {
         'id': flavor_ref['id'],
         'links': [
@@ -240,7 +187,7 @@ def get_flavor_details_old(app, req, flavor_ref, detail=False):
         flavor['disk'] = flavor_ref['disk']
         flavor['ram'] = flavor_ref['ram']
         flavor['vcpus'] = flavor_ref['cpus']
-        flavor['OS-FLV-DISK-TYPE:disk_type']= flavor_ref['disk-type']
+        flavor['OS-FLV-DISK-TYPE:disk_type'] = flavor_ref['disk-type']
         flavor['swap'] = ''
         flavor['rxtx_factor'] = 1
         flavor['os-flavor-access:is_public'] = True
@@ -248,4 +195,3 @@ def get_flavor_details_old(app, req, flavor_ref, detail=False):
         flavor['OS-FLV-DISABLED:disabled'] = False
 
     return flavor
-
