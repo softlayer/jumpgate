@@ -3,40 +3,87 @@ from jumpgate.common.error_handling import bad_request, not_found
 FLAVORS = {
     1: {
         'id': '1',
-        'name': '1 vCPU, 1GB ram, 25GB',
+        'name': '1 vCPU, 1GB ram, 25GB, local',
         'ram': 1024,
         'disk': 25,
+        'disk-type': 'Local',
         'cpus': 1,
     },
     2: {
         'id': '2',
-        'name': '1 vCPU, 1GB ram, 100GB',
+        'name': '1 vCPU, 1GB ram, 100GB, local',
         'ram': 1024,
         'disk': 100,
+        'disk-type': 'Local',
         'cpus': 1,
     },
     3: {
         'id': '3',
-        'name': '2 vCPU, 2GB ram, 100GB',
+        'name': '2 vCPU, 2GB ram, 100GB, local',
         'ram': 2 * 1024,
         'disk': 100,
+        'disk-type': 'Local',
         'cpus': 2,
     },
     4: {
         'id': '4',
-        'name': '4 vCPU, 4GB ram, 100GB',
+        'name': '4 vCPU, 4GB ram, 100GB, local',
         'ram': 4 * 1024,
         'disk': 100,
+        'disk-type': 'Local',
         'cpus': 4,
     },
     5: {
         'id': '5',
-        'name': '8 vCPU, 8GB ram, 100GB',
+        'name': '8 vCPU, 8GB ram, 100GB, local',
         'ram': 8 * 1024,
         'disk': 100,
+        'disk-type': 'Local',
+        'cpus': 8,
+    },
+    11: {
+        'id': '11',
+        'name': '1 vCPU, 1GB ram, 25GB, SAN',
+        'ram': 1024,
+        'disk': 25,
+        'disk-type': 'SAN',
+        'cpus': 1,
+    },
+    12: {
+        'id': '12',
+        'name': '1 vCPU, 1GB ram, 100GB, SAN',
+        'ram': 1024,
+        'disk': 100,
+        'disk-type': 'SAN',
+        'cpus': 1,
+    },
+    13: {
+        'id': '13',
+        'name': '2 vCPU, 2GB ram, 100GB, SAN',
+        'ram': 2 * 1024,
+        'disk': 100,
+        'disk-type': 'SAN',
+        'cpus': 2,
+    },
+    14: {
+        'id': '14',
+        'name': '4 vCPU, 4GB ram, 100GB, SAN',
+        'ram': 4 * 1024,
+        'disk': 100,
+        'disk-type': 'SAN',
+        'cpus': 4,
+    },
+    15: {
+        'id': '15',
+        'name': '8 vCPU, 8GB ram, 100GB, SAN',
+        'ram': 8 * 1024,
+        'disk': 100,
+        'disk-type': 'SAN',
         'cpus': 8,
     },
 }
+
+
 # Set flavor '1' as the default
 FLAVORS[None] = FLAVORS[1]
 
@@ -140,6 +187,7 @@ def get_flavor_details(app, req, flavor_ref, detail=False):
         flavor['disk'] = flavor_ref['disk']
         flavor['ram'] = flavor_ref['ram']
         flavor['vcpus'] = flavor_ref['cpus']
+        flavor['OS-FLV-DISK-TYPE:disk_type'] = flavor_ref['disk-type']
         flavor['swap'] = ''
         flavor['rxtx_factor'] = 1
         flavor['os-flavor-access:is_public'] = True
