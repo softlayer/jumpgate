@@ -37,6 +37,17 @@ FILE_OPTIONS = {
     'compute': [
         cfg.StrOpt('driver', default='jumpgate.compute.drivers.sl'),
         cfg.StrOpt('mount', default='/compute'),
+        cfg.StrOpt('default_injected_file_content_bytes', default=10240),
+        cfg.StrOpt('default_injected_file_path_bytes', default=255),
+        cfg.StrOpt('default_cores', default=200),
+        cfg.StrOpt('default_floating_ips', default=100),
+        cfg.StrOpt('default_injected_files', default=5),
+        cfg.StrOpt('default_instances', default=10),
+        cfg.StrOpt('default_key_pairs', default=100),
+        cfg.StrOpt('default_metadata_items', default=128),
+        cfg.StrOpt('default_ram', default=512000),
+        cfg.StrOpt('default_security_group_rules', default=20),
+        cfg.StrOpt('default_security_groups', default=10),
     ],
     'image': [
         cfg.StrOpt('driver', default='jumpgate.image.drivers.sl'),
