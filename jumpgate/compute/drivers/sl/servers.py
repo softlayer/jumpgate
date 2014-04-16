@@ -201,7 +201,7 @@ class ServersV2(object):
             'domain': CONF['default_domain'] or 'jumpgate.com',
             'cpus': flavor['cpus'],
             'memory': flavor['ram'],
-            'local_disk': False if flavor['disk-type'] is "SAN" else True,
+            'local_disk': False if flavor['disk-type'] == 'SAN' else True,
             'hourly': True,  # TODO - How do we set this accurately?
             'datacenter': datacenter,
             'image_id': body['server']['imageRef'],
