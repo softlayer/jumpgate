@@ -5,3 +5,4 @@ oslo.config>=1.2.0
 softlayer
 pycrypto
 iso8601
+gunicorn>=17.0
