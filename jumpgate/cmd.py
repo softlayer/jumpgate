@@ -22,9 +22,11 @@ def main():
     args = parser.parse_args()
     httpd = make_server(args.host, args.port, make_api(args.config))
     print("Starting server on (%s:%s)" % (args.host, args.port))
-    print("Warning: This is currently a test server for Jumpgate and not fit"
-          "for production since it is single-threaded. Use the WSGI"
-          "application directly: jumpgate.wsgi:make_api()")
+    print("""
+Warning: This is currently a test server for Jumpgate and not fit for
+production since it is single-threaded. Use the WSGI application directly
+along with a better wsgi server like gunicorn or uwsgi:
+    jumpgate.wsgi:make_api()""")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
