@@ -23,7 +23,6 @@ setup(
         'softlayer',
         'pycrypto',
         'iso8601',
-        'gunicorn>=17.0',
     ],
     setup_requires=[],
     test_suite='nose.collector',
