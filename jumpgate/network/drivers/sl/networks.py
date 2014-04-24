@@ -13,5 +13,5 @@ def format_network(vlan):
         'subnets': [str(subnet['id']) for subnet in vlan['subnets']],
         'admin_state_up': True,
         'name': vlan.get('name'),
-        'id': vlan['id'],
+        'id': str(vlan['id']),
     }
