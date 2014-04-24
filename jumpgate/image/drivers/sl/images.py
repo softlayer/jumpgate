@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from SoftLayer.utils import query_filter
+from SoftLayer.utils import query_filter, NestedDict
 
 from jumpgate.common.utils import lookup
 from jumpgate.common.error_handling import not_found, bad_request
@@ -328,6 +328,7 @@ class ImagesV2(object):
         image_service = req.env['sl_client'][
             'SoftLayer_Virtual_Guest_Block_Device_Template_Group']
         img = image_service.createFromExternalSource(configuration)
+
         resp.body = {
             'id': img['globalIdentifier'],
             'name': body['name'],
@@ -355,12 +356,17 @@ class ImagesV2(object):
         limit = None
         if req.get_param('limit'):
             limit = int(req.get_param('limit'))
+
+        marker = req.get_param('marker')
+
         for visibility, funct in [('public', image_obj.get_public_images),
                                   ('private', image_obj.get_private_images)]:
 
             if limit == 0:
                 break
-            results = funct(name=req.get_param('name'), limit=limit)
+            results = funct(name=req.get_param('name'),
+                            limit=limit,
+                            marker=marker)
 
             if not results:
                 continue
@@ -446,48 +452,7 @@ class ImageV1(object):
         resp.set_headers(headers)
 
 
-class ImagesV1(object):
-    def __init__(self, app):
-        self.app = app
-
-    def on_get(self, req, resp, tenant_id=None):
-        client = req.env['sl_client']
-        tenant_id = tenant_id or lookup(req.env, 'auth', 'tenant_id')
-
-        image_obj = SLImages(client)
-
-        output = []
-        limit = None
-        if req.get_param('limit'):
-            limit = int(req.get_param('limit'))
-        for visibility, funct in [('public', image_obj.get_public_images),
-                                  ('private', image_obj.get_private_images)]:
-
-            if limit == 0:
-                break
-            results = funct(name=req.get_param('name'), limit=limit)
-
-            if not results:
-                continue
-
-            if not isinstance(results, list):
-                results = [results]
-
-            for image in results:
-                formatted_image = get_v2_image_details_dict(self.app,
-                                                            req,
-                                                            image,
-                                                            tenant_id)
-
-                if formatted_image:
-                    formatted_image['visibility'] = visibility
-                    output.append(formatted_image)
-                    if limit is not None:
-                        limit -= 1
-
-        resp.body = {'images': sorted(output,
-                                      key=lambda x: x['name'].lower())}
-
+class ImagesV1(ImagesV2):
     def on_post(self, req, resp, tenant_id=None):
         headers = req.headers
 
@@ -617,11 +582,16 @@ class SLImages(object):
 
         return matching_image
 
-    def get_private_images(self, guid=None, name=None, limit=None):
-        _filter = {}
+    def get_private_images(self, guid=None, name=None, limit=None,
+                           marker=None):
+        _filter = NestedDict()
         if name:
-            _filter['privateBlockDeviceTemplateGroups'] = {
-                'name': query_filter(name)}
+            _filter['privateBlockDeviceTemplateGroups']['name'] = \
+                query_filter(name)
+
+        if marker is not None:
+            _filter['privateBlockDeviceTemplateGroups']['globalIdentifier'] = \
+                query_filter('> %s' % marker)
 
         if guid:
             _filter['privateBlockDeviceTemplateGroups'] = {
@@ -631,7 +601,7 @@ class SLImages(object):
         params['mask'] = self.image_mask
 
         if _filter:
-            params['filter'] = _filter
+            params['filter'] = _filter.to_dict()
 
         if limit:
             params['limit'] = limit
@@ -639,19 +609,22 @@ class SLImages(object):
         account = self.client['Account']
         return account.getPrivateBlockDeviceTemplateGroups(**params)
 
-    def get_public_images(self, guid=None, name=None, limit=None):
-        _filter = {}
+    def get_public_images(self, guid=None, name=None, limit=None, marker=None):
+        _filter = NestedDict()
         if name:
             _filter['name'] = query_filter(name)
 
         if guid:
             _filter['globalIdentifier'] = query_filter(guid)
 
+        if marker is not None:
+            _filter['globalIdentifier'] = query_filter('> %s' % marker)
+
         params = {}
         params['mask'] = self.image_mask
 
         if _filter:
-            params['filter'] = _filter
+            params['filter'] = _filter.to_dict()
 
         if limit:
             params['limit'] = limit
