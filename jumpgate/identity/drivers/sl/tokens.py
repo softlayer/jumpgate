@@ -7,6 +7,7 @@ from jumpgate.common.utils import lookup
 from jumpgate.identity.drivers import core as identity
 
 from SoftLayer import Client, SoftLayerAPIError
+from SoftLayer.auth import TokenAuthentication
 from oslo.config import cfg
 
 LOG = logging.getLogger(__name__)
@@ -76,12 +77,16 @@ class SLAuthDriver(identity.AuthDriver):
         credential = lookup(creds, 'auth', 'passwordCredentials',
                             'password')
         token_id = lookup(creds, 'auth', 'token', 'id')
+
+        token_auth = None
+
         if token_id:
             token = identity.token_id_driver().token_from_id(token_id)
             token_driver = identity.token_driver()
             token_driver.validate_token(token)
             username = token_driver.username(token)
             credential = token_driver.credential(token)
+            token_auth = token['auth_type'] == 'token'
 
         def assert_tenant(user):
             tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,
@@ -104,10 +109,18 @@ class SLAuthDriver(identity.AuthDriver):
                             proxy=cfg.CONF['softlayer']['proxy'])
             client.auth = None
             try:
-                userId, tokenHash = client.\
-                    authenticate_with_password(username, credential)
+                if token_auth:
+                    client.auth = TokenAuthentication(token['user_id'], credential)
+                else:
+                    userId, tokenHash = client.\
+                        authenticate_with_password(username, credential)
+
                 user = client['Account'].getCurrentUser(mask=USER_MASK)
                 assert_tenant(user)
+
+                if token_auth:
+                    tokenHash = credential
+
                 return {'user': user, 'credential': tokenHash,
                         'auth_type': 'token'}
             except SoftLayerAPIError as e:
