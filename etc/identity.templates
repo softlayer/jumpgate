@@ -15,9 +15,9 @@ catalog.RegionOne.compute.privateURL = http://localhost:5000/compute/v2/$(tenant
 catalog.RegionOne.compute.adminURL = http://localhost:5000/compute/v2/$(tenant_id)s
 
 catalog.RegionOne.image.name = Image Service
-catalog.RegionOne.image.publicURL = http://localhost:5000/image/v2
-catalog.RegionOne.image.privateURL = http://localhost:5000/image/v2
-catalog.RegionOne.image.adminURL = http://localhost:5000/image/v2
+catalog.RegionOne.image.publicURL = http://localhost:5000/image
+catalog.RegionOne.image.privateURL = http://localhost:5000/image
+catalog.RegionOne.image.adminURL = http://localhost:5000/image
 
 catalog.RegionOne.network.name = Image Service
 catalog.RegionOne.network.publicURL = http://localhost:5000/network/
