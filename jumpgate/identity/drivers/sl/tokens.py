@@ -110,7 +110,8 @@ class SLAuthDriver(identity.AuthDriver):
             client.auth = None
             try:
                 if token_auth:
-                    client.auth = TokenAuthentication(token['user_id'], credential)
+                    client.auth = TokenAuthentication(token['user_id'],
+                                                      credential)
                 else:
                     userId, tokenHash = client.\
                         authenticate_with_password(username, credential)

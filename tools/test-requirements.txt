@@ -2,3 +2,4 @@ nose
 yanc
 mock
 coverage
+tox

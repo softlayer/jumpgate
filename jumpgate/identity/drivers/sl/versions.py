@@ -17,12 +17,16 @@ class Versions(object):
                                 'rel': 'self'
                             },
                             {
-                                'href': 'http://docs.openstack.org/api/openstack-identity-service/2.0/content/',
+                                'href': 'http://docs.openstack.org/api/'
+                                        'openstack-identity-service/2.0/'
+                                        'content/',
                                 'rel': 'describedby',
                                 'type': 'text/html'
                             },
                             {
-                                'href': 'http://docs.openstack.org/api/openstack-identity-service/2.0/identity-dev-guide-2.0.pdf',
+                                'href': 'http://docs.openstack.org/api/'
+                                        'openstack-identity-service/2.0/'
+                                        'identity-dev-guide-2.0.pdf',
                                 'rel': 'describedby',
                                 'type': 'application/pdf'
                             }
@@ -30,7 +34,8 @@ class Versions(object):
                         'media-types': [
                             {
                                 'base': 'application/json',
-                                'type': 'application/vnd.openstack.identity-v2.0+json'
+                                'type': 'application/'
+                                        'vnd.openstack.identity-v2.0+json'
                             }
                         ],
                         'status': 'stable',
