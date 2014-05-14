@@ -7,10 +7,10 @@ logger = logging.getLogger(__name__)
 
 class NYI(object):
 
-    def __init__(self, before=[], after=[]):
+    def __init__(self, before=None, after=None):
         # simulate before and after hooks
-        self.before = before
-        self.after = after
+        self.before = before or []
+        self.after = after or []
 
     def __call__(self, req, resp, **kwargs):
         for hook in self.before:

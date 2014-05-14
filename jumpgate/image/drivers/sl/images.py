@@ -13,7 +13,10 @@ class SchemaImageV2(object):
         "name": "image",
         "properties": {
             "architecture": {
-                "description": "Operating system architecture as specified in http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-images.html",
+                "description": "Operating system architecture as specified in "
+                               "http://docs.openstack.org/trunk/"
+                               "openstack-compute/admin/content/"
+                               "adding-images.html",
                 "type": "string"
             },
             "checksum": {
@@ -33,11 +36,13 @@ class SchemaImageV2(object):
                 "type": "string"
             },
             "created_at": {
-                "description": "Date and time of image registration (READ-ONLY)",
+                "description": "Date and time of image registration "
+                               "(READ-ONLY)",
                 "type": "string"
             },
             "direct_url": {
-                "description": "URL to access the image file kept in external store (READ-ONLY)",
+                "description": "URL to access the image file kept in external "
+                               "store (READ-ONLY)",
                 "type": "string"
             },
             "disk_format": {
@@ -61,7 +66,11 @@ class SchemaImageV2(object):
             },
             "id": {
                 "description": "An identifier for the image",
-                "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                "pattern": "^([0-9a-fA-F]){8}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){12}$",
                 "type": "string"
             },
             "instance_uuid": {
@@ -69,12 +78,19 @@ class SchemaImageV2(object):
                 "type": "string"
             },
             "kernel_id": {
-                "description": "ID of image stored in Glance that should be used as the kernel when booting an AMI-style image.",
-                "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                "description": "ID of image stored in Glance that should be "
+                               "used as the kernel when booting an AMI-style "
+                               "image.",
+                "pattern": "^([0-9a-fA-F]){8}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){12}$",
                 "type": "string"
             },
             "locations": {
-                "description": "A set of URLs to access the image file kept in external store",
+                "description": "A set of URLs to access the image file kept "
+                               "in external store",
                 "items": {
                     "properties": {
                         "metadata": {
@@ -94,7 +110,8 @@ class SchemaImageV2(object):
                 "type": "array"
             },
             "min_disk": {
-                "description": "Amount of disk space (in GB) required to boot image.",
+                "description": "Amount of disk space (in GB) required to boot "
+                               "image.",
                 "type": "integer"
             },
             "min_ram": {
@@ -107,11 +124,16 @@ class SchemaImageV2(object):
                 "type": "string"
             },
             "os_distro": {
-                "description": "Common name of operating system distribution as specified in http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-images.html",
+                "description": "Common name of operating system distribution "
+                               "as specified in "
+                               "http://docs.openstack.org/trunk/"
+                               "openstack-compute/admin/content/"
+                               "adding-images.html",
                 "type": "string"
             },
             "os_version": {
-                "description": "Operating system version as specified by the distributor",
+                "description": "Operating system version as specified by the "
+                               "distributor",
                 "type": "string"
             },
             "protected": {
@@ -119,8 +141,14 @@ class SchemaImageV2(object):
                 "type": "boolean"
             },
             "ramdisk_id": {
-                "description": "ID of image stored in Glance that should be used as the ramdisk when booting an AMI-style image.",
-                "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                "description": "ID of image stored in Glance that should be "
+                               "used as the ramdisk when booting an AMI-style "
+                               "image.",
+                "pattern": "^([0-9a-fA-F]){8}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){12}$",
                 "type": "string"
             },
             "schema": {
@@ -156,7 +184,8 @@ class SchemaImageV2(object):
                 "type": "array"
             },
             "updated_at": {
-                "description": "Date and time of the last image modification (READ-ONLY)",
+                "description": "Date and time of the last image modification "
+                               "(READ-ONLY)",
                 "type": "string"
             },
             "visibility": {
@@ -239,7 +268,11 @@ class SchemaMemberV2(object):
             },
             "image_id": {
                 "description": "An identifier for the image",
-                "pattern": "^([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}$",
+                "pattern": "^([0-9a-fA-F]){8}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){4}-"
+                           "([0-9a-fA-F]){12}$",
                 "type": "string"
             },
             "member_id": {
@@ -256,7 +289,8 @@ class SchemaMemberV2(object):
                 "type": "string"
             },
             "updated_at": {
-                "description": "Date and time of last modification of image member",
+                "description": "Date and time of last modification of image "
+                               "member",
                 "type": "string"
             },
             "schema": {

@@ -6,7 +6,8 @@ EXTENSIONS = {
         'description': '''Availability-zone support''',
         'links': [],
         'name': 'AvailabilityZone',
-        'namespace': 'http://docs.openstack.org/compute/ext/availabilityzone/api/v1.1',
+        'namespace': 'http://docs.openstack.org/compute/ext/availabilityzone/'
+                     'api/v1.1',
         'updated': '2012-12-21T00:00:00+00:00'
     },
 }

@@ -1,6 +1,7 @@
-import os
-import argparse
+from __future__ import print_function
 from wsgiref.simple_server import make_server
+import argparse
+import os
 
 from jumpgate.wsgi import make_api
 
