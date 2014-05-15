@@ -19,10 +19,10 @@ catalog.RegionOne.image.publicURL = http://localhost:5000/image
 catalog.RegionOne.image.privateURL = http://localhost:5000/image
 catalog.RegionOne.image.adminURL = http://localhost:5000/image
 
-catalog.RegionOne.network.name = Image Service
-catalog.RegionOne.network.publicURL = http://localhost:5000/network/
-catalog.RegionOne.network.privateURL = http://localhost:5000/network/
-catalog.RegionOne.network.adminURL = http://localhost:5000/network/
+catalog.RegionOne.network.name = Network Service
+catalog.RegionOne.network.publicURL = http://localhost:5000/network
+catalog.RegionOne.network.privateURL = http://localhost:5000/network
+catalog.RegionOne.network.adminURL = http://localhost:5000/network
 
 #catalog.RegionOne.volume.name = Block Storage Service
 #catalog.RegionOne.volume.publicURL = http://localhost:5000/volume/v1/$(tenant_id)s
