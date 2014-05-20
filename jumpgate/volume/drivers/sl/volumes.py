@@ -10,14 +10,12 @@ class VolumesV2(object):
             iscsi_list = [iscsi_list]
         results = []
         for instance in iscsi_list:
-            print instance
-            print "-----------------"
             results.append({
                 'id': instance['id'],
-                'display_name':instance['serviceResourceName'],
-                'size':instance['capacityGb'],
-                'volume_type':instance['nasType'],
-                'attachments':[],
+                'display_name': instance['serviceResourceName'],
+                'size': instance['capacityGb'],
+                'volume_type': instance['nasType'],
+                'attachments': [],
                 "created_at": instance['createDate']
             })
         resp.status = 200
