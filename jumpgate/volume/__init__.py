@@ -2,8 +2,6 @@
 
 def add_endpoints(disp):
     # V2 API - http://api.openstack.org/api-ref-blockstorage.html#volumes-api
-
-
     disp.add_endpoint('v2_index', '/v2')
 
     disp.add_endpoint('v2_volumes', '/v2/{tenant_id}/volumes')
