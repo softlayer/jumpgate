@@ -118,9 +118,11 @@ class ServerActionV2(object):
             flavor_id = int(body['resize'].get('flavorRef'))
             if flavor_id not in FLAVORS:
                 return bad_request(resp,
-                                   message="Invalid flavor id in the request body")
+                                   message="Invalid flavor id in the "
+                                   "request body")
             flavor = FLAVORS[flavor_id]
-            cci.upgrade(instance_id, cpus=flavor['cpus'], memory=flavor['ram'] / 1024)
+            cci.upgrade(instance_id, cpus=flavor['cpus'],
+                        memory=flavor['ram'] / 1024)
             resp.status = 202
             return
         elif 'confirmResize' in body:
