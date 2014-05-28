@@ -72,9 +72,8 @@ def get_new_token_v3(credentials):
     token_driver = identity.token_driver()
     token_id = lookup(credentials, 'auth', 'identity', 'token', 'id')
     if token_id:
-        LOG.info("token id is: %s", str(token_id))
         token = identity.token_id_driver().token_from_id(token_id)
-        LOG.info("token details are: %s", str(token))
+        LOG.debug("token details are: %s", str(token))
 
         token_driver.validate_token(token)
         username = token_driver.username(token)
@@ -93,7 +92,6 @@ def get_new_token_v3(credentials):
                }
         return userinfo, user
 
-    LOG.info("credentials = " + str(credentials.keys()) + " values = " + str(credentials.values()))
     username = lookup(credentials, 'auth', 'passwordCredentials', 'username')
     credential = lookup(credentials, 'auth', 'passwordCredentials', 'password')
 
