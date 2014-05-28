@@ -12,8 +12,6 @@ from oslo.config import cfg
 LOG = logging.getLogger(__name__)
 
 
-
-
 def parse_templates(template_lines):
     o = {}
     for line in template_lines:
@@ -37,6 +35,7 @@ def parse_templates(template_lines):
 
     return o
 
+
 class ServicesV3(object):
     def __init__(self, template_file):
         self._load_templates(template_file)
@@ -59,18 +58,17 @@ class ServicesV3(object):
                 for k, v in service_ref.items():
                     o[region][service][k] = v.replace('$(', '%(') % d
         return o
+
     def on_get(self, req, resp):
         client = req.env['sl_client']
         account = client['Account'].getObject()
 
-        tenants = [
-            {
-                'enabled': True,
-                'description': None,
-                'name': str(account['id']),
-                'id': str(account['id']),
-            },
-        ]
+        tenants = [{
+            'enabled': True,
+            'description': None,
+            'name': str(account['id']),
+            'id': str(account['id']),
+            }]
 
         # Add catalog to the access data
         raw_catalog = self._get_catalog(account['id'], account['id'])

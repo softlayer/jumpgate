@@ -86,7 +86,7 @@ class SLAuthDriver(identity.AuthDriver):
             username = token_driver.username(token)
             credential = token_driver.credential(token)
             return {'user': user, 'credential': credential,
-                    'auth_type': token['auth_type'] }
+                    'auth_type': token['auth_type']}
 
         def assert_tenant(user):
             tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,

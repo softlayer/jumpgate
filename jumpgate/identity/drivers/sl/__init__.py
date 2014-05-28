@@ -13,7 +13,7 @@ from jumpgate.common.sl import add_hooks
 
 def setup_routes(app, disp):
     # V3 Routes
-    disp.set_handler('v3_auth_index',V3(disp))
+    disp.set_handler('v3_auth_index', V3(disp))
     disp.set_handler('v3_user_projects', UserProjectsV3())
 
     # V2 Routes
@@ -40,10 +40,10 @@ def setup_routes(app, disp):
     disp.set_handler('v2_tokens', TokensV2(template_file))
     disp.set_handler('v2_token_endpoints', TokensV2(template_file))
 
-    #V3 auth token route
-    disp.set_handler('v3_auth_tokens',AuthTokensV3(template_file_v3))
+    # V3 auth token route
+    disp.set_handler('v3_auth_tokens', AuthTokensV3(template_file_v3))
 
-    #V3 service
-    disp.set_handler('v3_services',ServicesV3(template_file_v3))
+    # V3 service
+    disp.set_handler('v3_services', ServicesV3(template_file_v3))
 
     add_hooks(app)

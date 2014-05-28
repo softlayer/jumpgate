@@ -3,7 +3,8 @@ import logging
 import json
 import base64
 
-from jumpgate.common.sl.auth import get_new_token_v3, get_token_details, get_auth
+from jumpgate.common.sl.auth import get_auth, get_new_token_v3
+from jumpgate.common.sl.auth import get_token_details
 from jumpgate.common.aes import encode_aes
 
 from SoftLayer import Client
@@ -64,15 +65,14 @@ def get_access_v3(token_id, token_details, user):
         'token': {
             'expires_at': datetime.datetime.fromtimestamp(
                 token_details['expires']).isoformat(),
-             'issued_at': datetime.datetime.fromtimestamp(
+            'issued_at': datetime.datetime.fromtimestamp(
                 token_details['expires']).isoformat(),
-             'methods':['password'],
-             'id':token_id,
-             'user': {
-                 'id': user['id'],
-                 'links': [0],
-                 'name': user['username'],
-             },
+            'methods': ['password'],
+            'id': token_id,
+            'user': {
+                'id': user['id'],
+                'links': [0],
+                'name': user['username']}
         }
     }
 
@@ -106,28 +106,27 @@ class AuthTokensV3(object):
         for services in raw_catalog.values():
             for service_type, service in services.items():
                 d = {
-#                   'id': "????"
+                    # 'id': "????"
                     'type': service_type,
                     'name': service.get('name', 'Unknown'),
                     'endpoints': [{
-#                       'id': "????"
+                        # 'id': "????"
                         'interface': "internal",
                         'region': service.get('region', 'RegionOne'),
                         'url': service.get('privateURL')
-                    },
-                    {
-#                       'id': "????"
+                        },
+                        {
+                        # 'id': "????"
                         'interface': "public",
                         'region': service.get('region', 'RegionOne'),
                         'url': service.get('publicURL')
-                    },
-                    {
-#                       'id': "????"
+                        },
+                        {
+                        # 'id': "????"
                         'interface': "admin",
                         'region': service.get('region', 'RegionOne'),
                         'url': service.get('adminURL'),
-                    }
-                                  ]
+                        }]
                 }
                 catalog.append(d)
         return catalog
@@ -139,13 +138,12 @@ class AuthTokensV3(object):
         token_id = base64.b64encode(encode_aes(json.dumps(token_details)))
 
         access = get_access_v3(token_id, token_details, user)
-
-         # Add catalog to the access data
+        # Add catalog to the access data
         catalog = self._build_catalog(token_details, user)
         access['token']['catalog'] = catalog
 
         resp.status = 200
-        resp.set_header('X-Subject-Token',str(token_id))
+        resp.set_header('X-Subject-Token', str(token_id))
         # V2 APIs return the body in 'access' keypair but V3 APIs do not
         # resp.body = {'access': access}
         resp.body = access
