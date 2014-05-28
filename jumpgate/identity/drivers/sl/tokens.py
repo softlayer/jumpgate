@@ -78,15 +78,15 @@ class SLAuthDriver(identity.AuthDriver):
                             'password')
         token_id = lookup(creds, 'auth', 'token', 'id')
 
-        token_auth = None
+        token_driver = identity.token_driver()
 
         if token_id:
             token = identity.token_id_driver().token_from_id(token_id)
-            token_driver = identity.token_driver()
             token_driver.validate_token(token)
             username = token_driver.username(token)
             credential = token_driver.credential(token)
-            token_auth = token['auth_type'] == 'token'
+            return {'user': user, 'credential': credential,
+                    'auth_type': token['auth_type'] }
 
         def assert_tenant(user):
             tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,
@@ -99,28 +99,24 @@ class SLAuthDriver(identity.AuthDriver):
         if len(credential) == 64:
             client = Client(username=username, api_key=credential,
                             endpoint_url=cfg.CONF['softlayer']['endpoint'],
-                            proxy=cfg.CONF['softlayer']['proxy'])
+                            proxy=cfg.CONF['softlayer']['proxy']
+                            )
             user = client['Account'].getCurrentUser(mask=USER_MASK)
             assert_tenant(user)
+
             return {'user': user, 'credential': credential,
                     'auth_type': 'api_key'}
+
         else:
             client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'],
                             proxy=cfg.CONF['softlayer']['proxy'])
             client.auth = None
             try:
-                if token_auth:
-                    client.auth = TokenAuthentication(token['user_id'],
-                                                      credential)
-                else:
-                    userId, tokenHash = client.\
-                        authenticate_with_password(username, credential)
+                userId, tokenHash = client.\
+                    authenticate_with_password(username, credential)
 
                 user = client['Account'].getCurrentUser(mask=USER_MASK)
                 assert_tenant(user)
-
-                if token_auth:
-                    tokenHash = credential
 
                 return {'user': user, 'credential': tokenHash,
                         'auth_type': 'token'}

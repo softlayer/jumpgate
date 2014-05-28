@@ -10,6 +10,8 @@ DIR_PATH = os.path.dirname(__file__)
 MOCK_CONFIG = MagicMock()
 MOCK_CONFIG.softlayer.catalog_template_file = os.path.join(
     DIR_PATH, 'identity.templates')
+MOCK_CONFIG.softlayer.catalog_template_file_v3 = os.path.join(
+    DIR_PATH, 'identity_v3.templates')
 
 
 class TestServiceDispatchers(unittest.TestCase):
