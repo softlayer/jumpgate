@@ -77,7 +77,6 @@ class SLAuthDriver(identity.AuthDriver):
         credential = lookup(creds, 'auth', 'passwordCredentials',
                             'password')
         token_id = lookup(creds, 'auth', 'token', 'id')
-
         token_driver = identity.token_driver()
 
         if token_id:
@@ -85,8 +84,7 @@ class SLAuthDriver(identity.AuthDriver):
             token_driver.validate_token(token)
             username = token_driver.username(token)
             credential = token_driver.credential(token)
-            return {'user': user, 'credential': credential,
-                    'auth_type': token['auth_type']}
+            token_auth = token['auth_type'] == 'token'
 
         def assert_tenant(user):
             tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,
@@ -103,7 +101,6 @@ class SLAuthDriver(identity.AuthDriver):
                             )
             user = client['Account'].getCurrentUser(mask=USER_MASK)
             assert_tenant(user)
-
             return {'user': user, 'credential': credential,
                     'auth_type': 'api_key'}
 
@@ -112,11 +109,18 @@ class SLAuthDriver(identity.AuthDriver):
                             proxy=cfg.CONF['softlayer']['proxy'])
             client.auth = None
             try:
-                userId, tokenHash = client.\
-                    authenticate_with_password(username, credential)
+                if token_auth:
+                    client.auth = TokenAuthentication(token['user_id'],
+                                                      credential)
+                else:
+                    userId, tokenHash = client.\
+                        authenticate_with_password(username, credential)
 
                 user = client['Account'].getCurrentUser(mask=USER_MASK)
                 assert_tenant(user)
+
+                if token_auth:
+                    tokenHash = credential
 
                 return {'user': user, 'credential': tokenHash,
                         'auth_type': 'token'}

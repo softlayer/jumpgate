@@ -2,7 +2,6 @@ import time
 import json
 import base64
 import logging
-import os
 
 from SoftLayer import (
     Client, SoftLayerAPIError, TokenAuthentication, BasicAuthentication)

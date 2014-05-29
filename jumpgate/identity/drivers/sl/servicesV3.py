@@ -1,13 +1,4 @@
-import datetime
 import logging
-import json
-import base64
-
-from jumpgate.common.sl.auth import get_new_token, get_token_details, get_auth
-from jumpgate.common.aes import encode_aes
-
-from SoftLayer import Client
-from oslo.config import cfg
 
 LOG = logging.getLogger(__name__)
 
@@ -63,12 +54,12 @@ class ServicesV3(object):
         client = req.env['sl_client']
         account = client['Account'].getObject()
 
-        tenants = [{
-            'enabled': True,
-            'description': None,
-            'name': str(account['id']),
-            'id': str(account['id']),
-            }]
+        # tenants = [{
+        #    'enabled': True,
+        #    'description': None,
+        #    'name': str(account['id']),
+        #    'id': str(account['id']),
+        #    }]
 
         # Add catalog to the access data
         raw_catalog = self._get_catalog(account['id'], account['id'])
