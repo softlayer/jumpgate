@@ -77,12 +77,10 @@ class SLAuthDriver(identity.AuthDriver):
         credential = lookup(creds, 'auth', 'passwordCredentials',
                             'password')
         token_id = lookup(creds, 'auth', 'token', 'id')
-
-        token_auth = None
+        token_driver = identity.token_driver()
 
         if token_id:
             token = identity.token_id_driver().token_from_id(token_id)
-            token_driver = identity.token_driver()
             token_driver.validate_token(token)
             username = token_driver.username(token)
             credential = token_driver.credential(token)
@@ -99,11 +97,13 @@ class SLAuthDriver(identity.AuthDriver):
         if len(credential) == 64:
             client = Client(username=username, api_key=credential,
                             endpoint_url=cfg.CONF['softlayer']['endpoint'],
-                            proxy=cfg.CONF['softlayer']['proxy'])
+                            proxy=cfg.CONF['softlayer']['proxy']
+                            )
             user = client['Account'].getCurrentUser(mask=USER_MASK)
             assert_tenant(user)
             return {'user': user, 'credential': credential,
                     'auth_type': 'api_key'}
+
         else:
             client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'],
                             proxy=cfg.CONF['softlayer']['proxy'])
