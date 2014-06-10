@@ -36,7 +36,7 @@ class ServerActionV2(object):
 
         try:
             instance_id = int(instance_id)
-        except ValueError:
+        except Exception:
             return not_found(resp, "Invalid instance ID specified.")
 
         instance = cci.get_instance(instance_id)
