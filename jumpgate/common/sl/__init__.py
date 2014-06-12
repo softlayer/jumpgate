@@ -8,7 +8,7 @@ from SoftLayer import SoftLayerAPIError
 opts = [
     cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
     cfg.StrOpt('catalog_template_file', default='identity.templates'),
-    cfg.StrOpt('catalog_template_file_v3', default='identity.templates_v3'),
+    cfg.StrOpt('catalog_template_file_v3', default='identity_v3.templates'),
 ]
 
 cfg.CONF.register_opts(opts, group='softlayer')
