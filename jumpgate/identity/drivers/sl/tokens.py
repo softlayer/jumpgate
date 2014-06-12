@@ -78,7 +78,7 @@ class SLAuthDriver(identity.AuthDriver):
                             'password')
         token_id = lookup(creds, 'auth', 'token', 'id')
         token_driver = identity.token_driver()
-        token_auth = None 
+        token_auth = None
         if token_id:
             token = identity.token_id_driver().token_from_id(token_id)
             token_driver.validate_token(token)
