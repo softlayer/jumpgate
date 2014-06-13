@@ -207,9 +207,14 @@ class ServersV2(object):
         datacenter = None
         if lookup(body, 'server', 'availability_zone'):
             datacenter = lookup(body, 'server', 'availability_zone')
+        else: 
+	    if "default_availability_zone" in CONF['compute'].keys():
+	        datacenter = CONF['compute']["default_availability_zone"]
+
+        if not datacenter:
+            return bad_request(resp, 'availability-zone missing')
 
         cci = CCIManager(client)
-
         payload = {
             'hostname': body['server']['name'],
             'domain': CONF['default_domain'] or 'jumpgate.com',
