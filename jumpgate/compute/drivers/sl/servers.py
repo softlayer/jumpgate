@@ -191,8 +191,7 @@ class ServersV2(object):
             user_data['personality'] = lookup(body, 'server', 'personality')
 
         datacenter = None
-        if lookup(body, 'server', 'availability_zone'):
-            datacenter = lookup(body, 'server', 'availability_zone')
+        datacenter = lookup(body, 'server', 'availability_zone')
 
         cci = CCIManager(client)
 

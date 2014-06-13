@@ -48,6 +48,7 @@ FILE_OPTIONS = {
         cfg.StrOpt('default_ram', default=512000),
         cfg.StrOpt('default_security_group_rules', default=20),
         cfg.StrOpt('default_security_groups', default=10),
+        cfg.StrOpt('default_availability_zone', default=None),
     ],
     'image': [
         cfg.StrOpt('driver', default='jumpgate.image.drivers.sl'),
