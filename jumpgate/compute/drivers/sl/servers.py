@@ -204,9 +204,10 @@ class ServersV2(object):
         if lookup(body, 'server', 'personality'):
             user_data['personality'] = lookup(body, 'server', 'personality')
 
-        datacenter = None
-        if lookup(body, 'server', 'availability_zone'):
-            datacenter = lookup(body, 'server', 'availability_zone')
+        datacenter = (lookup(body, 'server', 'availability_zone')
+                      or CONF['compute']['default_availability_zone'])
+        if not datacenter:
+            return bad_request(resp, 'availability_zone missing')
 
         cci = CCIManager(client)
 
