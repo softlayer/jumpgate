@@ -193,7 +193,7 @@ class ServersV2(object):
         datacenter = (lookup(body, 'server', 'availability_zone')
                       or CONF['compute']['default_availability_zone'])
         if not datacenter:
-            return bad_request(resp,'availability_zone missing')
+            return bad_request(resp, 'availability_zone missing')
 
         cci = CCIManager(client)
 
