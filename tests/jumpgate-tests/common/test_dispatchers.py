@@ -13,6 +13,7 @@ MOCK_CONFIG.softlayer.catalog_template_file = os.path.join(
 MOCK_CONFIG.softlayer.catalog_template_file_v3 = os.path.join(
     DIR_PATH, '../identity_v3.templates')
 
+
 class TestServiceDispatchers(unittest.TestCase):
     def test_all_endpoints(self):
         for service in SUPPORTED_SERVICES:

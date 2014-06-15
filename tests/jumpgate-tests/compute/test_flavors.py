@@ -1,7 +1,6 @@
-from mock import MagicMock, patch, ANY
+from mock import MagicMock
 from jumpgate.compute.drivers.sl.flavors import FlavorsDetailV2
 import unittest
-import io
 
 TENANT_ID = 333333
 
@@ -25,7 +24,7 @@ class TestFlavorList(unittest.TestCase):
         elif (args[1] == 'minDisk' and args[0].param == 'minDisk'):
             return 42
         elif (args[1] == 'minRam' and args[0].param == 'minRam'):
-            return 4*1024
+            return 4 * 1024
         elif (args[1] == 'limit' and args[0].param == 'limit'):
             return 7
         return None
@@ -49,7 +48,9 @@ class TestFlavorList(unittest.TestCase):
         '''Testing the flavor-list without any parameters set for filtering'''
         self.param = 'no_params'
         self.perform_flavor_list(TENANT_ID, 1)
-        self.assertEquals(self.resp.body.keys(), ['flavors'])
+        # For python 3.3/3.4 dict.keys() returns iterable views instead of
+        # list.
+        self.assertEquals(list(self.resp.body.keys()), ['flavors'])
         self.assertEquals(len(self.resp.body['flavors']), 10)
 
     def test_on_get_for_flavor_list_marker(self):
@@ -108,4 +109,4 @@ class TestFlavorList(unittest.TestCase):
                           "Invalid limit parameter.")
 
     def tearDown(self):
-        req, resp, self.app = None, None, None
+        self.req, self.resp, self.app = None, None, None
