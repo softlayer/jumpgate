@@ -1,8 +1,6 @@
-from mock import MagicMock, patch, ANY
+from mock import MagicMock, patch
 from jumpgate.compute.drivers.sl.servers import ServerActionV2
 import unittest
-import io
-import json
 
 TENANT_ID = 333333
 INSTANCE_ID = 7890782
