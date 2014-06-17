@@ -1,6 +1,6 @@
 from mock import MagicMock, patch
 from jumpgate.compute.drivers.sl.availability_zones import (
-    AvailabilityZonesV2, CCIManager)
+    AvailabilityZonesV2)
 import unittest
 
 
@@ -30,3 +30,6 @@ class TestAvailabilityZonesV2(unittest.TestCase):
                            {'zoneState': {'available': True},
                             'hosts': None, 'zoneName': 'sng01'}])
         self.assertEquals(self.resp.status, 200)
+
+    def tearDown(self):
+        self.req, self.resp, self.app = None, None, None
