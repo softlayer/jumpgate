@@ -186,7 +186,7 @@ class TestServerDetail(unittest.TestCase):
         '''Testing the server details'''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
-        self.assertEquals(self.resp.body.keys(), ['server'])
+        self.assertEquals(list(self.resp.body.keys()), ['server'])
         self.assertEquals(len(self.resp.body['server']), 20)
 
     def test_on_get_server_detail_id(self):
