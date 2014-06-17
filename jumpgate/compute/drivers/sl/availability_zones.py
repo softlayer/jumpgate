@@ -21,3 +21,4 @@ class AvailabilityZonesV2(object):
         results = sorted(results, key=lambda x: x['zoneName'])
 
         resp.body = {'availabilityZoneInfo': results}
+        resp.status = 200

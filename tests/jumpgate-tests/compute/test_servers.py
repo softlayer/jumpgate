@@ -1,5 +1,7 @@
 from mock import MagicMock, patch
-from jumpgate.compute.drivers.sl.servers import ServerActionV2
+from jumpgate.compute.drivers.sl.servers import (ServerActionV2,
+                                                 SoftLayerAPIError,
+                                                 )
 import unittest
 
 TENANT_ID = 333333
@@ -23,6 +25,31 @@ class TestServersServerActionV2(unittest.TestCase):
     def perform_server_action(self, tenant_id, instance_id):
         instance = ServerActionV2(app=None)
         instance.on_post(self.req, self.resp, tenant_id, instance_id)
+
+    @patch('jumpgate.compute.drivers.sl.servers.CCIManager')
+    @patch('jumpgate.compute.drivers.sl.servers.CCIManager.get_instance')
+    @patch('json.loads')
+    def test_on_post_create(self, bodyMock, cciGetInstanceMock,
+                            cciManagerMock):
+        bodyMock.return_value = {'createImage': {'name': 'foobar'}}
+        cciGetInstanceMock.return_value = {'blockDevices':
+                                           [{'device': 0},
+                                            {'device': 1}]}
+        instance = ServerActionV2(MagicMock())
+        instance.on_post(self.req, self.resp, TENANT_ID, INSTANCE_ID)
+        self.assertEquals(self.resp.status, 202)
+
+    @patch('jumpgate.compute.drivers.sl.servers.CCIManager')
+    @patch('json.loads')
+    def test_on_post_create_fail(self, bodyMock, cciManagerMock):
+        e = SoftLayerAPIError(123, 'abc')
+        self.vg_clientMock.createArchiveTransaction.side_effect = e
+        bodyMock.return_value = {'createImage': {'name': 'foobar'}}
+        instance = ServerActionV2(MagicMock())
+        instance.on_post(self.req, self.resp, TENANT_ID, INSTANCE_ID)
+        self.assertRaises(SoftLayerAPIError,
+                          self.vg_clientMock.createArchiveTransaction)
+        self.assertEquals(self.resp.status, 500)
 
     @patch('json.loads')
     def test_on_post_powerOn(self, bodyMock):
