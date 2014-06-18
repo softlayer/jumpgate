@@ -6,7 +6,7 @@ FILE_OPTIONS = {
         cfg.ListOpt('enabled_services', default=['identity',
                                                  'compute',
                                                  'image',
-                                                 'block_storage',
+                                                 'volume',
                                                  'network,'
                                                  'baremetal']),
         cfg.StrOpt('log_level', default='INFO',
@@ -54,9 +54,9 @@ FILE_OPTIONS = {
         cfg.StrOpt('driver', default='jumpgate.image.drivers.sl'),
         cfg.StrOpt('mount', default='/image'),
     ],
-    'block_storage': [
-        cfg.StrOpt('driver', default='jumpgate.block_storage.drivers.sl'),
-        cfg.StrOpt('mount', default='/block_store'),
+    'volume': [
+        cfg.StrOpt('driver', default='jumpgate.volume.drivers.sl'),
+        cfg.StrOpt('mount', default='/volume'),
     ],
     'network': [
         cfg.StrOpt('driver', default='jumpgate.network.drivers.sl'),

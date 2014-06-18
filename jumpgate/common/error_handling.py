@@ -7,6 +7,10 @@ def compute_fault(resp, message, details=None, code=500):
     error(resp, 'computeFault', message, details=details, code=code)
 
 
+def volume_fault(resp, message, details=None, code=500):
+    error(resp, 'volumeFault', message, details=details, code=code)
+
+
 def bad_request(resp, message, details=None, code=400):
     error(resp, 'badRequest', message, details=details, code=code)
 

@@ -26,5 +26,5 @@ setup(
     ],
     setup_requires=[],
     test_suite='nose.collector',
-    entry_points={'console_scripts': ['jumpgate = jumpgate.cmd:main']}
+    entry_points={'console_scripts': ['jumpgate = jumpgate.cmd_main:main']}
 )
