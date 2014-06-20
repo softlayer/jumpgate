@@ -172,6 +172,7 @@ class TestVolumesV1(unittest.TestCase):
             self.req,
             operation=OP_CODE['GOOD_PATH']['CREATE_VOLUME'])
         self.app.on_post(self.req, self.resp, TENANT_ID)
+        self.assertEquals(list(self.resp.body.keys()), ["volume"])
         self.assertEquals(self.resp.status, 202)
 
     def tearDown(self):

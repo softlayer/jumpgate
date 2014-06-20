@@ -5,12 +5,12 @@ else:
     import http.client as HTTP
 import json
 import logging
+import math
 import uuid
 import time
 
 from jumpgate.common.config import CONF
 from jumpgate.common.error_handling import bad_request, volume_fault, error
-from jumpgate.common.utils import lookup
 from SoftLayer import SoftLayerAPIError
 
 LOG = logging.getLogger(__name__)
@@ -141,9 +141,11 @@ class VolumesV1(object):
         try:
             body = json.loads(req.stream.read().decode())
             # required field in the create volume payload
+            namestr = body['volume'].get("display_name")
             volreq = body['volume']
+            # portable storage order cannot have empty name
             name = (CONF['volume']['volume_name_prefix'] +
-                    lookup(body, 'volume', 'display_name'))
+                    (namestr if namestr else ""))
 
 
             # size is required option for volume create. Throw type exception
@@ -151,10 +153,10 @@ class VolumesV1(object):
             size = int(volreq['size'])
             # availability_zone is optional, don't throw exception if
             # it is not available
-            availability_zone = (lookup(body, 'volume', 'availability_zone')
+            availability_zone = (body['volume'].get('availability_zone')
                                  or
                                  CONF['volume']['default_availability_zone'])
-            volume_type = lookup(body, 'volume', 'volume_type')
+            volume_type = body['volume'].get('volume_type')
 
         except Exception:
             return bad_request(resp, 'Malformed request body')
@@ -168,9 +170,19 @@ class VolumesV1(object):
 
             resp.status = HTTP.ACCEPTED
 
-            resp.body = {'volume':
-                         format_volume(tenant_id, volinfo, client)}
-            resp.body.update({'status': 'creating'})
+            if volinfo:
+                resp.body = {'volume':
+                             format_volume(tenant_id, volinfo, client)}
+                resp.body['volume'].update({'status': 'creating'})
+            else:
+                # Cannot generate a valid response without knowning
+                # the volume id when order takes too long to complete.
+                # This should be a rare case, but it could break openstack
+                # since the volume create caller always expect a volume id
+                # uppon successful return. The approach here is to fail
+                # the volume create operation and leak one portable storage
+                # volume. User can always cancel from SL portal.
+                return volume_fault(resp, "Portable storage order delayed")
 
         except SoftLayerAPIError as e:
             return error(resp,
@@ -246,8 +258,9 @@ class VolumesV1(object):
             volume create"""
 
             bill = client['Billing_Order']
+            volume_id = None
             count = 0
-            while count < RETRY_COUNT:
+            while count <= RETRY_COUNT:
                 items = bill.getOrderTopLevelItems(id=order_id,
                                                    mask='billingItem')
                 # There is only one disk ordered per volume create.
@@ -260,7 +273,17 @@ class VolumesV1(object):
                 except Exception:
                     time.sleep(WAIT_TIME * count)
                     count += 1
-
+            if not volume_id:
+                # after waiting long enough, the order hasn't went through.
+                # There is no way to cancel the order as roll back method
+                # since we don't have the billingItem yet.
+                # This is the state we cannot handle in jumgate right now.
+                # Will not return the volume info in the create volume
+                # response body.
+                LOG.info("Portable Storage order: %(ordid)s hasn't been "
+                         "delivered after waiting for %(wait)s seconds." %
+                         dict(ordid=order_id,
+                              wait=(WAIT_TIME * math.factorial(count))))
             return volume_id
 
         pkgid = _find_product_package_id()
@@ -275,10 +298,13 @@ class VolumesV1(object):
 
         LOG.debug("Portable storage order payload: %s" % str(data))
         product = client['Product_Order']
-        product.overifyOrder(data)
+        product.verifyOrder(data)
         order = product.placeOrder(data)
         LOG.debug("Portable Storage order receipt: %s" % str(order))
         volume_id = _get_volume_id_from_ordered_items(order['orderId'])
+        if not volume_id:
+            return None
+
         virtual_disk = client['Virtual_Disk_Image']
         volinfo = virtual_disk.getObject(id=volume_id,
                                             mask=get_virt_disk_img_mask())
