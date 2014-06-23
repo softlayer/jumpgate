@@ -12,6 +12,7 @@ from .server_ips import ServerIpsV2, ServerIpsNetworkV2
 from .security_groups import OSSecurityGroupsV2
 from .usage import UsageV2
 from .volumes import OSVolumeAttachmentsV2
+from .volumes import OSVolumeAttachmentV2
 from .networks import OSNetworksV2, OSNetworkV2
 from .instance_actions import InstanceActionsV2, InstanceActionV2
 from .index import IndexV2
@@ -67,6 +68,8 @@ def setup_routes(app, disp):
     disp.set_handler('v2_os_security_groups', OSSecurityGroupsV2())
 
     disp.set_handler('v2_os_volume_attachments', OSVolumeAttachmentsV2())
+    disp.set_handler('v2_os_volume_attachments_detail',
+                     OSVolumeAttachmentV2())
 
     disp.set_handler('v2_server', ServerV2(app))
     disp.set_handler('v2_servers', ServersV2(app))

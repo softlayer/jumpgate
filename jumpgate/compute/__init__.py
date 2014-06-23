@@ -160,5 +160,9 @@ def add_endpoints(disp):
 
     # Volume Attachments
     disp.add_endpoint(
+        'v2_os_volume_attachments_detail',
+        '/v2/{tenant_id}/servers/{instance_id}/os-volume_attachments/'
+        '{volume_id}')
+    disp.add_endpoint(
         'v2_os_volume_attachments',
         '/v2/{tenant_id}/servers/{instance_id}/os-volume_attachments')
