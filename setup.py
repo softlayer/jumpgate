@@ -27,12 +27,10 @@ setup(
     url='http://sldn.softlayer.com',
     license='MIT',
     packages=find_packages(exclude=['*.tests']),
-    data_files=[('etc', [
-        'etc/identity.templates',
-        'etc/identity_v3.templates',
-        'etc/jumpgate.conf',
-        'etc/tempest.conf.sample'
-    ])],
+    data_files=[('etc', ['etc/identity.templates',
+                         'etc/identity_v3.templates',
+                         'etc/jumpgate.conf',
+                         'etc/tempest.conf.sample'])],
     include_package_data=True,
     zip_safe=False,
     install_requires=install_requires_list,
