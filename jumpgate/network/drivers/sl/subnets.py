@@ -1,4 +1,5 @@
 import operator
+
 import ipaddress
 
 from jumpgate.common import error_handling
