@@ -2,13 +2,13 @@ import unittest
 
 import falcon
 from falcon.testing import helpers
-from mock import MagicMock
+import mock
 
-from jumpgate.network.drivers.sl.networks import NetworksV2, NetworkV2
+from jumpgate.network.drivers.sl import networks
 
 
 def get_client_env(**kwargs):
-    client = MagicMock()
+    client = mock.MagicMock()
     env = helpers.create_environ(**kwargs)
     env['sl_client'] = client
     env['auth'] = {'tenant_id': 999999}
@@ -43,7 +43,7 @@ class TestNetworkV2(unittest.TestCase):
         req = falcon.Request(env)
         resp = falcon.Response()
 
-        NetworkV2().on_get(req, resp, 11)
+        networks.NetworkV2().on_get(req, resp, 11)
         self.check_response_body(resp.body['network'])
         self.assertEqual(resp.status, 200)
         self.assertEqual(resp.body['network']['provider:physical_network'],
@@ -64,7 +64,7 @@ class TestNetworkV2(unittest.TestCase):
         req = falcon.Request(env)
         resp = falcon.Response()
 
-        NetworkV2().on_get(req, resp, 11)
+        networks.NetworkV2().on_get(req, resp, 11)
 
         self.check_response_body(resp.body['network'])
         self.assertEqual(resp.status, 200)
@@ -78,7 +78,7 @@ class TestNetworkV2(unittest.TestCase):
         req = falcon.Request(env)
         resp = falcon.Response()
 
-        NetworkV2().on_get(req, resp, 'BAD_ID')
+        networks.NetworkV2().on_get(req, resp, 'BAD_ID')
         self.assertEqual(resp.status, 400)
 
 
@@ -110,7 +110,7 @@ class TestNetworksV2(unittest.TestCase):
         req = falcon.Request(env)
         resp = falcon.Response()
 
-        NetworksV2().on_get(req, resp)
+        networks.NetworksV2().on_get(req, resp)
         self.assertEqual(resp.status, 200)
         self.check_response_body(resp.body['networks'][0])
 
@@ -123,7 +123,7 @@ class TestNetworksV2(unittest.TestCase):
         req = falcon.Request(env)
         resp = falcon.Response()
 
-        NetworksV2().on_get(req, resp)
+        networks.NetworksV2().on_get(req, resp)
         self.assertEqual(resp.status, 200)
         self.assertEqual(resp.body['networks'], [])
 
@@ -141,6 +141,6 @@ class TestNetworksV2(unittest.TestCase):
         req = falcon.Request(env)
         resp = falcon.Response()
 
-        NetworksV2().on_get(req, resp)
+        networks.NetworksV2().on_get(req, resp)
         self.assertEqual(resp.status, 200)
         self.check_response_body(resp.body['networks'][0])
