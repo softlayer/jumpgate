@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 import sys
 
 install_requires_list = [
-        'falcon>=0.1.8',
-        'requests',
-        'six>=1.4.1',
-        'oslo.config>=1.2.0',
-        'softlayer',
-        'pycrypto',
-        'iso8601',
+    'falcon>=0.1.8',
+    'requests',
+    'six>=1.7',
+    'oslo.config>=1.2.0',
+    'softlayer',
+    'pycrypto',
+    'iso8601',
 ]
 
 if sys.version_info[0] < 3:
