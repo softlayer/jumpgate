@@ -1,5 +1,5 @@
-from jumpgate.common.openstack import setup_responder
+from jumpgate.common import openstack
 
 
 def setup_routes(app, disp):
-    return setup_responder(app, disp, 'image')
+    return openstack.setup_responder(app, disp, 'image')

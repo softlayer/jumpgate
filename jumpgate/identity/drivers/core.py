@@ -3,26 +3,25 @@ import json
 import logging
 import time
 
-import jumpgate.common.aes as aes
-from jumpgate.config import CONF
-import jumpgate.common.exceptions as exceptions
-import jumpgate.common.utils as utils
-
+from jumpgate.common import aes
+from jumpgate.common import exceptions
+from jumpgate.common import utils
+from jumpgate import config
 
 DEFAULT_TOKEN_DURATION = 60 * 60 * 24
 LOG = logging.getLogger(__name__)
 
 
 def auth_driver():
-    return utils.load_driver(CONF['identity']['auth_driver'])
+    return utils.load_driver(config.CONF['identity']['auth_driver'])
 
 
 def token_driver():
-    return utils.load_driver(CONF['identity']['token_driver'])
+    return utils.load_driver(config.CONF['identity']['token_driver'])
 
 
 def token_id_driver():
-    return utils.load_driver(CONF['identity']['token_id_driver'])
+    return utils.load_driver(config.CONF['identity']['token_id_driver'])
 
 
 def validate_token_id(token_id, user_id=None, username=None, tenant_id=None):
@@ -32,7 +31,8 @@ def validate_token_id(token_id, user_id=None, username=None, tenant_id=None):
 
 class TokenDriver(object):
     """Encapsulates auth token creation, validation and access
-    to provide a pluggable means for auth tokens.
+
+    This exists to provide a pluggable means for auth tokens.
     """
 
     def create_token(self, creds, auth, duration=DEFAULT_TOKEN_DURATION):
@@ -49,7 +49,7 @@ class TokenDriver(object):
 
     def validate_token(self, token, user_id=None,
                        username=None, tenant_id=None):
-        """Assert the specified token is still valid.
+        """Assert the specified token is still valid
 
         :param token: Token to validate.
         :param user_id: If specified the user_id associated with the token.
@@ -60,6 +60,7 @@ class TokenDriver(object):
 
     def create_credentials(self, token):
         """Creates a well formed credential dict from the given token.
+
         The format of the response should mimic that expected in the
         credentials argument of create_token.
 
@@ -69,8 +70,10 @@ class TokenDriver(object):
 
     def validate_access(self, token, user_id=None,
                         username=None, tenant_id=None):
-        """Validate the specified token still has access. Failure to validate
-        the given token should raise an exception in the method implementation.
+        """Validate the specified token still has access.
+
+        Failure to validate the given token should raise an exception in the
+        method implementation.
 
         :param user_id: If specified the user ID to validate token access for.
         :param username: If specified the username to validate token
@@ -124,6 +127,7 @@ class TokenDriver(object):
 
     def roles(self, token):
         """Extracts the role id/name pairs from the token.
+
         The response should be a dict object who's key:value
         pairs equate to the role_id:role_name for each role
         in the token. For example: {'0':'admin', '1':'user'}
@@ -134,8 +138,9 @@ class TokenDriver(object):
 
 
 class TokenIdDriver(object):
-    """Encapsulates concrete logic encode/decode a raw token sent/received
-    over the wire herein called a token ID.
+    """Encapsulates concrete logic encode/decode a raw token
+
+    Sent/received over the wire herein called a token ID.
     """
 
     def create_token_id(self, token):
@@ -154,13 +159,16 @@ class TokenIdDriver(object):
 
 
 class AuthDriver(object):
-    """Encapsulates logic to authenticate an identity request which
-    thereby validates a consumer's identity and grants the consumer
-    eligibility for an authentication token.
+    """Encapsulates logic to authenticate an identity request
+
+    Validates a consumer's identity and grants the consumer eligibility for
+    an authentication token.
     """
 
     def authenticate(self, creds):
-        """Authenticate the said credentials against an identity provider.
+        """Performs authentication
+
+        Authenticate the said credentials against an identity provider.
         Upon successful authentication implementations should return an
         auth object which typically contains additional details about the
         authenticated user. The format of the response object is determined
@@ -175,8 +183,10 @@ class AuthDriver(object):
 
 
 class JumpgateTokenDriver(TokenDriver):
-    """Default Jumpgate token driver - acceptable for many implementations
-    needing to transport standard token attributes.
+    """Default Jumpgate token driver
+
+    acceptable for many implementations needing to transport standard token
+    attributes.
     """
 
     def __init__(self):
@@ -244,8 +254,9 @@ class JumpgateTokenDriver(TokenDriver):
 
 
 class AESTokenIdDriver(TokenIdDriver):
-    """Default Jumpgate token ID driver which uses AES + base64 to encode and
-    decode a raw token.
+    """Default Jumpgate token ID driver
+
+    uses AES + base64 to encode and decode a raw token.
     """
 
     def __init__(self):

@@ -71,7 +71,7 @@ class TestHookSetUUID(unittest.TestCase):
 
 
 class TestHookAdminToken(unittest.TestCase):
-    @patch('jumpgate.common.hooks.admin_token.cfg')
+    @patch('oslo.config.cfg')
     def test_admin_token(self, cfg):
         req = MagicMock()
         req.headers = {'X-AUTH-TOKEN': 'ADMIN'}

@@ -1,15 +1,15 @@
 import json
-from six.moves.urllib.parse import unquote_plus  # pylint: disable=E0611
 
-from SoftLayer import DNSManager
+from six.moves.urllib import parse  # pylint: disable=E0611
+import SoftLayer
 
-from jumpgate.common.utils import lookup
+from jumpgate.common import utils
 
 
 class DNSDomainsV2(object):
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
-        mgr = DNSManager(client)
+        mgr = SoftLayer.DNSManager(client)
 
         results = []
 
@@ -27,9 +27,9 @@ class DNSDomainsV2(object):
 class DNSDomainEntryV2(object):
     def on_delete(self, req, resp, tenant_id, domain, entry):
         client = req.env['sl_client']
-        mgr = DNSManager(client)
+        mgr = SoftLayer.DNSManager(client)
 
-        domain = unquote_plus(domain)
+        domain = parse.unquote_plus(domain)
 
         zone_id = mgr._get_zone_id_from_name(domain)[0]
 
@@ -41,9 +41,9 @@ class DNSDomainEntryV2(object):
 
     def on_get(self, req, resp, tenant_id, domain, entry=None):
         client = req.env['sl_client']
-        mgr = DNSManager(client)
+        mgr = SoftLayer.DNSManager(client)
 
-        domain = unquote_plus(domain)
+        domain = parse.unquote_plus(domain)
 
         zone_id = mgr._get_zone_id_from_name(domain)[0]
 
@@ -57,15 +57,15 @@ class DNSDomainEntryV2(object):
 
     def on_put(self, req, resp, tenant_id, domain, entry):
         client = req.env['sl_client']
-        mgr = DNSManager(client)
+        mgr = SoftLayer.DNSManager(client)
 
         body = json.loads(req.stream.read().decode())
-        ip = lookup(body, 'dns_entry', 'ip')
-        record_type = lookup(body, 'dns_entry', 'type')
+        ip = utils.lookup(body, 'dns_entry', 'ip')
+        record_type = utils.lookup(body, 'dns_entry', 'type')
         if not record_type:
             record_type = 'A'
 
-        domain = unquote_plus(domain)
+        domain = parse.unquote_plus(domain)
         zone_id = mgr._get_zone_id_from_name(domain)[0]
         mgr.create_record(zone_id=zone_id, record=entry,
                           record_type=record_type, data=ip)

@@ -3,3 +3,5 @@ yanc
 mock
 coverage
 tox
+hacking
+pylint

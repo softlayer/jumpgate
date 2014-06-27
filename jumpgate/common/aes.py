@@ -1,6 +1,8 @@
-from Crypto.Cipher import AES
 import base64
-from jumpgate.config import CONF
+
+from Crypto import Cipher
+
+from jumpgate import config
 
 
 BLOCK_SIZE = 32
@@ -12,7 +14,7 @@ def pad(string):
 
 
 def create_cypher():
-    return AES.new(pad(CONF['secret_key']))
+    return Cipher.AES.new(pad(config.CONF['secret_key']))
 
 
 def encode_aes(string):

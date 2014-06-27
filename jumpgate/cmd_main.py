@@ -1,9 +1,9 @@
 from __future__ import print_function
-from wsgiref.simple_server import make_server
 import argparse
 import os
+from wsgiref import simple_server
 
-from jumpgate.wsgi import make_api
+from jumpgate import wsgi
 
 
 def main():
@@ -21,7 +21,9 @@ def main():
                         help='port to listen on')
 
     args = parser.parse_args()
-    httpd = make_server(args.host, args.port, make_api(args.config))
+    httpd = simple_server.make_server(args.host,
+                                      args.port,
+                                      wsgi.make_api(args.config))
     print("Starting server on (%s:%s)" % (args.host, args.port))
     print("""
 Warning: This is currently a test server for Jumpgate and not fit for

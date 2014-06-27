@@ -1,27 +1,27 @@
 import os.path
 
-from .user import UserV2
-from .tenants import TenantsV2
-from .tokens import TokensV2, TokenV2
-from .versions import Versions
-from .v3 import V3
-from .servicesV3 import ServicesV3
-from .authTokensV3 import AuthTokensV3
-from .userProjectsV3 import UserProjectsV3
-from jumpgate.common.sl import add_hooks
+from jumpgate.common import sl as sl_common
+from jumpgate.identity.drivers.sl import auth_tokens_v3
+from jumpgate.identity.drivers.sl import services_v3
+from jumpgate.identity.drivers.sl import tenants
+from jumpgate.identity.drivers.sl import tokens
+from jumpgate.identity.drivers.sl import user
+from jumpgate.identity.drivers.sl import user_projects_v3
+from jumpgate.identity.drivers.sl import v3
+from jumpgate.identity.drivers.sl import versions
 
 
 def setup_routes(app, disp):
     # V3 Routes
-    disp.set_handler('v3_auth_index', V3(disp))
-    disp.set_handler('v3_user_projects', UserProjectsV3())
+    disp.set_handler('v3_auth_index', v3.V3(disp))
+    disp.set_handler('v3_user_projects', user_projects_v3.UserProjectsV3())
 
     # V2 Routes
-    disp.set_handler('v2_tenants', TenantsV2())
-    disp.set_handler('v2_token', TokenV2())
-    disp.set_handler('v2_user', UserV2())
+    disp.set_handler('v2_tenants', tenants.TenantsV2())
+    disp.set_handler('v2_token', tokens.TokenV2())
+    disp.set_handler('v2_user', user.UserV2())
 
-    disp.set_handler('versions', Versions(disp))
+    disp.set_handler('versions', versions.Versions(disp))
 
     template_file = app.config.softlayer.catalog_template_file
     if not os.path.exists(template_file):
@@ -37,13 +37,14 @@ def setup_routes(app, disp):
     if template_file_v3 is None:
         raise ValueError('Template file v3 not found')
 
-    disp.set_handler('v2_tokens', TokensV2(template_file))
-    disp.set_handler('v2_token_endpoints', TokensV2(template_file))
+    disp.set_handler('v2_tokens', tokens.TokensV2(template_file))
+    disp.set_handler('v2_token_endpoints', tokens.TokensV2(template_file))
 
     # V3 auth token route
-    disp.set_handler('v3_auth_tokens', AuthTokensV3(template_file_v3))
+    disp.set_handler('v3_auth_tokens',
+                     auth_tokens_v3.AuthTokensV3(template_file_v3))
 
     # V3 service
-    disp.set_handler('v3_services', ServicesV3(template_file_v3))
+    disp.set_handler('v3_services', services_v3.ServicesV3(template_file_v3))
 
-    add_hooks(app)
+    sl_common.add_hooks(app)

@@ -2,13 +2,12 @@ import datetime
 import json
 import logging
 
-from jumpgate.common.exceptions import Unauthorized
-from jumpgate.common.utils import lookup
+from jumpgate.common import exceptions
+from jumpgate.common import utils
 from jumpgate.identity.drivers import core as identity
 
-from SoftLayer import Client, SoftLayerAPIError
-from SoftLayer.auth import TokenAuthentication
 from oslo.config import cfg
+import SoftLayer
 
 LOG = logging.getLogger(__name__)
 USER_MASK = 'id, username, accountId'
@@ -63,6 +62,7 @@ def get_access(token_id, token_details):
 
 class SLAuthDriver(identity.AuthDriver):
     """Jumpgate SoftLayer auth driver which authenticates using the SLAPI.
+
     Suitable for most implementations who's authentication requests should
     be validates against SoftLayer's credential system which uses either a
     username/password scheme or a username/api-key scheme.
@@ -72,11 +72,15 @@ class SLAuthDriver(identity.AuthDriver):
         super(SLAuthDriver, self).__init__()
 
     def authenticate(self, creds):
-        username = lookup(creds, 'auth', 'passwordCredentials',
-                          'username')
-        credential = lookup(creds, 'auth', 'passwordCredentials',
-                            'password')
-        token_id = lookup(creds, 'auth', 'token', 'id')
+        username = utils.lookup(creds,
+                                'auth',
+                                'passwordCredentials',
+                                'username')
+        credential = utils.lookup(creds,
+                                  'auth',
+                                  'passwordCredentials',
+                                  'password')
+        token_id = utils.lookup(creds, 'auth', 'token', 'id')
         token_driver = identity.token_driver()
         token_auth = None
         if token_id:
@@ -87,34 +91,38 @@ class SLAuthDriver(identity.AuthDriver):
             token_auth = token['auth_type'] == 'token'
 
         def assert_tenant(user):
-            tenant = lookup(creds, 'auth', 'tenantId') or lookup(creds,
-                                                                 'auth',
-                                                                 'tenantName')
+            tenant = (utils.lookup(creds, 'auth', 'tenantId')
+                      or utils.lookup(creds, 'auth', 'tenantName'))
             if tenant and str(user['accountId']) != tenant:
-                raise Unauthorized('Invalid username, password or tenant id')
+                raise exceptions.Unauthorized(
+                    'Invalid username, password or tenant id')
 
         # If the 'password' is the right length, treat it as an API api_key
         if len(credential) == 64:
-            client = Client(username=username, api_key=credential,
-                            endpoint_url=cfg.CONF['softlayer']['endpoint'],
-                            proxy=cfg.CONF['softlayer']['proxy']
-                            )
+            endpoint = cfg.CONF['softlayer']['endpoint']
+            proxy = cfg.CONF['softlayer']['proxy']
+            client = SoftLayer.Client(username=username,
+                                      api_key=credential,
+                                      endpoint_url=endpoint,
+                                      proxy=proxy)
             user = client['Account'].getCurrentUser(mask=USER_MASK)
             assert_tenant(user)
             return {'user': user, 'credential': credential,
                     'auth_type': 'api_key'}
 
         else:
-            client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'],
-                            proxy=cfg.CONF['softlayer']['proxy'])
+            endpoint = cfg.CONF['softlayer']['endpoint']
+            client = SoftLayer.Client(endpoint_url=endpoint,
+                                      proxy=proxy)
             client.auth = None
             try:
                 if token_auth:
-                    client.auth = TokenAuthentication(token['user_id'],
-                                                      credential)
+                    client.auth = SoftLayer.TokenAuthentication(
+                        token['user_id'], credential)
                 else:
-                    userId, tokenHash = client.\
-                        authenticate_with_password(username, credential)
+                    userId, tokenHash = (
+                        client.authenticate_with_password(username, credential)
+                    )
 
                 user = client['Account'].getCurrentUser(mask=USER_MASK)
                 assert_tenant(user)
@@ -124,10 +132,10 @@ class SLAuthDriver(identity.AuthDriver):
 
                 return {'user': user, 'credential': tokenHash,
                         'auth_type': 'token'}
-            except SoftLayerAPIError as e:
+            except SoftLayer.SoftLayerAPIError as e:
                 if (e.faultCode == "SoftLayer_Exception_User_Customer"
                         "_LoginFailed"):
-                    raise Unauthorized(e.faultString)
+                    raise exceptions.Unauthorized(e.faultString)
                 raise
 
 
@@ -161,7 +169,7 @@ class TokensV2(object):
 
         auth = identity.auth_driver().authenticate(credentials)
         if auth is None:
-            raise Unauthorized('Unauthorized credentials')
+            raise exceptions.Unauthorized('Unauthorized credentials')
         token = tokens.create_token(credentials, auth)
         tok_id = identity.token_id_driver().create_token_id(token)
         access = get_access(tok_id, token)

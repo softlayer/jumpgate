@@ -1,18 +1,16 @@
-import sys
-if sys.version_info < (3, 0):
-    import httplib as HTTP
-else:
-    import http.client as HTTP
 import json
 import logging
 import math
-import uuid
 import time
+import uuid
 
-from jumpgate.common.config import CONF
-from jumpgate.common.error_handling import bad_request, volume_fault, error
-from SoftLayer import SoftLayerAPIError
+import six
+import SoftLayer
 
+from jumpgate.common import config
+from jumpgate.common import error_handling
+
+HTTP = six.moves.http_client  # pylint: disable=E1101
 LOG = logging.getLogger(__name__)
 
 CONTAINER_VIRT_DISK = 'SoftLayer_Container_Product_Order_Virtual_Disk_Image'
@@ -36,8 +34,10 @@ OPENSTACK_VOLUME_UUID_LEN = len(str(uuid.uuid4()))
 
 
 class VolumesV2(object):
-    """ This code has been deprecated. It will be removed once
-    the portable storage device based volume functions are implemented.
+    """This code has been deprecated
+
+    It will be removed once the portable storage device based volume functions
+    are implemented.
     """
     def on_get(self, req, resp, tenant_id):
         resp.body = {'volumes': []}
@@ -47,7 +47,8 @@ class VolumesV2(object):
 
 
 class VolumeV1(object):
-    """ class VolumeV1 supports the following cinder volume endpoints:
+    """class VolumeV1 supports the following cinder volume endpoints:
+
     GET /v1/{tenant_id}/volumes/{volume_id}    -- Shows a specified volume
     DELETE /v1/{tenant_id}/volumes/{volume_id} -- Delete a specified volume
     """
@@ -61,7 +62,8 @@ class VolumeV1(object):
             # /v1/{tenant_id}/volumes/{volume_id}
             self._show_volume(tenant_id, volume_id, client, req, resp)
         else:
-            return bad_request(resp, message="Malformed request body")
+            return error_handling.bad_request(resp,
+                                              message="Malformed request body")
 
     def on_delete(self, req, resp, tenant_id, volume_id):
 
@@ -72,11 +74,12 @@ class VolumeV1(object):
             # /v1/{tenant_id}/volumes/{volume_id}
             self._delete_volume(tenant_id, volume_id, client, req, resp)
         else:
-            return bad_request(resp, message="Invalid volume Id")
-
+            return error_handling.bad_request(resp,
+                                              message="Invalid volume Id")
 
     def _show_volume(self, tenant_id, volume_id, client, req, resp):
         """Show the details of a particular portable storage device.
+
         :param tenant_id: SoftLayer tenant id
         :param volume_id: id of the portable storage device
         :param client: SoftLayer Client
@@ -91,7 +94,8 @@ class VolumeV1(object):
             volinfo = vol.getObject(id=volume_id,
                                     mask=get_virt_disk_img_mask())
         except Exception as e:
-            return volume_fault(resp, e.faultString, code=HTTP.NOT_FOUND)
+            return error_handling.volume_fault(resp, e.faultString,
+                                               code=HTTP.NOT_FOUND)
 
         resp.status = HTTP.OK
         resp.body = {'volume':
@@ -106,8 +110,9 @@ class VolumeV1(object):
 
         try:
             item = virtual_disk.getObject(id=volume_id, mask='billingItem')
-        except SoftLayerAPIError as e:
-            return volume_fault(resp, e.faultString, code=HTTP.NOT_FOUND)
+        except SoftLayer.SoftLayerAPIError as e:
+            return error_handling.volume_fault(resp, e.faultString,
+                                               code=HTTP.NOT_FOUND)
 
         billingItemId = item['billingItem']['id']
         billing = client['Billing_Item']
@@ -120,7 +125,8 @@ class VolumeV1(object):
 
 
 class VolumesV1(object):
-    """ class VolumesV1 supports the following cinder volume endpoints:
+    """class VolumesV1 supports the following cinder volume endpoints:
+
     POST /v1/{tenant_id}/volumes    -- create volume
     GET /v1/{tenant_id}/volumes     -- Lists simple volume entities
     GET /v1/{tenant_id}/volumes/detail -- Lists details for volume entities
@@ -135,7 +141,7 @@ class VolumesV1(object):
         self._list_volumes(tenant_id, client, req, resp)
 
     def on_post(self, req, resp, tenant_id):
-        """ Create volume (SL Portable storage) """
+        """Create volume (SL Portable storage)."""
         client = req.env['sl_client']
 
         try:
@@ -144,29 +150,27 @@ class VolumesV1(object):
             namestr = body['volume'].get("display_name")
             volreq = body['volume']
             # portable storage order cannot have empty name
-            name = (CONF['volume']['volume_name_prefix'] +
+            name = (config.CONF['volume']['volume_name_prefix'] +
                     (namestr if namestr else ""))
-
 
             # size is required option for volume create. Throw type exception
             # if it is invalid
             size = int(volreq['size'])
             # availability_zone is optional, don't throw exception if
             # it is not available
-            availability_zone = (body['volume'].get('availability_zone')
-                                 or
-                                 CONF['volume']['default_availability_zone'])
+            availability_zone = (
+                body['volume'].get('availability_zone')
+                or config.CONF['volume']['default_availability_zone'])
             volume_type = body['volume'].get('volume_type')
 
         except Exception:
-            return bad_request(resp, 'Malformed request body')
+            return error_handling.bad_request(resp, 'Malformed request body')
 
         try:
             volinfo = self._create_volume(tenant_id, client, resp,
                                           size, name=name,
                                           zone=availability_zone,
                                           volume_type=volume_type)
-
 
             resp.status = HTTP.ACCEPTED
 
@@ -182,19 +186,21 @@ class VolumesV1(object):
                 # uppon successful return. The approach here is to fail
                 # the volume create operation and leak one portable storage
                 # volume. User can always cancel from SL portal.
-                return volume_fault(resp, "Portable storage order delayed")
+                return error_handling.volume_fault(
+                    resp, "Portable storage order delayed")
 
-        except SoftLayerAPIError as e:
-            return error(resp,
-                         "SoftLayerAPIError",
-                         e.faultString,
-                         code=HTTP.INTERNAL_SERVER_ERROR)
+        except SoftLayer.SoftLayerAPIError as e:
+            return error_handling.error(resp,
+                                        "SoftLayerAPIError",
+                                        e.faultString,
+                                        code=HTTP.INTERNAL_SERVER_ERROR)
         except Exception as e:
-            return volume_fault(resp, str(e))
+            return error_handling.volume_fault(resp, str(e))
 
     def _create_volume(self, tenant_id, client, resp, size,
                        name=None, zone=None, volume_type=None):
-        """ Please Order to create a SL portable storage(SAN)
+        """Please Order to create a SL portable storage(SAN)
+
         :param tenant_id: SoftLayer tenant id
         :param client: SoftLayer Client
         :param resp: Http Response body
@@ -205,7 +211,7 @@ class VolumesV1(object):
         :param return: cinder volume info
         """
         def _find_product_package_id():
-            """ return SL product page id """
+            """return SL product package id."""
             prod_pkg = client['Product_Package'].getAllObjects()
             prod = [item for item in prod_pkg
                     if item['name'].lower() == "portable storage" and
@@ -216,8 +222,7 @@ class VolumesV1(object):
                 return None
 
         def _match_portable_storage_prices(packageId, size):
-            """ match the SL portable storage capacity that closet
-            to the requested size and return the prices"""
+            """Find the closet to the requested size portable storage size."""
             prod_pkg = client['Product_Package']
             price_list = prod_pkg.getItems(id=packageId,
                                            mask='prices.id')
@@ -252,10 +257,13 @@ class VolumesV1(object):
             return locations.get(zonename, locations.get('dal05'))
 
         def _get_volume_id_from_ordered_items(order_id):
-            """ The SL placeOrder only returns the receipt not the
+            """Retreive volume id from order id
+
+            The SL placeOrder only returns the receipt not the
             ordered items itself. Need to find the portable disk id
             from the ordered item to generate the respond body for
-            volume create"""
+            volume create
+            """
 
             bill = client['Billing_Order']
             volume_id = None
@@ -307,12 +315,13 @@ class VolumesV1(object):
 
         virtual_disk = client['Virtual_Disk_Image']
         volinfo = virtual_disk.getObject(id=volume_id,
-                                            mask=get_virt_disk_img_mask())
+                                         mask=get_virt_disk_img_mask())
         return volinfo
 
     def _list_volumes(self, tenant_id, client, req, resp):
-        """ Retrieve all the SoftLayer portable storage devices of
-        a given tenant and generate the Cinder volume list. The swap
+        """Retrieve all the SoftLayer portable storage devices
+
+        Generate the Cinder volume list. The swap
         device(SoftLayer Virtual_Disk_Image with typeID 246) will not be
         listed. The VSI's boot disk is also SoftLayer portable storage
         device. The VSI boot disk will always be shown as attached and
@@ -342,7 +351,7 @@ class VolumesV1(object):
             resp.status = HTTP.OK
 
         except Exception as e:
-            return volume_fault(resp, str(e))
+            return error_handling.volume_fault(resp, str(e))
 
 
 def format_volume(tenant_id, volume, client, showDetails=False, version=1):

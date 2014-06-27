@@ -1,11 +1,9 @@
-import inspect
+import functools
 import importlib
+import inspect
 import logging
 
-from functools import wraps
-
 LOG = logging.getLogger(__name__)
-
 _driver_cache = {}
 
 
@@ -23,7 +21,7 @@ def propagate_argspec(wrapper, responder):
 
 
 def wrap_handler_with_hooks(handler, after):
-    @wraps(handler)
+    @functools.wraps(handler)
     def wrapped(ex, req, resp, params):
         handler(ex, req, resp, params)
         for hook in after:

@@ -1,10 +1,10 @@
-from SoftLayer import HardwareManager
+import SoftLayer
 
 
 class NodesV1(object):
     def on_get(self, req, resp):
         client = req.env['sl_client']
-        hardware = HardwareManager(client)
+        hardware = SoftLayer.HardwareManager(client)
 
         nodes = []
         hw_items = set([
@@ -24,10 +24,10 @@ class NodesV1(object):
             'activeTransaction[id, transactionStatus[friendlyName,name]]',
         ])
 
-        mask = '[mask[%s],' \
-               ' mask(SoftLayer_Hardware_Server)[%s]]' % \
-               (','.join(hw_items),
-                ','.join(server_items))
+        mask = ('[mask[%s],'
+                ' mask(SoftLayer_Hardware_Server)[%s]]'
+                % (','.join(hw_items), ','.join(server_items)))
+
         for hw in hardware.list_hardware(mask=mask):
             nodes.append({
                 "uuid": hw['id'],

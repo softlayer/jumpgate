@@ -1,8 +1,8 @@
 import logging
 import re
 
-from jumpgate.common.hooks import request_hook
-from jumpgate.common import exceptions as exceptions
+from jumpgate.common import exceptions
+from jumpgate.common import hooks
 from jumpgate.identity.drivers import core as identity
 
 
@@ -22,7 +22,7 @@ def protected(target):
     return True
 
 
-@request_hook(True)
+@hooks.request_hook(True)
 def validate_token(req, resp, kwargs):
     tenant_id = req.env.get('tenant_id', None)
     token = req.headers.get('X-AUTH-TOKEN', None)
