@@ -1,21 +1,19 @@
 import json
-import sys
-
-from jumpgate.common.error_handling import (bad_request,
-                                            volume_fault, not_found)
-if sys.version_info < (3, 0):
-    import httplib as HTTP
-else:
-    import http.client as HTTP
 import uuid
+
+import six
+
+from jumpgate.common import error_handling
+
+HTTP = six.moves.http_client  # pylint: disable=E1101
 
 # openstack is use uuid.uuid4() to generate UUID.
 OPENSTACK_VOLUME_UUID_LEN = len(str(uuid.uuid4()))
 
 
 class OSVolumeAttachmentsV2(object):
-    """ class OSVolumeAttachmentsV2 supports the following nova extension
-    volume endpoints:
+    """class OSVolumeAttachmentsV2 supports the following nova volume endpoints
+
     GET /v2/{tenant_id}/servers/{server_id}/os-volume_attachments
         -- Lists the volume attachments for a specified server.
     POST /v2/{tenant_id}/servers/{server_id}/os-volume_attachments
@@ -23,44 +21,49 @@ class OSVolumeAttachmentsV2(object):
     """
 
     def on_get(self, req, resp, tenant_id, instance_id):
-        ''' Lists volume attachments for the instance. '''
+        '''Lists volume attachments for the instance.'''
         vg_client = req.env['sl_client']['Virtual_Guest']
         try:
             instance_id = int(instance_id)
         except Exception:
-            return not_found(resp, "Invalid instance ID specified.")
+            return error_handling.not_found(resp,
+                                            "Invalid instance ID specified.")
 
         try:
             blkDevices = vg_client.getBlockDevices(mask='id, diskImage.type',
                                                    id=instance_id)
 
-            vols = \
-                [format_volume_attachment(vol['diskImage']['id'],
-                                          instance_id, '')
-                 for vol in blkDevices
-                 if vol['diskImage']['type']['keyName'] != 'SWAP']
+            vols = [format_volume_attachment(vol['diskImage']['id'],
+                                             instance_id,
+                                             '')
+                    for vol in blkDevices
+                    if vol['diskImage']['type']['keyName'] != 'SWAP']
             resp.body = {"volumeAttachments": vols}
         except Exception as e:
-            volume_fault(resp, e.faultString)
+            error_handling.volume_fault(resp, e.faultString)
 
     def on_post(self, req, resp, tenant_id, instance_id):
-        ''' Attaches a specified volume to a specified server. '''
+        '''Attaches a specified volume to a specified server.'''
         body = json.loads(req.stream.read().decode())
 
-        if len(body) == 0 or 'volumeAttachment' not in body or 'volumeId' \
-           not in body['volumeAttachment']:
-            return bad_request(resp, message="Malformed request body")
+        if any([len(body) == 0,
+                'volumeAttachment' not in body,
+                'volumeId' not in body['volumeAttachment']]):
+            return error_handling.bad_request(resp,
+                                              message="Malformed request body")
 
         vg_client = req.env['sl_client']['Virtual_Guest']
 
         try:
             instance_id = int(instance_id)
         except Exception:
-            return not_found(resp, "Invalid instance ID specified.")
+            return error_handling.not_found(resp,
+                                            "Invalid instance ID specified.")
 
         volume_id = body['volumeAttachment']['volumeId']
         if volume_id and len(volume_id) > OPENSTACK_VOLUME_UUID_LEN:
-            return bad_request(resp, message="Malformed request body")
+            return error_handling.bad_request(resp,
+                                              message="Malformed request body")
 
         vdi_client = req.env['sl_client']['Virtual_Disk_Image']
         volinfo = None
@@ -75,28 +78,32 @@ class OSVolumeAttachmentsV2(object):
                                 in blkDevices]
                 for guest_id in guestId_list:
                     if (guest_id == instance_id):
-                        return volume_fault(resp,
-                                            'The requested disk image is '
-                                            'already attached to this '
-                                            'guest.', code=HTTP.BAD_REQUEST)
+                        return error_handling.volume_fault(
+                            resp,
+                            'The requested disk image is already attached to '
+                            'this guest.',
+                            code=HTTP.BAD_REQUEST)
                     else:
-                        return volume_fault(resp,
-                                            'The requested disk image is '
-                                            'already attached to another '
-                                            'guest.', code=HTTP.BAD_REQUEST)
+                        return error_handling.volume_fault(
+                            resp,
+                            'The requested disk image is already attached to '
+                            'another guest.',
+                            code=HTTP.BAD_REQUEST)
         except Exception as e:
-            return volume_fault(resp, e.faultString, code=HTTP.NOT_FOUND)
+            return error_handling.volume_fault(resp,
+                                               e.faultString,
+                                               code=HTTP.NOT_FOUND)
 
         try:
             # providing different size doesn't seem to have any impact on the
             # outcome hence using 10 as default size.
-            _checkHostDiskAvailability = \
-                vg_client.checkHostDiskAvailability(10, id=instance_id)
+            disk_check = vg_client.checkHostDiskAvailability(10,
+                                                             id=instance_id)
         except Exception:
-            _checkHostDiskAvailability = True
+            disk_check = True
 
         try:
-            if _checkHostDiskAvailability:
+            if disk_check:
                 sl_transaction = vg_client.attachDiskImage(volume_id,
                                                            id=instance_id)
                 resp.body = {"volumeAttachment":
@@ -106,17 +113,17 @@ class OSVolumeAttachmentsV2(object):
                               "volumeId": volume_id}}
                 resp.status = HTTP.ACCEPTED
             else:
-                return volume_fault(resp,
-                                    'Action causes migration to a new host'
-                                    'Migration is not allowed.',
-                                    HTTP.BAD_REQUEST)
+                return error_handling.volume_fault(
+                    resp,
+                    'Action causes migration to a new host. Migration is not '
+                    'allowed.',
+                    code=HTTP.BAD_REQUEST)
         except Exception as e:
-            volume_fault(resp, e.faultString)
+            error_handling.volume_fault(resp, e.faultString)
 
 
 class OSVolumeAttachmentV2(object):
-    """ class OSVolumeAttachmentsV2 supports the following nova extension
-    volume endpoints:
+    """class OSVolumeAttachmentsV2 supports the following nova volume endpoints
 
     GET /v2/{tenant_id}/servers/{server_id}/os-volume_attachments/
     {attachment_id} -- Shows details for the specified volume attachment.
@@ -125,16 +132,17 @@ class OSVolumeAttachmentV2(object):
     {attachment_id}
         -- Detaches a specified volume attachment from a specified server.
     """
-
     def on_get(self, req, resp, tenant_id, instance_id, volume_id):
-        ''' Shows details for the specified volume attachment. '''
+        '''Shows details for the specified volume attachment.'''
         try:
             instance_id = int(instance_id)
         except Exception:
-            return not_found(resp, "Invalid instance ID specified.")
+            return error_handling.not_found(resp,
+                                            "Invalid instance ID specified.")
 
         if volume_id and len(volume_id) > OPENSTACK_VOLUME_UUID_LEN:
-            return bad_request(resp, message="Malformed request body")
+            return error_handling.bad_request(resp,
+                                              message="Malformed request body")
 
         # since detail has the same info as the input request params, we can
         # just return the values back in the response using the request params.
@@ -158,20 +166,22 @@ class OSVolumeAttachmentV2(object):
             if json_response:
                 resp.body = json_response
             else:
-                volume_fault(resp, 'Invalid volume id.',
-                             code=HTTP.BAD_REQUEST)
+                error_handling.volume_fault(resp, 'Invalid volume id.',
+                                            code=HTTP.BAD_REQUEST)
         except Exception as e:
-            volume_fault(resp, e.faultString)
+            error_handling.volume_fault(resp, e.faultString)
 
     def on_delete(self, req, resp, tenant_id, instance_id, volume_id):
-        """ Detach the requested volume from the specified instance """
+        """Detach the requested volume from the specified instance."""
         try:
             instance_id = int(instance_id)
         except Exception:
-            return not_found(resp, "Invalid instance ID specified.")
+            return error_handling.not_found(resp,
+                                            "Invalid instance ID specified.")
 
         if volume_id and len(volume_id) > OPENSTACK_VOLUME_UUID_LEN:
-            return bad_request(resp, message="Malformed request body")
+            return error_handling.bad_request(resp,
+                                              message="Malformed request body")
 
         vdi_client = req.env['sl_client']['Virtual_Disk_Image']
 
@@ -191,15 +201,16 @@ class OSVolumeAttachmentV2(object):
                                                       id=instance_id)
                             break
                         except Exception as e:
-                            volume_fault(resp, e.faultString)
+                            error_handling.volume_fault(resp, e.faultString)
                     else:
-                        return volume_fault(resp,
-                                            'The requested disk image is '
-                                            'attached to another guest and '
-                                            'cannot be detached.',
-                                            code=HTTP.BAD_REQUEST)
+                        return error_handling.volume_fault(
+                            resp,
+                            'The requested disk image is attached to another '
+                            'guest and cannot be detached.',
+                            code=HTTP.BAD_REQUEST)
         except Exception as e:
-            return volume_fault(resp, e.faultString, code=HTTP.NOT_FOUND)
+            return error_handling.volume_fault(resp, e.faultString,
+                                               code=HTTP.NOT_FOUND)
 
         resp.status = HTTP.ACCEPTED
 

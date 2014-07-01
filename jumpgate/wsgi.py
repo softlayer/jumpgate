@@ -1,15 +1,16 @@
-import os.path
-import os
 import logging
+import os
+import os.path
+
 from oslo.config import cfg
 
-from jumpgate.api import Jumpgate
-from jumpgate.config import CONF
+from jumpgate import api
+from jumpgate import config as jumpgate_config
 
 PROJECT = 'jumpgate'
 
 
-def make_api(config=None):
+def make_api(config_path=None):
     # Find configuration files
     config_files = cfg.find_config_files(PROJECT)
 
@@ -19,22 +20,22 @@ def make_api(config=None):
         config_files.insert(0, env_config_loc)
 
     # Check for explit config file
-    if config and os.path.exists(config):
-        config_files.insert(0, config)
+    if config_path and os.path.exists(config_path):
+        config_files.insert(0, config_path)
 
     if not config_files:
         raise Exception('No config files for %s found.' % PROJECT)
 
-    CONF(project=PROJECT,
-         args=[],  # We don't want CLI arguments to pass through here
-         default_config_files=config_files)
+    jumpgate_config.CONF(project=PROJECT,
+                         args=[],  # We don't want CLI arguments
+                         default_config_files=config_files)
 
     logger = logging.getLogger(PROJECT)
-    logger.setLevel(getattr(logging, CONF['log_level'].upper()))
+    logger.setLevel(getattr(logging,
+                            jumpgate_config.CONF['log_level'].upper()))
     logger.addHandler(logging.StreamHandler())
-    app = Jumpgate()
+    app = api.Jumpgate()
     app.load_endpoints()
     app.load_drivers()
 
-    api = app.make_api()
-    return api
+    return app.make_api()

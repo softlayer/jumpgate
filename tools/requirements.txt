@@ -1,7 +1,8 @@
 falcon>=0.1.8
 requests
-six>=1.4.1
+six>=1.7
 oslo.config>=1.2.0
 softlayer
 pycrypto
 iso8601
+cython

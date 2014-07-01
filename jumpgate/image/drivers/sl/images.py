@@ -1,14 +1,14 @@
 import json
 import uuid
 
-from SoftLayer.utils import query_filter, NestedDict
+from SoftLayer import utils as sl_utils
 
-from jumpgate.common.utils import lookup
-from jumpgate.common.error_handling import not_found, bad_request
+from jumpgate.common import error_handling
+from jumpgate.common import utils
 
 
 class SchemaImageV2(object):
-    # TODO - This needs to be updated for our specifications
+    # TODO() - This needs to be updated for our specifications
     image_schema = {
         "name": "image",
         "properties": {
@@ -221,7 +221,7 @@ class SchemaImageV2(object):
 
 
 class SchemaImagesV2(SchemaImageV2):
-    # TODO - This needs to be updated for our specifications
+    # TODO() - This needs to be updated for our specifications
     def on_get(self, req, resp):
         resp.body = {
             "name": "images",
@@ -258,7 +258,7 @@ class SchemaImagesV2(SchemaImageV2):
 
 
 class SchemaMemberV2(object):
-    # TODO - This needs to be updated for our specifications
+    # TODO() - This needs to be updated for our specifications
     member_schema = {
         "name": "member",
         "properties": {
@@ -304,7 +304,7 @@ class SchemaMemberV2(object):
 
 
 class SchemaMembersV2(SchemaMemberV2):
-    # TODO - This needs to be updated for our specifications
+    # TODO() - This needs to be updated for our specifications
     def on_get(self, req, resp):
         resp.body = {
             "name": "members",
@@ -329,14 +329,14 @@ class ImagesV2(object):
 
     def on_delete(self, req, resp, image_guid=None, tenant_id=None):
         if not image_guid:
-            return not_found(resp, 'Image could not be found')
+            return error_handling.not_found(resp, 'Image could not be found')
 
         client = req.env['sl_client']
         image_obj = SLImages(client)
         results = image_obj.get_image(image_guid)
 
         if not results:
-            return not_found(resp, 'Image could not be found')
+            return error_handling.not_found(resp, 'Image could not be found')
 
         client['Virtual_Guest_Block_Device_Template_Group'].deleteObject(
             id=results['id'])
@@ -350,7 +350,8 @@ class ImagesV2(object):
         url = body.get('direct_url')
         osRefCode = body.get('os_version', None)
         if not all([url, osRefCode]):
-            raise bad_request(resp, "Swift url and OS code must be given")
+            raise error_handling.bad_request(
+                resp, "Swift url and OS code must be given")
 
         configuration = {
             'name': body.get('name'),
@@ -382,7 +383,7 @@ class ImagesV2(object):
 
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
-        tenant_id = tenant_id or lookup(req.env, 'auth', 'tenant_id')
+        tenant_id = tenant_id or utils.lookup(req.env, 'auth', 'tenant_id')
 
         image_obj = SLImages(client)
 
@@ -430,14 +431,14 @@ class ImageV1(object):
 
     def on_delete(self, req, resp, image_guid=None, tenant_id=None):
         if not image_guid:
-            return not_found(resp, 'Image could not be found')
+            return error_handling.not_found(resp, 'Image could not be found')
 
         client = req.env['sl_client']
         image_obj = SLImages(client)
         results = image_obj.get_image(image_guid)
 
         if not results:
-            return not_found(resp, 'Image could not be found')
+            return error_handling.not_found(resp, 'Image could not be found')
 
         client['Virtual_Guest_Block_Device_Template_Group'].deleteObject(
             id=results['id'])
@@ -450,7 +451,7 @@ class ImageV1(object):
         results = image_obj.get_image(image_guid)
 
         if not results:
-            return not_found(resp, 'Image could not be found')
+            return error_handling.not_found(resp, 'Image could not be found')
 
         resp.body = {
             'image': get_v1_image_details_dict(self.app, req, results)}
@@ -462,7 +463,7 @@ class ImageV1(object):
             self.app, req, image_obj.get_image(image_guid))
 
         if not results:
-            return not_found(resp, 'Image could not be found')
+            return error_handling.not_found(resp, 'Image could not be found')
 
         headers = {
             'x-image-meta-id': image_guid,
@@ -507,7 +508,7 @@ class ImagesV1(ImagesV2):
         if headers['x-image-meta-is-public']:
             image_details['visibility'] = 'public'
 
-        # TODO - Need to determine how to handle this for real
+        # TODO() - Need to determine how to handle this for real
         image_id = body.get('id', str(uuid.uuid4()))
 
         resp.body = {'image': {
@@ -522,7 +523,7 @@ def get_v2_image_details_dict(app, req, image, tenant_id):
     if not image or not image.get('globalIdentifier'):
         return {}
 
-    # TODO - Don't hardcode some of these values
+    # TODO() - Don't hardcode some of these values
     results = {
         'id': image['globalIdentifier'],
         'name': image['name'],
@@ -555,7 +556,7 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
     if not image or not image.get('globalIdentifier'):
         return {}
 
-    # TODO - Don't hardcode some of these values
+    # TODO() - Don't hardcode some of these values
     results = {
         'status': 'ACTIVE',
         'updated': image.get('createDate'),
@@ -618,18 +619,18 @@ class SLImages(object):
 
     def get_private_images(self, guid=None, name=None, limit=None,
                            marker=None):
-        _filter = NestedDict()
+        _filter = sl_utils.NestedDict()
         if name:
-            _filter['privateBlockDeviceTemplateGroups']['name'] = \
-                query_filter(name)
+            _filter['privateBlockDeviceTemplateGroups']['name'] = (
+                sl_utils.query_filter(name))
 
         if marker is not None:
-            _filter['privateBlockDeviceTemplateGroups']['globalIdentifier'] = \
-                query_filter('> %s' % marker)
+            _filter['privateBlockDeviceTemplateGroups']['globalIdentifier'] = (
+                sl_utils.query_filter('> %s' % marker))
 
         if guid:
             _filter['privateBlockDeviceTemplateGroups'] = {
-                'globalIdentifier': query_filter(guid)}
+                'globalIdentifier': sl_utils.query_filter(guid)}
 
         params = {}
         params['mask'] = self.image_mask
@@ -644,15 +645,16 @@ class SLImages(object):
         return account.getPrivateBlockDeviceTemplateGroups(**params)
 
     def get_public_images(self, guid=None, name=None, limit=None, marker=None):
-        _filter = NestedDict()
+        _filter = sl_utils.NestedDict()
         if name:
-            _filter['name'] = query_filter(name)
+            _filter['name'] = sl_utils.query_filter(name)
 
         if guid:
-            _filter['globalIdentifier'] = query_filter(guid)
+            _filter['globalIdentifier'] = sl_utils.query_filter(guid)
 
         if marker is not None:
-            _filter['globalIdentifier'] = query_filter('> %s' % marker)
+            _filter['globalIdentifier'] = sl_utils.query_filter('> %s'
+                                                                % marker)
 
         params = {}
         params['mask'] = self.image_mask

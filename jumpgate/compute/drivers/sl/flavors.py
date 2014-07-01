@@ -1,4 +1,4 @@
-from jumpgate.common.error_handling import bad_request, not_found
+from jumpgate.common import error_handling
 
 FLAVORS = {
     1: {
@@ -96,10 +96,10 @@ class FlavorV2(object):
         try:
             flavor_id = int(flavor_id)
         except ValueError:
-            return not_found(resp, 'Flavor could not be found')
+            return error_handling.not_found(resp, 'Flavor could not be found')
 
         if flavor_id not in FLAVORS:
-            return not_found(resp, 'Flavor could not be found')
+            return error_handling.not_found(resp, 'Flavor could not be found')
 
         flavor = get_flavor_details(self.app, req, FLAVORS[flavor_id],
                                     detail=True)
@@ -148,7 +148,8 @@ def filter_flavor_refs(req, resp, flavor_refs):
             flavor_refs = [f for f in flavor_refs
                            if f['disk'] >= min_disk]
         except ValueError:
-            bad_request(resp, message="Invalid minDisk parameter.")
+            error_handling.bad_request(resp,
+                                       message="Invalid minDisk parameter.")
             return
 
     if req.get_param('minRam') is not None:
@@ -156,7 +157,8 @@ def filter_flavor_refs(req, resp, flavor_refs):
             min_ram = int(req.get_param('minRam'))
             flavor_refs = [f for f in flavor_refs if f['ram'] >= min_ram]
         except ValueError:
-            bad_request(resp, message="Invalid minRam parameter.")
+            error_handling.bad_request(resp,
+                                       message="Invalid minRam parameter.")
             return
 
     if req.get_param('limit') is not None:
@@ -164,7 +166,8 @@ def filter_flavor_refs(req, resp, flavor_refs):
             limit = int(req.get_param('limit'))
             flavor_refs = flavor_refs[:limit]
         except ValueError:
-            bad_request(resp, message="Invalid limit parameter.")
+            error_handling.bad_request(resp,
+                                       message="Invalid limit parameter.")
             return
 
     return flavor_refs

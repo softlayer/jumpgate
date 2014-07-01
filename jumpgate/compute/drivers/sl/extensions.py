@@ -1,4 +1,4 @@
-from jumpgate.common.error_handling import not_found
+from jumpgate.common import error_handling
 
 EXTENSIONS = {
     'os-availability-zone': {
@@ -21,6 +21,7 @@ class ExtensionsV2(object):
 class ExtensionV2(object):
     def on_get(self, req, resp, tenant_id, alias):
         if alias not in EXTENSIONS:
-            return not_found(resp, 'No extension exists with given alias.')
+            return error_handling.not_found(
+                resp, 'No extension exists with given alias.')
 
         resp.body = {'extension': EXTENSIONS[alias]}

@@ -11,8 +11,7 @@ class TestAvailabilityZonesV2(unittest.TestCase):
         self.tenant_id = '1234'
         self.instance = AvailabilityZonesV2()
 
-    @patch('jumpgate.compute.drivers.sl.'
-           'availability_zones.CCIManager.get_create_options')
+    @patch('SoftLayer.CCIManager.get_create_options')
     def test_on_get(self, mockOptions):
         mockOptions.return_value = {
             'datacenters':

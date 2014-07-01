@@ -1,15 +1,18 @@
 import logging
 
-from jumpgate.common.hooks import request_hook
 from oslo.config import cfg
 
+from jumpgate.common import hooks
 
-cfg.CONF.register_opts([cfg.StrOpt('admin_token', secret=True,
-                                   default='ADMIN')], group='DEFAULT')
+
+cfg.CONF.register_opts([cfg.StrOpt('admin_token',
+                                   secret=True,
+                                   default='ADMIN')],
+                       group='DEFAULT')
 LOG = logging.getLogger(__name__)
 
 
-@request_hook(True)
+@hooks.request_hook(True)
 def admin_token(req, resp, kwargs):
     auth_token = req.headers.get('X-AUTH-TOKEN', None)
     admin_token = cfg.CONF['DEFAULT']['admin_token']

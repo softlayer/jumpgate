@@ -7,7 +7,7 @@ class LimitsV2(object):
         account = client['Account'].getObject(
             mask='mask[hourlyVirtualGuestCount]')
 
-        # TODO - This shouldn't be hardcoded
+        # TODO(kmcdonald) - This shouldn't be hardcoded
         limits = {
             'absolute': {
                 'maxImageMeta': 0,

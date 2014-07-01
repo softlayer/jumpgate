@@ -1,14 +1,13 @@
-import datetime
-import logging
-import json
 import base64
+import datetime
+import json
+import logging
 
-from jumpgate.common.sl.auth import get_auth, get_new_token_v3
-from jumpgate.common.sl.auth import get_token_details
-from jumpgate.common.aes import encode_aes
-
-from SoftLayer import Client
 from oslo.config import cfg
+import SoftLayer
+
+from jumpgate.common import aes
+from jumpgate.common.sl import auth
 
 LOG = logging.getLogger(__name__)
 
@@ -114,19 +113,17 @@ class AuthTokensV3(object):
                         'interface': "internal",
                         'region': service.get('region', 'RegionOne'),
                         'url': service.get('privateURL')
-                        },
-                        {
+                    }, {
                         # 'id': "????"
                         'interface': "public",
                         'region': service.get('region', 'RegionOne'),
                         'url': service.get('publicURL')
-                        },
-                        {
+                    }, {
                         # 'id': "????"
                         'interface': "admin",
                         'region': service.get('region', 'RegionOne'),
                         'url': service.get('adminURL'),
-                        }]
+                    }]
                 }
                 catalog.append(d)
         return catalog
@@ -134,8 +131,8 @@ class AuthTokensV3(object):
     def on_post(self, req, resp):
         body = req.stream.read().decode()
         credentials = json.loads(body)
-        token_details, user = get_new_token_v3(credentials)
-        token_id = base64.b64encode(encode_aes(json.dumps(token_details)))
+        token_details, user = auth.get_new_token_v3(credentials)
+        token_id = base64.b64encode(aes.encode_aes(json.dumps(token_details)))
 
         access = get_access_v3(token_id, token_details, user)
         # Add catalog to the access data
@@ -151,10 +148,11 @@ class AuthTokensV3(object):
 
 class TokenV2(object):
     def on_get(self, req, resp, token_id):
-        token_details = get_token_details(token_id,
-                                          tenant_id=req.get_param('belongsTo'))
-        client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'])
-        client.auth = get_auth(token_details)
+        token_details = auth.get_token_details(
+            token_id, tenant_id=req.get_param('belongsTo'))
+        endpoint = cfg.CONF['softlayer']['endpoint']
+        client = SoftLayer.Client(endpoint_url=endpoint)
+        client.auth = auth.get_auth(token_details)
 
         user = client['Account'].getCurrentUser(mask='id, username')
         access = get_access(token_id, token_details, user)

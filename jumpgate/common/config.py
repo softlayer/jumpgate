@@ -1,5 +1,5 @@
 from oslo.config import cfg
-from SoftLayer import API_PUBLIC_ENDPOINT
+import SoftLayer
 
 FILE_OPTIONS = {
     None: [
@@ -9,9 +9,10 @@ FILE_OPTIONS = {
                                                  'volume',
                                                  'network,'
                                                  'baremetal']),
-        cfg.StrOpt('log_level', default='INFO',
-                   help='Log level to report. '
-                        'Options: DEBUG, INFO, WARNING, ERROR, CRITICAL'),
+        cfg.StrOpt('log_level',
+                   default='INFO',
+                   help=('Log level to report. '
+                         'Options: DEBUG, INFO, WARNING, ERROR, CRITICAL')),
         cfg.StrOpt('secret_key',
                    default='SET ME',
                    help='Secret key used to encrypt tokens'),
@@ -20,7 +21,7 @@ FILE_OPTIONS = {
         cfg.StrOpt('default_domain', default='jumpgate.com')
     ],
     'softlayer': [
-        cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
+        cfg.StrOpt('endpoint', default=SoftLayer.API_PUBLIC_ENDPOINT),
         cfg.StrOpt('proxy', default=None),
         cfg.StrOpt('catalog_template_file', default='identity.templates'),
     ],

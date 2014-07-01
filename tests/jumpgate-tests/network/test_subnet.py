@@ -1,39 +1,30 @@
 import unittest
 
-from mock import MagicMock
-from jumpgate.network.drivers.sl.subnets import SubnetV2, SubnetsV2
+import falcon
+from falcon.testing import helpers
+import mock
 
-SUBNET_DICT = {'id': 10, 'networkIdentifier': '9.0.3.192',
-               'tenant_id': '6', 'cidr': 28, 'networkVlanId': 5,
-               'gateway': '9.0.3.193', 'version': 4, 'name': 'name'}
+from jumpgate.network.drivers.sl import subnets
+
+SUBNET_DICT = {'id': 10,
+               'networkIdentifier': '9.0.3.192',
+               'tenant_id': '6',
+               'cidr': 28,
+               'networkVlanId': 5,
+               'gateway': '9.0.3.193',
+               'version': 4,
+               'name': 'name'}
+
+
+def get_client_env(**kwargs):
+    client = mock.MagicMock()
+    env = helpers.create_environ(**kwargs)
+    env['sl_client'] = client
+    env['auth'] = {'tenant_id': 999999}
+    return client, env
 
 
 class TestSubnetV2(unittest.TestCase):
-    def setUp(self):
-        self.req, self.resp = MagicMock(), MagicMock()
-        self.account_client_mock = MagicMock()
-        self.network_subnet_mock = MagicMock()
-        self.req.env = {
-            'sl_client': {
-                'Account': self.account_client_mock,
-                'Network_Subnet': self.network_subnet_mock
-            },
-            'auth': {
-                'tenant_id': 999999
-            }
-        }
-
-    def side_effect_show(*args):
-        if args[1] == 'name' and args[0].param == 'name':
-            return '10'
-        else:
-            return None
-
-
-    def perform_subnetv2_action(self, subnet_id):
-        """Initiate the SubnetV2 Instant with a given subnet id"""
-        instance = SubnetV2()
-        instance.on_get(self.req, self.resp, subnet_id)
 
     def check_body_response(self, body_subnet):
         self.assertEqual(body_subnet['id'], 10)
@@ -51,53 +42,28 @@ class TestSubnetV2(unittest.TestCase):
 
     def test_on_get_response_subnetv2(self):
         """Test working path of SubnetV2()"""
+        client, env = get_client_env(query_string='name=10')
+
         SUBNET_DICT['id'] = 10
-        self.network_subnet_mock.getObject.return_value = SUBNET_DICT
-        self.param = 'name'
-        self.req.get_param = MagicMock(side_effect=self.side_effect_show)
-        self.perform_subnetv2_action(10)
-        self.assertEquals(self.resp.status, 200)
-        self.check_body_response(self.resp.body['subnet'])
+        client['Network_Subnet'].getObject.return_value = SUBNET_DICT
+        req = falcon.Request(env)
+        resp = falcon.Response()
+
+        subnets.SubnetV2().on_get(req, resp, 10)
+        self.assertEquals(resp.status, 200)
+        self.check_body_response(resp.body['subnet'])
 
     def test_on_get_response_subnetv2_invalid_id(self):
         """Test invalid id"""
-        self.perform_subnetv2_action('BAD_ID')
-        self.assertEquals(self.resp.status, 400)
+        client, env = get_client_env()
+        req = falcon.Request(env)
+        resp = falcon.Response()
 
-    def tearDown(self):
-        self.req, self.resp = None, None
-        self.account_client_mock, self.network_subnet_mock = None, None
+        subnets.SubnetV2().on_get(req, resp, 'BAD_ID')
+        self.assertEquals(resp.status, 400)
 
 
 class TestSubnetsV2(unittest.TestCase):
-    def setUp(self):
-        self.req, self.resp = MagicMock(), MagicMock()
-        self.account_client_mock = MagicMock()
-        self.network_subnet_mock = MagicMock()
-        self.req.env = {
-            'sl_client': {
-                'Account': self.account_client_mock,
-                'Network_Subnet': self.network_subnet_mock
-            },
-            'auth': {
-                'tenant_id': 999999
-            }
-        }
-
-    def side_effect_list(*args):
-        if args[1] == 'fields' and args[0].param == 'fields':
-            return None
-
-    def side_effect_show(*args):
-        if args[1] == 'name' and args[0].param == 'name':
-            return '10'
-        else:
-            return None
-
-    def perform_subnetsv2_action(self):
-        """Initaite the SubnetsV2 Instance"""
-        instance = SubnetsV2()
-        instance.on_get(self.req, self.resp)
 
     def check_body_response(self, body_subnet):
         self.assertEqual(body_subnet['id'], 10)
@@ -115,34 +81,36 @@ class TestSubnetsV2(unittest.TestCase):
 
     def test_on_get_response_subnetsv2_show(self):
         """Test show function in SubnetsV2"""
-        SUBNET_DICT['id'] = 10
-        self.account_client_mock.getSubnets.return_value = [SUBNET_DICT]
+        client, env = get_client_env()
 
-        self.param = 'name'
-        self.req.get_param = MagicMock(side_effect=self.side_effect_show)
-        self.perform_subnetsv2_action()
-        self.assertEquals(self.resp.status, 200)
-        self.assertEquals(self.resp.body['subnets'], [{'id': '10'}])
+        SUBNET_DICT['id'] = 10
+        client['Account'].getSubnets.return_value = [SUBNET_DICT]
+        req = falcon.Request(env)
+        resp = falcon.Response()
+
+        subnets.SubnetsV2().on_get(req, resp)
+        self.assertEquals(resp.status, 200)
+        self.check_body_response(resp.body['subnets'][0])
 
     def test_on_get_response_subnetsv2_show_no_match(self):
         """Test show function in SubnetsV2 with no matching ID"""
+        client, env = get_client_env(query_string='name=10')
         SUBNET_DICT['id'] = 9
-        self.account_client_mock.getSubnets.return_value = []
-        self.param = 'name'
-        self.req.get_param = MagicMock(side_effect=self.side_effect_show)
-        self.perform_subnetsv2_action()
-        self.assertEquals(self.resp.status, 200)
-        self.assertEqual(self.resp.body['subnets'], [])
+        client['Account'].getSubnets.return_value = []
+        req = falcon.Request(env)
+        resp = falcon.Response()
+
+        subnets.SubnetsV2().on_get(req, resp)
+        self.assertEquals(resp.status, 200)
+        self.assertEqual(resp.body['subnets'], [])
 
     def test_on_get_subnetsv2_response_list(self):
         """Test list function"""
+        client, env = get_client_env(query_string='name=10')
         SUBNET_DICT['id'] = 10
-        self.account_client_mock.getSubnets.return_value = [SUBNET_DICT]
-        self.param = 'fields'
-        self.req.get_param = MagicMock(side_effect=self.side_effect_list)
-        self.perform_subnetsv2_action()
-        self.check_body_response(self.resp.body['subnets'][0])
+        client['Account'].getSubnets.return_value = [SUBNET_DICT]
+        req = falcon.Request(env)
+        resp = falcon.Response()
 
-    def tearDown(self):
-        self.req, self.resp = None, None
-        self.account_client_mock, self.network_subnet_mock = None, None
+        subnets.SubnetsV2().on_get(req, resp)
+        self.check_body_response(resp.body['subnets'][0])

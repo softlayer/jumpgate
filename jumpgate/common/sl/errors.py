@@ -1,25 +1,24 @@
 import logging
 
-from jumpgate.common.error_handling import (
-    bad_request, not_found, compute_fault, unauthorized)
+from jumpgate.common import error_handling as e
 
 LOG = logging.getLogger(__name__)
 
 FAULT_CODE_ERRORS = [
-    ('SoftLayer_Exception_MissingCreationProperty', None, bad_request),
-    ('SoftLayer_Exception_InvalidValue', None, bad_request),
-    ('SoftLayer_Exception_InvalidDataLength', None, bad_request),
-    ('SoftLayer_Exception_ObjectNotFound', None, not_found),
-    ('SoftLayer_Exception_NotFound', None, not_found),
+    ('SoftLayer_Exception_MissingCreationProperty', None, e.bad_request),
+    ('SoftLayer_Exception_InvalidValue', None, e.bad_request),
+    ('SoftLayer_Exception_InvalidDataLength', None, e.bad_request),
+    ('SoftLayer_Exception_ObjectNotFound', None, e.not_found),
+    ('SoftLayer_Exception_NotFound', None, e.not_found),
     ('SoftLayer_Exception_InvalidLegacyToken',
-     'Invalid Credentials', unauthorized)
+     'Invalid Credentials', e.unauthorized)
 ]
 
 FAULT_STRING_ERRORS = [
-    ('must be alphanumeric strings', 'Invalid hostname', bad_request),
-    ('Invalid API token', 'Invalid credentials', unauthorized),
+    ('must be alphanumeric strings', 'Invalid hostname', e.bad_request),
+    ('Invalid API token', 'Invalid credentials', e.unauthorized),
     ('No valid authentication headers found',
-     'Invalid credentials', unauthorized)
+     'Invalid credentials', e.unauthorized)
 ]
 
 
@@ -39,6 +38,6 @@ def handle_softlayer_errors(ex, req, resp, params):
                            details=ex.faultString)
 
     LOG.exception('Unexpected SoftLayer Error')
-    return compute_fault(resp,
-                         message=ex.faultCode,
-                         details=ex.faultString)
+    return e.compute_fault(resp,
+                           message=ex.faultCode,
+                           details=ex.faultString)

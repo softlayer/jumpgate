@@ -1,4 +1,4 @@
-from jumpgate.common.error_handling import error
+from jumpgate.common import error_handling
 
 
 class UserProjectsV3(object):
@@ -7,9 +7,11 @@ class UserProjectsV3(object):
         account = client['Account'].getObject()
         currentUser = client['Account'].getCurrentUser()
         if currentUser['username'] != user_id:
-            return error(resp, 'notMatch',
-                         'User provided does not match current user',
-                         details=None, code=500)
+            return error_handling.error(resp,
+                                        'notMatch',
+                                        'Invalid user',
+                                        details=None,
+                                        code=400)
 
         projects = [{
             'domain_id': str(account['id']),
