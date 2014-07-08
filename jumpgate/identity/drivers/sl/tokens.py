@@ -97,10 +97,11 @@ class SLAuthDriver(identity.AuthDriver):
                 raise exceptions.Unauthorized(
                     'Invalid username, password or tenant id')
 
+        endpoint = cfg.CONF['softlayer']['endpoint']
+        proxy = cfg.CONF['softlayer']['proxy']
+
         # If the 'password' is the right length, treat it as an API api_key
         if len(credential) == 64:
-            endpoint = cfg.CONF['softlayer']['endpoint']
-            proxy = cfg.CONF['softlayer']['proxy']
             client = SoftLayer.Client(username=username,
                                       api_key=credential,
                                       endpoint_url=endpoint,
@@ -111,7 +112,6 @@ class SLAuthDriver(identity.AuthDriver):
                     'auth_type': 'api_key'}
 
         else:
-            endpoint = cfg.CONF['softlayer']['endpoint']
             client = SoftLayer.Client(endpoint_url=endpoint,
                                       proxy=proxy)
             client.auth = None
