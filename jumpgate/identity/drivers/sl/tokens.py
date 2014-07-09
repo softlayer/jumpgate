@@ -1,7 +1,9 @@
+import base64
 import datetime
 import json
 import logging
 
+from jumpgate.common import aes
 from jumpgate.common import exceptions
 from jumpgate.common import utils
 from jumpgate.identity.drivers import core as identity
@@ -99,7 +101,6 @@ class SLAuthDriver(identity.AuthDriver):
 
         endpoint = cfg.CONF['softlayer']['endpoint']
         proxy = cfg.CONF['softlayer']['proxy']
-
         # If the 'password' is the right length, treat it as an API api_key
         if len(credential) == 64:
             client = SoftLayer.Client(username=username,
@@ -137,6 +138,43 @@ class SLAuthDriver(identity.AuthDriver):
                         "_LoginFailed"):
                     raise exceptions.Unauthorized(e.faultString)
                 raise
+
+
+class NoAuthDriver(identity.AuthDriver):
+    """Encapsulates logic to auto-approve an identity request to a single 
+    default SL credentials.
+
+    Validates a consumer's identity in the jumpgate.conf and grants the 
+    consumer eligibility for an authentication token.
+    """
+
+    def __init__(self):
+        super(NoAuthDriver, self).__init__()
+
+    def authenticate(self, creds):
+        """Performs authentication
+
+        Authenticate the said credentials against an identity provider.
+        Upon successful authentication implementations should return an
+        auth object which typically contains additional details about the
+        authenticated user. The format of the response object is determined
+        by the requirements of the current TokenDriver's create_token method.
+
+        :param creds: The credentials in dict form as passed to the API
+        in a request to authenticate and obtain a new token.
+        """
+
+        endpoint = cfg.CONF['softlayer']['endpoint']
+        proxy = cfg.CONF['softlayer']['proxy']
+        default_user = cfg.CONF['softlayer']['noauth_user']
+        default_api_key = cfg.CONF['softlayer']['noauth_api_key']
+        client = SoftLayer.Client(username=default_user,
+                                      api_key=default_api_key,
+                                      endpoint_url=endpoint,
+                                      proxy=proxy)
+        user = client['Account'].getCurrentUser(mask=USER_MASK)
+        return {'user': user, 'credential': default_api_key,
+                'auth_type': 'api_key'}
 
 
 class TokensV2(object):
@@ -238,3 +276,32 @@ class TokenV2(object):
         LOG.warning('User attempted to delete token: %s', token_id)
         resp.status = 202
         resp.body = ''
+
+class FakeTokenIdDriver(identity.TokenIdDriver):
+    """Fake 'accept-anything' Jumpgate token ID driver
+    to map to a single Softlayer user/tenant.  This is meant for environments that
+    use a separate 'real' keystone and want to just have any token work and map to 
+    a single SoftLayer user/tenant.
+    """
+
+    def __init__(self):
+        super(FakeTokenIdDriver, self).__init__()
+
+    def create_token_id(self, token):
+        # Doesn't matter how we encode, since decode will always give same result
+        # no matter what input, but for now do the same as our default driver
+        return base64.b64encode(aes.encode_aes(json.dumps(token)))
+
+    def token_from_id(self, token_id):
+        try:
+            tokens = identity.token_driver()
+            if (identity.auth_driver().__class__.__name__ != "NoAuthDriver"):
+                raise exceptions.InvalidTokenError('Auth-driver must be NoAuthDriver')
+            auth = identity.auth_driver().authenticate(None)
+            if auth is None:
+                raise exceptions.Unauthorized('Unauthorized credentials')
+            token = tokens.create_token(None, auth)
+            return token
+        except (TypeError, ValueError):
+            raise exceptions.InvalidTokenError('Malformed token')
+
