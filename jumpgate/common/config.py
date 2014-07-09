@@ -60,6 +60,7 @@ FILE_OPTIONS = {
         cfg.StrOpt('mount', default='/volume'),
         cfg.StrOpt('default_availability_zone', default=None),
         cfg.StrOpt('volume_name_prefix', default='jumpgate-san-'),
+        cfg.StrOpt('volume_types', default='volume_types.json'),
     ],
     'network': [
         cfg.StrOpt('driver', default='jumpgate.network.drivers.sl'),
