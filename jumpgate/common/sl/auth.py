@@ -1,15 +1,14 @@
-import time
-import json
 import base64
+import json
 import logging
-
-from SoftLayer import (
-    Client, SoftLayerAPIError, TokenAuthentication, BasicAuthentication)
+import time
 
 from oslo.config import cfg
-from jumpgate.common.aes import decode_aes
-from jumpgate.common.utils import lookup
-from jumpgate.common.exceptions import Unauthorized
+import SoftLayer
+
+from jumpgate.common import aes
+from jumpgate.common import exceptions
+from jumpgate.common import utils
 from jumpgate.identity.drivers import core as identity
 
 USER_MASK = 'id, username, accountId'
@@ -18,31 +17,38 @@ LOG = logging.getLogger(__name__)
 
 def get_token_details(token, tenant_id=None):
     try:
-        token_details = json.loads(decode_aes(base64.b64decode(token)))
+        token_details = json.loads(aes.decode_aes(base64.b64decode(token)))
     except (TypeError, ValueError):
-        raise Unauthorized('Invalid Key')
+        raise exceptions.Unauthorized('Invalid Key')
 
     if time.time() > token_details['expires']:
-        raise Unauthorized('Expired Key')
+        raise exceptions.Unauthorized('Expired Key')
 
     if tenant_id and str(token_details['tenant_id']) != tenant_id:
-        raise Unauthorized('Tenant/token Mismatch')
+        raise exceptions.Unauthorized('Tenant/token Mismatch')
 
     return token_details
 
 
 def get_new_token(credentials):
-    username = lookup(credentials, 'auth', 'passwordCredentials', 'username')
-    credential = lookup(credentials, 'auth', 'passwordCredentials', 'password')
+    username = utils.lookup(credentials,
+                            'auth',
+                            'passwordCredentials',
+                            'username')
+    credential = utils.lookup(credentials,
+                              'auth',
+                              'passwordCredentials',
+                              'password')
 
     def assert_tenant(user):
-        tenant = lookup(credentials, 'auth', 'tenantId')
+        tenant = utils.lookup(credentials, 'auth', 'tenantId')
         if tenant and str(user['accountId']) != tenant:
-            raise Unauthorized('Invalid username, password or tenant id')
+            raise exceptions.Unauthorized(
+                'Invalid username, password or tenant id')
 
     # If the 'password' is the right length, treat it as an API api_key
     if len(credential) == 64:
-        client = Client(username=username, api_key=credential)
+        client = SoftLayer.Client(username=username, api_key=credential)
         user = client['Account'].getCurrentUser(mask=USER_MASK)
         assert_tenant(user)
         return {'username': username,
@@ -51,7 +57,7 @@ def get_new_token(credentials):
                 'tenant_id': str(user['accountId']),
                 'expires': time.time() + (60 * 60 * 24)}, user
     else:
-        client = Client()
+        client = SoftLayer.Client()
         client.auth = None
         try:
             userId, tokenHash = client.authenticate_with_password(username,
@@ -63,15 +69,15 @@ def get_new_token(credentials):
                     'auth_type': 'token',
                     'tenant_id': str(user['accountId']),
                     'expires': time.time() + (60 * 60 * 24)}, user
-        except SoftLayerAPIError as e:
+        except SoftLayer.SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_User_Customer_LoginFailed':
-                raise Unauthorized(e.faultString)
+                raise exceptions.Unauthorized(e.faultString)
             raise
 
 
 def get_new_token_v3(credentials):
     token_driver = identity.token_driver()
-    token_id = lookup(credentials, 'auth', 'identity', 'token', 'id')
+    token_id = utils.lookup(credentials, 'auth', 'identity', 'token', 'id')
     if token_id:
         token = identity.token_id_driver().token_from_id(token_id)
         LOG.debug("token details are: %s", str(token))
@@ -92,14 +98,22 @@ def get_new_token_v3(credentials):
                 'accountId': token['tenant_id']}
         return userinfo, user
 
-    username = lookup(credentials, 'auth', 'passwordCredentials', 'username')
-    credential = lookup(credentials, 'auth', 'passwordCredentials', 'password')
+    username = utils.lookup(credentials,
+                            'auth',
+                            'passwordCredentials',
+                            'username')
+    credential = utils.lookup(credentials,
+                              'auth',
+                              'passwordCredentials',
+                              'password')
 
     # If the 'password' is the right length, treat it as an API api_key
     if len(credential) == 64:
-        client = Client(username=username, api_key=credential,
-                        endpoint_url=cfg.CONF['softlayer']['endpoint'],
-                        proxy=cfg.CONF['softlayer']['proxy'])
+        endpoint = cfg.CONF['softlayer']['endpoint']
+        client = SoftLayer.Client(username=username,
+                                  api_key=credential,
+                                  endpoint_url=endpoint,
+                                  proxy=cfg.CONF['softlayer']['proxy'])
         user = client['Account'].getCurrentUser(mask=USER_MASK)
 
         username = token_driver.username(user)
@@ -111,8 +125,9 @@ def get_new_token_v3(credentials):
                 'expires': time.time() + (60 * 60 * 24)}, user
 
     else:
-        client = Client(endpoint_url=cfg.CONF['softlayer']['endpoint'],
-                        proxy=cfg.CONF['softlayer']['proxy'])
+        endpoint = cfg.CONF['softlayer']['endpoint']
+        client = SoftLayer.Client(endpoint_url=endpoint,
+                                  proxy=cfg.CONF['softlayer']['proxy'])
         client.auth = None
         try:
             userId, tokenHash = client.authenticate_with_password(username,
@@ -126,18 +141,18 @@ def get_new_token_v3(credentials):
                     'tenant_id': str(user['accountId']),
                     'expires': time.time() + (60 * 60 * 24)}, user
 
-        except SoftLayerAPIError as e:
+        except SoftLayer.SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_User_Customer_LoginFailed':
-                raise Unauthorized(e.faultString)
+                raise exceptions.Unauthorized(e.faultString)
             raise
 
 
 def get_auth(token_details):
     if token_details['auth_type'] == 'api_key':
-        return BasicAuthentication(token_details['username'],
-                                   token_details['api_key'])
+        return SoftLayer.BasicAuthentication(token_details['username'],
+                                             token_details['api_key'])
     elif token_details['auth_type'] == 'token':
-        return TokenAuthentication(token_details['user_id'],
-                                   token_details['api_key'])
+        return SoftLayer.TokenAuthentication(token_details['user_id'],
+                                             token_details['api_key'])
 
     return None

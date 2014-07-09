@@ -1,5 +1,6 @@
-from jumpgate.common.error_handling import not_found
-from SoftLayer import SoftLayerAPIError
+import SoftLayer
+
+from jumpgate.common import error_handling
 
 
 class UserV2(object):
@@ -21,9 +22,10 @@ class UserV2(object):
         try:
             user = client['User_Customer'].getObject(id=user_id,
                                                      **kwargs)
-        except SoftLayerAPIError as ex:
+        except SoftLayer.SoftLayerAPIError as ex:
             if ex.faultCode == 'SoftLayer_Exception_ObjectNotFound':
-                return not_found(resp, "Invalid User ID specified")
+                return error_handling.not_found(resp,
+                                                "Invalid User ID specified")
             raise
         fieldMap = {
             # SL-Field : OpenStack-Field

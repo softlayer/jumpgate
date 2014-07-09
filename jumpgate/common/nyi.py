@@ -1,6 +1,6 @@
 import logging
 
-from jumpgate.common.error_handling import not_implemented
+from jumpgate.common import error_handling
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +16,7 @@ class NYI(object):
         for hook in self.before:
             hook(req, resp, kwargs)
         logger.warning("UNKNOWN PATH: %s %s", req.method, req.path)
-        not_implemented(resp, 'Not Implemented', details='Not Implemented')
+        error_handling.not_implemented(resp, 'Not Implemented',
+                                       details='Not Implemented')
         for hook in self.after:
             hook(req, resp)

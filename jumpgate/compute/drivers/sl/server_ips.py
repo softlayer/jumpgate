@@ -1,12 +1,12 @@
-from SoftLayer import CCIManager
+import SoftLayer
 
-from jumpgate.common.error_handling import not_found
+from jumpgate.common import error_handling
 
 
 class ServerIpsV2(object):
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = SoftLayer.CCIManager(client)
 
         instance = cci.get_instance(
             server_id, mask='id, primaryIpAddress, primaryBackendIpAddress')
@@ -37,10 +37,11 @@ class ServerIpsNetworkV2(object):
         elif network_label == 'private':
             network_mask = 'primaryBackendIpAddress'
         else:
-            return not_found(resp, message='Network does not exist')
+            return error_handling.not_found(resp,
+                                            message='Network does not exist')
 
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = SoftLayer.CCIManager(client)
         instance = cci.get_instance(server_id, mask='id, ' + network_mask)
 
         resp.body = {

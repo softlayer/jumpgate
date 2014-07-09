@@ -1,4 +1,18 @@
 from setuptools import setup, find_packages
+import sys
+
+install_requires_list = [
+    'falcon>=0.1.8',
+    'requests',
+    'six>=1.7',
+    'oslo.config>=1.2.0',
+    'softlayer',
+    'pycrypto',
+    'iso8601',
+]
+
+if sys.version_info[0] < 3:
+    install_requires_list.append('py2-ipaddress')
 
 setup(
     name='jumpgate',
@@ -13,18 +27,14 @@ setup(
     url='http://sldn.softlayer.com',
     license='MIT',
     packages=find_packages(exclude=['*.tests']),
+    data_files=[('etc', ['etc/identity.templates',
+                         'etc/identity_v3.templates',
+                         'etc/jumpgate.conf',
+                         'etc/tempest.conf.sample'])],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'falcon>=0.1.8',
-        'requests',
-        'six>=1.4.1',
-        'oslo.config>=1.2.0',
-        'softlayer',
-        'pycrypto',
-        'iso8601',
-    ],
+    install_requires=install_requires_list,
     setup_requires=[],
     test_suite='nose.collector',
-    entry_points={'console_scripts': ['jumpgate = jumpgate.cmd:main']}
+    entry_points={'console_scripts': ['jumpgate = jumpgate.cmd_main:main']}
 )

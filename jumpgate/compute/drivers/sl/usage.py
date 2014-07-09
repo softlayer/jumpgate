@@ -1,14 +1,14 @@
 import datetime
 
-from SoftLayer import CCIManager
+import SoftLayer
 
-from .servers import get_virtual_guest_mask
+from jumpgate.compute.drivers.sl import servers
 
 
 class UsageV2(object):
     def on_get(self, req, resp, tenant_id, target_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = SoftLayer.CCIManager(client)
         start_time = datetime.datetime.now() + datetime.timedelta(hours=-1)
         usage = {
             'server_usages': [],
@@ -22,7 +22,7 @@ class UsageV2(object):
         }
 
         params = {
-            'mask': get_virtual_guest_mask(),
+            'mask': servers.get_virtual_guest_mask(),
         }
 
         for instance in cci.list_instances(**params):

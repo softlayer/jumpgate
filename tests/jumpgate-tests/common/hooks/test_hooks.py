@@ -71,12 +71,12 @@ class TestHookSetUUID(unittest.TestCase):
 
 
 class TestHookAdminToken(unittest.TestCase):
-    @patch('jumpgate.common.hooks.admin_token.cfg')
+    @patch('oslo.config.cfg')
     def test_admin_token(self, cfg):
         req = MagicMock()
         req.headers = {'X-AUTH-TOKEN': 'ADMIN'}
         resp = MagicMock()
-        cfg.CONF = {'DEFAULT': {'admin_token':'ADMIN'}}
+        cfg.CONF = {'DEFAULT': {'admin_token': 'ADMIN'}}
 
         admin_token(req, resp, {})
         self.assertTrue(req.env['is_admin'])
@@ -92,14 +92,13 @@ class TestHookAuthToken(unittest.TestCase):
     def test_unprotected(self):
         for api in ['GET:/v2', 'GET:/v2/', 'GET:/v3.0', 'GET:/v3.0/',
                     'GET:/v10.22', 'POST:/v2/tokens', 'POST:/v2.1/tokens',
-                    'GET:/v2/tokens/a8Vs7bS', 'GET:/v2.0/tokens/a8Vs7bS']: 
+                    'GET:/v2/tokens/a8Vs7bS', 'GET:/v2.0/tokens/a8Vs7bS']:
             req = MagicMock()
             req.headers = {'X-AUTH-TOKEN': None}
             req.method = api.split(':')[0]
             req.path = api.split(':')[1]
             req.env = {}
             resp = MagicMock()
-    
             validate_token(req, resp, {})
             self.assertIsNone(req.env.get('auth'))
 

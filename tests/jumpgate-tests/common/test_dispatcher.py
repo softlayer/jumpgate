@@ -16,7 +16,7 @@ class TestDispatcher(unittest.TestCase):
 
         self.assertEquals(len(self.disp._endpoints), 1)
         self.assertEquals(self.disp._endpoints['user_page'],
-                         ('/mountpoint/path/to/{tenant_id}', None))
+                          ('/mountpoint/path/to/{tenant_id}', None))
 
     def test_set_handler(self):
         self.disp.add_endpoint('user_page0', '/path0/to/{tenant_id}')

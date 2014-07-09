@@ -1,8 +1,7 @@
 import importlib
 import logging
 
-from jumpgate.common.config import CONF
-
+from jumpgate.common import config
 
 LOG = logging.getLogger(__name__)
 
@@ -23,8 +22,8 @@ class APIHooks(object):
         def load_hooks(self):
             if not self._loaded:
                 for hook in (['jumpgate.common.hooks.core'] +
-                             CONF['request_hooks'] +
-                             CONF['response_hooks']):
+                             config.CONF['request_hooks'] +
+                             config.CONF['response_hooks']):
                     LOG.debug("Importing hook module '%s'" % (hook))
                     self._load_module(hook)
             self._loaded = True
@@ -82,6 +81,7 @@ class APIHooks(object):
 
 def request_hook(optional=True):
     """Decorator for request hook functions.
+
     Request hook functions should take 3 arguments:
     req - The incoming request object.
     resp - The response object.
@@ -94,6 +94,7 @@ def request_hook(optional=True):
 
 def response_hook(optional=True):
     """Decorator for response hook functions.
+
     Response hook functions should take 2 arguments:
     req - The incoming request object.
     resp - The response object.

@@ -35,3 +35,7 @@ nosetests.xml
 
 # Virtualenv
 env
+cover
+.project
+.pydevproject
+.gitignore

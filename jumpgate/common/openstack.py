@@ -1,6 +1,5 @@
-import requests
-
 from oslo.config import cfg
+import requests
 
 opts = [
     cfg.StrOpt('baremetal_endpoint', default='http://127.0.0.1:6385'),

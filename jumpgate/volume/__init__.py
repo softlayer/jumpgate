@@ -3,6 +3,7 @@
 def add_endpoints(disp):
     # V2 API - http://api.openstack.org/api-ref-blockstorage.html#volumes-api
 
+    disp.add_endpoint('v2_index', '/v2')
     disp.add_endpoint('v2_volumes', '/v2/{tenant_id}/volumes')
     disp.add_endpoint('v2_os_volumes', '/v2/{tenant_id}/os-volumes')
 
@@ -19,5 +20,6 @@ def add_endpoints(disp):
     disp.add_endpoint('v1_snapshots_detail',
                       '/v1/{tenant_id}/snapshots/detail')
     disp.add_endpoint('v1_volume_types', '/v1/{tenant_id}/types')
-    disp.add_endpoint('v1_volumes_detail', '/v1/{tenant_id}/volumes/detail')
+    disp.add_endpoint('v1_volumes', '/v1/{tenant_id}/volumes')
     disp.add_endpoint('v1_volume', '/v1/{tenant_id}/volumes/{volume_id}')
+    disp.add_endpoint('v1_volumes_detail', '/v1/{tenant_id}/volumes/detail')

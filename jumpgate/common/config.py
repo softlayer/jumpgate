@@ -1,17 +1,18 @@
 from oslo.config import cfg
-from SoftLayer import API_PUBLIC_ENDPOINT
+import SoftLayer
 
 FILE_OPTIONS = {
     None: [
         cfg.ListOpt('enabled_services', default=['identity',
                                                  'compute',
                                                  'image',
-                                                 'block_storage',
+                                                 'volume',
                                                  'network,'
                                                  'baremetal']),
-        cfg.StrOpt('log_level', default='INFO',
-                   help='Log level to report. '
-                        'Options: DEBUG, INFO, WARNING, ERROR, CRITICAL'),
+        cfg.StrOpt('log_level',
+                   default='INFO',
+                   help=('Log level to report. '
+                         'Options: DEBUG, INFO, WARNING, ERROR, CRITICAL')),
         cfg.StrOpt('secret_key',
                    default='SET ME',
                    help='Secret key used to encrypt tokens'),
@@ -20,7 +21,7 @@ FILE_OPTIONS = {
         cfg.StrOpt('default_domain', default='jumpgate.com')
     ],
     'softlayer': [
-        cfg.StrOpt('endpoint', default=API_PUBLIC_ENDPOINT),
+        cfg.StrOpt('endpoint', default=SoftLayer.API_PUBLIC_ENDPOINT),
         cfg.StrOpt('proxy', default=None),
         cfg.StrOpt('catalog_template_file', default='identity.templates'),
     ],
@@ -48,14 +49,17 @@ FILE_OPTIONS = {
         cfg.StrOpt('default_ram', default=512000),
         cfg.StrOpt('default_security_group_rules', default=20),
         cfg.StrOpt('default_security_groups', default=10),
+        cfg.StrOpt('default_availability_zone', default=None),
     ],
     'image': [
         cfg.StrOpt('driver', default='jumpgate.image.drivers.sl'),
         cfg.StrOpt('mount', default='/image'),
     ],
-    'block_storage': [
-        cfg.StrOpt('driver', default='jumpgate.block_storage.drivers.sl'),
-        cfg.StrOpt('mount', default='/block_store'),
+    'volume': [
+        cfg.StrOpt('driver', default='jumpgate.volume.drivers.sl'),
+        cfg.StrOpt('mount', default='/volume'),
+        cfg.StrOpt('default_availability_zone', default=None),
+        cfg.StrOpt('volume_name_prefix', default='jumpgate-san-'),
     ],
     'network': [
         cfg.StrOpt('driver', default='jumpgate.network.drivers.sl'),

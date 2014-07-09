@@ -1,7 +1,7 @@
 import iso8601
-from SoftLayer import SoftLayerAPIError
+import SoftLayer
 
-from jumpgate.common.error_handling import not_found
+from jumpgate.common import error_handling
 
 
 class InstanceActionsV2(object):
@@ -11,9 +11,10 @@ class InstanceActionsV2(object):
         try:
             server = client['Virtual_Guest'].getObject(
                 id=server_id, mask='id, accountId, createDate')
-        except SoftLayerAPIError as e:
+        except SoftLayer.SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_ObjectNotFound':
-                return not_found(resp, 'Instance could not be found')
+                return error_handling.not_found(resp,
+                                                'Instance could not be found')
             raise
 
         actions = client['Event_Log'].getAllObjects(filter={
@@ -32,9 +33,10 @@ class InstanceActionV2(object):
         try:
             server = client['Virtual_Guest'].getObject(
                 id=server_id, mask='id, accountId, createDate')
-        except SoftLayerAPIError as e:
+        except SoftLayer.SoftLayerAPIError as e:
             if e.faultCode == 'SoftLayer_Exception_ObjectNotFound':
-                return not_found(resp, 'Instance could not be found')
+                return error_handling.not_found(resp,
+                                                'Instance could not be found')
             raise
 
         actions = client['Event_Log'].getAllObjects(
@@ -45,7 +47,7 @@ class InstanceActionV2(object):
                 'traceId': {'operation': action_id}})
 
         if len(actions) == 0:
-            return not_found(resp, 'action could not be found')
+            return error_handling.not_found(resp, 'action could not be found')
 
         resp.body = {'instanceAction': format_action(server, actions[0])}
 

@@ -1,11 +1,11 @@
-from collections import OrderedDict
+import collections
 import logging
 LOG = logging.getLogger(__name__)
 
 
 class Dispatcher(object):
     def __init__(self, mount=None):
-        self._endpoints = OrderedDict()
+        self._endpoints = collections.OrderedDict()
         self.mount = mount
 
     def add_endpoint(self, nickname, endpoint):
