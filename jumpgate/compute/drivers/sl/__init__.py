@@ -3,6 +3,7 @@ from jumpgate.compute.drivers.sl import availability_zones
 from jumpgate.compute.drivers.sl import dns
 from jumpgate.compute.drivers.sl import extensions
 from jumpgate.compute.drivers.sl import extra_specs
+from jumpgate.compute.drivers.sl import flavor_list_loader
 from jumpgate.compute.drivers.sl import flavors
 from jumpgate.compute.drivers.sl import floating_ips
 from jumpgate.compute.drivers.sl import index
@@ -27,9 +28,10 @@ def setup_routes(app, disp):
     disp.set_handler('index', index.IndexV2(app))
     disp.set_handler('v2_index', index.IndexV2(app))
 
-    flavor = flavors.FlavorV2(app)
-    flavor_list = flavors.FlavorsV2(app)
-    flavors_detail = flavors.FlavorsDetailV2(app)
+    flavors_from_config = flavor_list_loader.Flavors.get_flavors(app)
+    flavor = flavors.FlavorV2(app, flavors_from_config)
+    flavor_list = flavors.FlavorsV2(app, flavors_from_config)
+    flavors_detail = flavors.FlavorsDetailV2(app, flavors_from_config)
 
     disp.set_handler('v2_availability_zone',
                      availability_zones.AvailabilityZonesV2())
@@ -40,7 +42,9 @@ def setup_routes(app, disp):
     disp.set_handler('v2_extension', extensions.ExtensionV2())
 
     disp.set_handler('v2_os_extra_specs_flavor',
-                     extra_specs.ExtraSpecsFlavorV2())
+                     extra_specs.ExtraSpecsFlavorV2(app))
+    disp.set_handler('v2_os_extra_specs_flavor_key',
+                     extra_specs.ExtraSpecsFlavorKeyV2(app))
 
     disp.set_handler('v2_flavor', flavor)
     disp.set_handler('v2_flavors', flavor_list)
@@ -76,9 +80,11 @@ def setup_routes(app, disp):
                      volumes.OSVolumeAttachmentV2())
 
     disp.set_handler('v2_server', servers.ServerV2(app))
-    disp.set_handler('v2_servers', servers.ServersV2(app))
+    disp.set_handler('v2_servers',
+                     servers.ServersV2(app, flavors_from_config))
     disp.set_handler('v2_servers_detail', servers.ServersDetailV2(app))
-    disp.set_handler('v2_server_action', servers.ServerActionV2(app))
+    disp.set_handler('v2_server_action',
+                     servers.ServerActionV2(app, flavors_from_config))
     disp.set_handler('v2_os_instance_actions',
                      instance_actions.InstanceActionsV2())
     disp.set_handler('v2_os_instance_action',

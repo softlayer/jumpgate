@@ -1,11 +1,15 @@
 import json
+import logging
 
 import SoftLayer
 
 from jumpgate.common import config
 from jumpgate.common import error_handling
 from jumpgate.common import utils
-from jumpgate.compute.drivers.sl import flavors
+
+
+LOG = logging.getLogger(__name__)
+
 
 # This comes from Horizon. I wonder if there's a better place to get it.
 OPENSTACK_POWER_MAP = {
@@ -21,8 +25,9 @@ OPENSTACK_POWER_MAP = {
 
 
 class ServerActionV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_post(self, req, resp, tenant_id, instance_id):
         body = json.loads(req.stream.read().decode())
@@ -117,14 +122,14 @@ class ServerActionV2(object):
             return
         elif 'resize' in body:
             flavor_id = int(body['resize'].get('flavorRef'))
-            if flavor_id not in flavors.FLAVORS:
-                return error_handling.bad_request(
-                    resp, message="Invalid flavor id in the request body")
-            flavor = flavors.FLAVORS[flavor_id]
-            cci.upgrade(instance_id, cpus=flavor['cpus'],
-                        memory=flavor['ram'] / 1024)
-            resp.status = 202
-            return
+            for flavor in self.flavors:
+                if str(flavor_id) == flavor['id']:
+                    cci.upgrade(instance_id, cpus=flavor['cpus'],
+                                memory=flavor['ram'] / 1024)
+                    resp.status = 202
+                    return
+            return error_handling.bad_request(resp, message="Invalid flavor "
+                                              "id in the request body")
         elif 'confirmResize' in body:
             resp.status = 204
             return
@@ -136,8 +141,9 @@ class ServerActionV2(object):
 
 
 class ServersV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
@@ -170,11 +176,11 @@ class ServersV2(object):
         client = req.env['sl_client']
         body = json.loads(req.stream.read().decode())
         flavor_id = int(body['server'].get('flavorRef'))
-        if flavor_id not in flavors.FLAVORS:
+        if flavor_id not in self.flavors:
             return error_handling.bad_request(resp,
                                               'Flavor could not be found')
 
-        flavor = flavors.FLAVORS[flavor_id]
+        flavor = self.flavors[flavor_id]
 
         ssh_keys = []
         key_name = body['server'].get('key_name')
@@ -199,7 +205,6 @@ class ServersV2(object):
             if not any([network['uuid'] == 'public'
                         in network for network in networks]):
                 private_network_only = True
-
         user_data = {}
         if utils.lookup(body, 'server', 'metadata'):
             user_data['metadata'] = utils.lookup(body, 'server', 'metadata')
@@ -231,6 +236,14 @@ class ServersV2(object):
             'private': private_network_only,
             'userdata': json.dumps(user_data),
         }
+
+        try:
+            port_speed = flavor['portspeed']
+            payload['nic_speed'] = port_speed
+        except Exception:
+            # If port speed is not specified, it is left to SoftLayer to
+            # provide the 'default' port speed
+            pass
 
         try:
             new_instance = cci.create_instance(**payload)
