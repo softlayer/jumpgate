@@ -9,4 +9,9 @@ Jumpgate and SoftLayer drivers were created and are maintained by SoftLayer, an 
 
 3. When contributing to a driver, your changes should not break any currently passing Tempest tests. If you introduce new functionality, please update the Tempest test whitelist to test the new functionality.
 
+4. Sign our contributor agreement (CLA)
+
+  * You can find the individual `CLA here <./docs/cla-individual.md>`_.
+  * If you're contributing on behalf of your employer we'll need a signed copy of our corporate contributor agreement (CCLA) as well.  You can find the `CCLA <./docs/cla-corporate.md>`_.
+
 .. _PEP8: http://www.python.org/dev/peps/pep-0008/
