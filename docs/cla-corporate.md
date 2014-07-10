@@ -1,7 +1,7 @@
 #### International Business machines, Inc.
 #####Software Grant and Corporate Contributor License Agreement ("Agreement")
 
-http://www.github.org/softlayer/jumpgate/
+http://www.github.com/softlayer/jumpgate/
 
 
 Thank you for your interest in IBM’s jumpgate project ("the Project").
