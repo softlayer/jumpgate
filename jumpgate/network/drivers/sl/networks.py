@@ -56,7 +56,7 @@ class NetworksV2(object):
 def format_network(sl_vlan, tenant_id):
     return {
         'admin_state_up': True,
-        'id': sl_vlan.get('id'),
+        'id': str(sl_vlan.get('id')),
         'name': sl_vlan.get('name'),
         'shared': False,
         'status': 'ACTIVE',
