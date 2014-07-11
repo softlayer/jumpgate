@@ -175,9 +175,6 @@ class TestVolumesV1(unittest.TestCase):
         self.assertEquals(list(self.resp.body.keys()), ["volume"])
         self.assertEquals(self.resp.status, 202)
 
-    def tearDown(self):
-        self.req, self.resp, self.app = None, None, None
-
 
 def set_SL_client(req, operation=OP_CODE['GOOD_PATH']['SIMPLE']):
     if operation == OP_CODE['GOOD_PATH']['SIMPLE']:
@@ -200,12 +197,10 @@ def set_SL_client(req, operation=OP_CODE['GOOD_PATH']['SIMPLE']):
         def _return_disk_imgs(*args, **kwargs):
             return [{'typeId': VIRTUAL_DISK_IMAGE_TYPE['SYSTEM'],
                      'blockDevices': [MagicMock()],
-                     'localDiskFlag': False,
-                    },
+                     'localDiskFlag': False},
                     {'typeId': VIRTUAL_DISK_IMAGE_TYPE['SWAP'],
                      'blockDevices': [MagicMock()],
-                     'localDiskFlag': False,
-                    }]
+                     'localDiskFlag': False}]
         setattr(req.env['sl_client']['Account'],
                 'getVirtualDiskImages',
                 MagicMock(side_effect=_return_disk_imgs))
@@ -213,8 +208,7 @@ def set_SL_client(req, operation=OP_CODE['GOOD_PATH']['SIMPLE']):
         def _return_disk_img(*args, **kwargs):
             return {'typeId': VIRTUAL_DISK_IMAGE_TYPE['SYSTEM'],
                     'blockDevices': [MagicMock()],
-                     'localDiskFlag': False,
-                    }
+                    'localDiskFlag': False}
         req.env['sl_client']['Virtual_Disk_Image'].getObject = \
             MagicMock(side_effect=_return_disk_img)
     elif operation == OP_CODE['BAD_PATH']['RET_BAD_VIRT_GUEST']:
@@ -222,9 +216,7 @@ def set_SL_client(req, operation=OP_CODE['GOOD_PATH']['SIMPLE']):
             return {'typeId': VIRTUAL_DISK_IMAGE_TYPE['SYSTEM'],
                     'blockDevices': [{'guestId': GUEST_ID,
                                       'diskImageId': DISK_IMG_ID,
-                                      'device': BLKDEV_MOUNT_ID,
-                                     }],
-                   }
+                                      'device': BLKDEV_MOUNT_ID}]}
         req.env['sl_client']['Virtual_Disk_Image'].getObject = \
             MagicMock(side_effect=_return_disk_img_1)
         req.env['sl_client']['Virtual_Guest'].getObject = \
@@ -256,9 +248,7 @@ def set_SL_client(req, operation=OP_CODE['GOOD_PATH']['SIMPLE']):
             return {'typeId': VIRTUAL_DISK_IMAGE_TYPE['SYSTEM'],
                     'blockDevices': [{'guestId': GUEST_ID,
                                       'diskImageId': DISK_IMG_ID,
-                                      'device': BLKDEV_MOUNT_ID,
-                                     }],
-                   }
+                                      'device': BLKDEV_MOUNT_ID}]}
 
         req.env['sl_client']['Product_Package'].getAllObjects = \
             MagicMock(side_effect=_return_all_objects)

@@ -393,7 +393,6 @@ class ImagesV2(object):
             limit = int(req.get_param('limit'))
 
         marker = req.get_param('marker')
-
         for visibility, funct in [('public', image_obj.get_public_images),
                                   ('private', image_obj.get_private_images)]:
 
@@ -420,7 +419,7 @@ class ImagesV2(object):
                     output.append(formatted_image)
                     if limit is not None:
                         limit -= 1
-
+        resp.status = 200
         resp.body = {'images': sorted(output,
                                       key=lambda x: x['name'].lower())}
 
@@ -453,6 +452,7 @@ class ImageV1(object):
         if not results:
             return error_handling.not_found(resp, 'Image could not be found')
 
+        resp.status = 200
         resp.body = {
             'image': get_v1_image_details_dict(self.app, req, results)}
 
@@ -535,18 +535,23 @@ def get_v2_image_details_dict(app, req, image, tenant_id):
         'disk_format': 'raw',
         'container_format': 'bare',
         'protected': False,
-        'properties': {},
-        'min_disk': 0,
-        'min_ram': 0,
+        'minDisk': 0,
+        'minRam': 0,
+        'progress': 100,
+        'metadata': {},
         # "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
-        'tags': [],
         'updated': image.get('createDate'),
         'created': image.get('createDate'),
-        'self': app.get_endpoint_url('image', req, 'v2_image',
-                                     image_guid=image['id']),
-        'file': app.get_endpoint_url('image', req, 'v2_image_file',
-                                     image_guid=image['id']),
-        'schema': app.get_endpoint_url('image', req, 'v2_schema_image'),
+        'links': [
+            {'href': app.get_endpoint_url('image', req, 'v2_image',
+                                          image_guid=image['id']),
+             'rel': 'self'},
+            {'href': app.get_endpoint_url('image', req, 'v2_image_file',
+                                          image_guid=image['id']),
+             'rel': 'file'},
+            {'href': app.get_endpoint_url('image', req, 'v2_schema_image'),
+             'rel': 'schema'},
+            ]
     }
 
     return results
@@ -563,17 +568,16 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'created': image.get('createDate'),
         'id': image['globalIdentifier'],
         'progress': 100,
-        'metaData': None,
+        'metadata': {},
         'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
         'OS-EXT-IMG-SIZE:size': None,
         'container_format': 'bare',
         'disk_format': 'raw',
-        'properties': {},
         'is_public': True if image.get('visibility') == 'public' else False,
         'protected': False,
         'owner': image.get('accountId'),
-        'min_disk': 0,
-        'min_ram': 0,
+        'minDisk': 0,
+        'minRam': 0,
         'name': image['name'],
         'links': [
             {
@@ -587,9 +591,6 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
                 'rel': 'bookmark',
             }
         ],
-        'properties': {
-
-        },
     }
 
     return results
