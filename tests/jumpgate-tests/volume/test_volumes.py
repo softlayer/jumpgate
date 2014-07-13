@@ -68,8 +68,6 @@ def _set_up_vol_types_vtl(json_str):
 
 
 class TestVolumeTypesV1Success(unittest.TestCase):
-    def setUp(self):
-        self.vtl = None
 
     def test_on_get_success(self):
         client, env, req, resp = _set_up_req_resp_body()
@@ -86,14 +84,9 @@ class TestVolumeTypesV1Success(unittest.TestCase):
             self.assertEquals(set(v_type.keys()),
                               set(EXPECTED['volume_types'][0].keys()))
 
-    def tearDown(self):
-        self.vtl._reset()
-
 
 @mock.patch('jumpgate.volume.drivers.volume_types_loader.LOG.error')
 class TestVolumeTypesLoader(unittest.TestCase):
-    def setUp(self):
-        self.vtl = None
 
     def _check_expected(self, volume_types):
         self.assertEquals(set(volume_types),
@@ -111,9 +104,8 @@ class TestVolumeTypesLoader(unittest.TestCase):
     def test_init_json_error(self, logMock):
         bad_json_str = '['
         self.vtl, volume_types = _set_up_vol_types_vtl(bad_json_str)
-        logMock.assert_called_with('JSON FORMATTING ERROR in jumpgate.conf'
-                                   ' or config.py!\nError: Expecting object:'
-                                   ' line 1 column 1 (char 0)')
+        logMock.assert_called_with('JSON FORMATTING ERROR in'
+                                   ' jumpgate.conf or config.py!')
         self.assertEquals(volume_types,
                           {'volume_types': []})
 
@@ -148,9 +140,6 @@ class TestVolumeTypesLoader(unittest.TestCase):
                                    'drivers:exact_capacity with '
                                    'default values')
         self._check_expected(volume_types)
-
-    def tearDown(self):
-        self.vtl._reset()
 
 
 class TestVolumeV1(unittest.TestCase):
@@ -226,7 +215,6 @@ class TestVolumesV1(unittest.TestCase):
     """ Unit tests for class VolumesV1"""
 
     def setUp(self):
-        self.vtl = None
         self.body = {
             'volume': {
                 'display_name': 'test',
@@ -348,9 +336,6 @@ class TestVolumesV1(unittest.TestCase):
         app = volumes.VolumesV1(volume_types)
         app.on_post(req, resp, TENANT_ID)
         self.assertEquals(resp.status, 400)
-
-    def tearDown(self):
-        self.vtl._reset()
 
 
 def set_SL_client(req, operation=OP_CODE['GOOD_PATH']['SIMPLE']):

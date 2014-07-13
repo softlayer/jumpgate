@@ -19,21 +19,18 @@ VOLUME_TYPE_LIST = {"volume_types": [VOLUME_TYPE_1]}
 
 class VolumeTypesLoader(object):
     _volume_types = None
-    _conf = None
-    _json_format_error = False
 
     def get_volume_types(self):
         return self.__class__._volume_types
 
-    def _reset(self):
-        '''For resetting class variables after each unit test.'''
-        self.__class___volume_types = None
-        self.__class__._conf = None
-        self.__class__._json_format_error = False
+    def __call__(self, json_str):
+        if self.__class__._volume_types:
+            return self
 
     def __init__(self, json_str):
         try:
-            self.__class__._conf = (VOLUME_TYPE_LIST)
+            json_format_error = False
+            self.conf = VOLUME_TYPE_LIST
             self.__class__._volume_types = json.loads(json_str)
             if 'volume_types' not in self.__class__._volume_types:
                 raise Exception('Unable to load "volume_types" from'
@@ -41,10 +38,9 @@ class VolumeTypesLoader(object):
             id_cache = set()
             for v_type in self.__class__._volume_types['volume_types']:
                 self._validate_volume_type(v_type, id_cache)
-        except (ValueError, TypeError) as e:
-            LOG.error('JSON FORMATTING ERROR in jumpgate.conf or config.py!\n'
-                      'Error: ' + str(e))
-            self.__class__._json_format_error = True
+        except (ValueError, TypeError):
+            LOG.error('JSON FORMATTING ERROR in jumpgate.conf or config.py!')
+            json_format_error = True
             pass
         except LookupError as e:
             LOG.error(str(e))
@@ -53,16 +49,16 @@ class VolumeTypesLoader(object):
             LOG.error(str(e))
             pass
         # LEAVE EMPTY LIST IF JSON ERROR!!!!!!!!
-        if self.__class__._json_format_error:
+        if json_format_error:
             self.__class__._volume_types = {'volume_types': []}
         elif not self.__class__._volume_types or (
                 'volume_types' not in self.__class__._volume_types):
-            self.__class__._volume_types = self.__class__._conf
+            self.__class__._volume_types = self.conf
 
     def _validate_volume_type(self, v_type, id_cache):
         delete = False
         errors = []
-        exspecs = self.__class__._conf['volume_types'][0]['extra_specs']
+        exspecs = self.conf['volume_types'][0]['extra_specs']
         vbn = exspecs['capabilities:volume_backend_name']
         dn = exspecs['drivers:display_name']
         sbd = exspecs['drivers:san_backed_disk']
