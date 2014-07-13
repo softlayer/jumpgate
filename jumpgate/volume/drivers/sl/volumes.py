@@ -1,6 +1,5 @@
 import json
 import logging
-import math
 import time
 import uuid
 
@@ -9,6 +8,7 @@ import SoftLayer
 
 from jumpgate.common import config
 from jumpgate.common import error_handling
+
 
 HTTP = six.moves.http_client  # pylint: disable=E1101
 LOG = logging.getLogger(__name__)
@@ -33,6 +33,27 @@ WAIT_TIME = 2
 OPENSTACK_VOLUME_UUID_LEN = len(str(uuid.uuid4()))
 
 
+class VolumeTypesV1(object):
+    """class VolumeTypesV1 supports the following cinder volume endpoints:
+
+    GET /volume/v1/333582/volumes/detail
+    """
+    def __init__(self, volume_types):
+        self.volume_types = volume_types
+
+    def on_get(self, req, resp, tenant_id):
+        """List Volume Types
+
+        :param req: Falcon request object
+        :param resp: Falcon request object
+        :param tenant_id: Softlayer tenant_id
+        :param return: Falcon response object with volume_type list in body
+        """
+
+        resp.body = self.volume_types
+        resp.status = HTTP.OK
+
+
 class VolumesV2(object):
     """This code has been deprecated
 
@@ -49,7 +70,7 @@ class VolumesV2(object):
 class VolumeV1(object):
     """class VolumeV1 supports the following cinder volume endpoints:
 
-    GET /v1/{tenant_id}/volumes/{volume_id}    -- Shows a specified volume
+    GET /v1/{tenant_id}/volumes/{volume_id} -- Shows a specified volume
     DELETE /v1/{tenant_id}/volumes/{volume_id} -- Delete a specified volume
     """
 
@@ -118,7 +139,7 @@ class VolumeV1(object):
         billing = client['Billing_Item']
         # Reason is from this document:
         # https://sldn.softlayer.com/reference/services/
-        #       SoftLayer_Billing_Item/cancelItem
+        # SoftLayer_Billing_Item/cancelItem
         reason = "No longer needed"
         billing.cancelItem(True, True, reason, id=billingItemId)
         resp.status = HTTP.ACCEPTED
@@ -131,6 +152,8 @@ class VolumesV1(object):
     GET /v1/{tenant_id}/volumes     -- Lists simple volume entities
     GET /v1/{tenant_id}/volumes/detail -- Lists details for volume entities
     """
+    def __init__(self, volume_types):
+        self.volume_types = volume_types
 
     def on_get(self, req, resp, tenant_id):
 
@@ -141,11 +164,38 @@ class VolumesV1(object):
         self._list_volumes(tenant_id, client, req, resp)
 
     def on_post(self, req, resp, tenant_id):
-        """Create volume (SL Portable storage)."""
-        client = req.env['sl_client']
+        """Create volume (SL Portable storage)
 
+        :param req: Falcon request object
+        :param resp: Falcon request object
+        :param tenant_id: Softlayer tenant_id
+        :param return: Falcon response object with openstack response body
+        """
+        client = req.env['sl_client']
         try:
+            v_type_zone = None
+            rounding = False
             body = json.loads(req.stream.read().decode())
+            if body['volume']['volume_type'] is not None:
+                if not self.volume_types['volume_types']:
+                    resp.status = HTTP.INTERNAL_SERVER_ERROR
+                    return error_handling.volume_fault(resp,
+                                                       "Server has no"
+                                                       " types to select")
+                foundType = False
+                for type in self.volume_types['volume_types']:
+                    if type['name'] == body['volume']['volume_type']:
+                        foundType = True
+                        v_type_zone = (
+                            type['extra_specs']['capabilities:volume_backend_name']  # noqa
+                            )
+                        rounding = (
+                            type['extra_specs']['drivers:exact_capacity']
+                            )
+                if not foundType:
+                    resp.status = 400
+                    raise Exception('Specify a volume with a valid name')
+
             # required field in the create volume payload
             namestr = body['volume'].get("display_name")
             volreq = body['volume']
@@ -158,19 +208,22 @@ class VolumesV1(object):
             size = int(volreq['size'])
             # availability_zone is optional, don't throw exception if
             # it is not available
-            availability_zone = (
-                body['volume'].get('availability_zone')
-                or config.CONF['volume']['default_availability_zone'])
+            availability_zone = (body['volume'].get('availability_zone')
+                                 or
+                                 v_type_zone
+                                 or
+                                 config.CONF['volume']['default_availability_zone'])  # noqa
             volume_type = body['volume'].get('volume_type')
 
-        except Exception:
-            return error_handling.bad_request(resp, 'Malformed request body')
+        except Exception as e:
+            return error_handling.bad_request(resp, str(e))
 
         try:
             volinfo = self._create_volume(tenant_id, client, resp,
                                           size, name=name,
                                           zone=availability_zone,
-                                          volume_type=volume_type)
+                                          volume_type=volume_type,
+                                          exact_capacity=rounding)
 
             resp.status = HTTP.ACCEPTED
 
@@ -186,19 +239,22 @@ class VolumesV1(object):
                 # uppon successful return. The approach here is to fail
                 # the volume create operation and leak one portable storage
                 # volume. User can always cancel from SL portal.
-                return error_handling.volume_fault(
-                    resp, "Portable storage order delayed")
+
+                return error_handling.volume_fault(resp,
+                                                   "Portable storage"
+                                                   " order delayed")
 
         except SoftLayer.SoftLayerAPIError as e:
             return error_handling.error(resp,
                                         "SoftLayerAPIError",
                                         e.faultString,
-                                        code=HTTP.INTERNAL_SERVER_ERROR)
+                                        code=e.faultCode)
         except Exception as e:
             return error_handling.volume_fault(resp, str(e))
 
     def _create_volume(self, tenant_id, client, resp, size,
-                       name=None, zone=None, volume_type=None):
+                       name=None, zone=None, volume_type=None,
+                       exact_capacity=False):
         """Please Order to create a SL portable storage(SAN)
 
         :param tenant_id: SoftLayer tenant id
@@ -221,40 +277,54 @@ class VolumesV1(object):
             else:
                 return None
 
-        def _match_portable_storage_prices(packageId, size):
-            """Find the closet to the requested size portable storage size."""
+        def _match_portable_storage_prices(packageId, size, exact_capacity):
+            # match the SL portable storage capacity that closet
+            # to the requested size and return the prices
+
             prod_pkg = client['Product_Package']
             price_list = prod_pkg.getItems(id=packageId,
                                            mask='prices.id')
             # each item in price_list looks like this:
             # {'capacity': '150',
-            #  'description': '150 GB (SAN)',
-            #  'id': 1221,
-            #  'prices': [{'id': 2262}],
-            #  'softwareDescriptionId': '',
-            #  'units': 'GB',
-            #  'upgradeItemId': ''}
+            # 'description': '150 GB (SAN)',
+            # 'id': 1221,
+            # 'prices': [{'id': 2262}],
+            # 'softwareDescriptionId': '',
+            # 'units': 'GB',
+            # 'upgradeItemId': ''}
             price_matrix = {}
-
             for x in price_list:
                 price_matrix.update({int(x['capacity']): x['prices']})
-
             # find the closet capacity to the requested size
-            capacity_idx = min(price_matrix, key=lambda x: abs(x - size))
+            if exact_capacity:
+                ret = False
+                for x in price_matrix:
+                    if size == x:
+                        ret = True
+                        capacity_idx = x
+                        break
+                if not ret:
+                    raise SoftLayer.SoftLayerAPIError(
+                        HTTP.BAD_REQUEST,
+                        'volume_types: extra_specs: '
+                        'drivers:exact_capacity is set to'
+                        ' True and there is no volume with'
+                        ' matching capacity')
+            else:
+                capacity_idx = min(price_matrix, key=lambda x: abs(x - size))
 
             return price_matrix[capacity_idx]
 
         def _find_availibility_zone_location(zone):
-
             # make sure there is an availability_zone selected
-            zonename = zone if zone else 'dal05'
+            zonename = zone if zone else 'sjc01'
 
             datacenter = client['Location_Datacenter']
             locations = dict(map(lambda x: (x['name'], x['id']),
                              datacenter.getDatacenters(mask="name,id")))
-            # use dal05 as default datacenter. The disk cannot be found if
+            # use sjc01 as default datacenter. The disk cannot be found if
             # being ordered without datacenter.
-            return locations.get(zonename, locations.get('dal05'))
+            return locations.get(zonename, locations.get('sjc01'))
 
         def _get_volume_id_from_ordered_items(order_id):
             """Retreive volume id from order id
@@ -285,17 +355,17 @@ class VolumesV1(object):
                 # after waiting long enough, the order hasn't went through.
                 # There is no way to cancel the order as roll back method
                 # since we don't have the billingItem yet.
-                # This is the state we cannot handle in jumgate right now.
+                # This is the state we cannot handle in jumpgate right now.
                 # Will not return the volume info in the create volume
                 # response body.
-                LOG.info("Portable Storage order: %(ordid)s hasn't been "
+                LOG.info("Portable Storage order: %(ordid)s hasn't been"
                          "delivered after waiting for %(wait)s seconds." %
                          dict(ordid=order_id,
-                              wait=(WAIT_TIME * math.factorial(count))))
+                              wait=(WAIT_TIME * (count - 1))))
             return volume_id
 
         pkgid = _find_product_package_id()
-        prices = _match_portable_storage_prices(pkgid, size)
+        prices = _match_portable_storage_prices(pkgid, size, exact_capacity)
         loc = _find_availibility_zone_location(zone)
 
         data = {'complexType': CONTAINER_VIRT_DISK,

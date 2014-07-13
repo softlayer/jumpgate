@@ -1,0 +1,14 @@
+{
+    "volume_types": [
+        {
+            "id": "241",
+            "name": "san",
+            "extra_specs": {
+                "capabilities:volume_backend_name": "sjc01",
+                "drivers:display_name": "default",
+                "drivers:san_backed_disk": true,
+                "drivers:exact_capacity": false
+            }
+        }
+    ]
+}
