@@ -21,18 +21,18 @@ class VolumeTypesLoader(object):
     _volume_types = None
 
     def get_volume_types(self):
-        return self.__class__._volume_types
+        return self._volume_types
 
     def __call__(self, json_str):
-        if self.__class__._volume_types:
+        if self._volume_types:
             return self
 
     def __init__(self, json_str):
         try:
             json_format_error = False
             self.conf = VOLUME_TYPE_LIST
-            self.__class__._volume_types = json.loads(json_str)
-            if 'volume_types' not in self.__class__._volume_types:
+            self._volume_types = json.loads(json_str)
+            if 'volume_types' not in self._volume_types:
                 raise Exception('Unable to load "volume_types" from'
                                 ' configuration file.')
             id_cache = set()
@@ -50,10 +50,10 @@ class VolumeTypesLoader(object):
             pass
         # LEAVE EMPTY LIST IF JSON ERROR!!!!!!!!
         if json_format_error:
-            self.__class__._volume_types = {'volume_types': []}
-        elif not self.__class__._volume_types or (
+            self._volume_types = {'volume_types': []}
+        elif not self._volume_types or (
                 'volume_types' not in self.__class__._volume_types):
-            self.__class__._volume_types = self.conf
+            self._volume_types = self.conf
 
     def _validate_volume_type(self, v_type, id_cache):
         delete = False
@@ -98,7 +98,7 @@ class VolumeTypesLoader(object):
             LOG.error('Replaced ' + ", ".join(errors) +
                       ' with default values')
         if delete:
-            self.__class__._volume_types['volume_types'].remove(v_type)
+            self._volume_types['volume_types'].remove(v_type)
 
         # id field present, check for duplicates
         if 'id' in v_type:
