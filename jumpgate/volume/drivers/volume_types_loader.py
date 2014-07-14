@@ -18,14 +18,9 @@ VOLUME_TYPE_LIST = {"volume_types": [VOLUME_TYPE_1]}
 
 
 class VolumeTypesLoader(object):
-    _volume_types = None
 
     def get_volume_types(self):
         return self._volume_types
-
-    def __call__(self, json_str):
-        if self._volume_types:
-            return self
 
     def __init__(self, json_str):
         try:
@@ -36,7 +31,7 @@ class VolumeTypesLoader(object):
                 raise Exception('Unable to load "volume_types" from'
                                 ' configuration file.')
             id_cache = set()
-            for v_type in self.__class__._volume_types['volume_types']:
+            for v_type in self._volume_types['volume_types']:
                 self._validate_volume_type(v_type, id_cache)
         except (ValueError, TypeError):
             LOG.error('JSON FORMATTING ERROR in jumpgate.conf or config.py!')
@@ -52,7 +47,7 @@ class VolumeTypesLoader(object):
         if json_format_error:
             self._volume_types = {'volume_types': []}
         elif not self._volume_types or (
-                'volume_types' not in self.__class__._volume_types):
+                'volume_types' not in self._volume_types):
             self._volume_types = self.conf
 
     def _validate_volume_type(self, v_type, id_cache):
@@ -105,5 +100,5 @@ class VolumeTypesLoader(object):
             if v_type['id'] not in id_cache:
                 id_cache.add(v_type['id'])
             else:
-                self.__class__._volume_types['volume_types'].remove(v_type)
+                self._volume_types['volume_types'].remove(v_type)
                 LOG.error('Duplicate detected and deleted')

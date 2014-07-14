@@ -21,9 +21,6 @@ def setup_routes(app, disp):
 
     with open(json_file) as jf:
         json_str = jf.read()
-        # strip out return carraiges and new lines
-        json_str = json_str.replace('\r', '')
-        json_str = json_str.replace('\n', '')
 
     vtl = volume_types_loader.VolumeTypesLoader(json_str)
     volume_types = vtl.get_volume_types()
