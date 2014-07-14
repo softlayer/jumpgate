@@ -34,8 +34,6 @@ class Flavors(object):
 
                 with open(json_file) as jf:
                     json_str = jf.read()
-                    json_str = json_str.replace('\n', '')
-                    json_str = json_str.replace('\r', '')
                     flavors = json.loads(json_str)
                     cls._flavors = {
                         int(key): format_flavor_extra_specs(val)

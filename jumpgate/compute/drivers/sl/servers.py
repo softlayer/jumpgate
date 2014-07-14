@@ -1,7 +1,9 @@
 import json
 import logging
+import re
 
 import SoftLayer
+
 
 from jumpgate.common import config
 from jumpgate.common import error_handling
@@ -173,82 +175,40 @@ class ServersV2(object):
         resp.body = {'servers': results}
 
     def on_post(self, req, resp, tenant_id):
+        payload = {}
         client = req.env['sl_client']
         body = json.loads(req.stream.read().decode())
-        flavor_id = int(body['server'].get('flavorRef'))
-        if flavor_id not in self.flavors:
-            return error_handling.bad_request(resp,
-                                              'Flavor could not be found')
 
-        flavor = self.flavors[flavor_id]
+        payload['hostname'] = body['server']['name']
+        payload['domain'] = config.CONF['default_domain'] or 'jumpgate.com'
+        payload['image_id'] = body['server']['imageRef']
 
-        ssh_keys = []
-        key_name = body['server'].get('key_name')
-        if key_name:
-            sshkey_mgr = SoftLayer.SshKeyManager(client)
-            keys = sshkey_mgr.list_keys(label=key_name)
-            if len(keys) == 0:
-                return error_handling.bad_request(resp,
-                                                  'KeyPair could not be found')
-            ssh_keys.append(keys[0]['id'])
+        # TODO(kmcdonald) - How do we set this accurately?
+        payload['hourly'] = True
 
-        private_network_only = False
         networks = utils.lookup(body, 'server', 'networks')
-        if networks:
-            # Make sure they're valid networks
-            if not all([network['uuid'] in ['public', 'private']
-                        in network for network in networks]):
-                return error_handling.bad_request(resp,
-                                                  message='Invalid network')
-
-            # Find out if it's private only
-            if not any([network['uuid'] == 'public'
-                        in network for network in networks]):
-                private_network_only = True
-        user_data = {}
-        if utils.lookup(body, 'server', 'metadata'):
-            user_data['metadata'] = utils.lookup(body, 'server', 'metadata')
-        if utils.lookup(body, 'server', 'user_data'):
-            user_data['user_data'] = utils.lookup(body, 'server', 'user_data')
-        if utils.lookup(body, 'server', 'personality'):
-            user_data['personality'] = utils.lookup(body,
-                                                    'server',
-                                                    'personality')
-
-        datacenter = (utils.lookup(body, 'server', 'availability_zone')
-                      or config.CONF['compute']['default_availability_zone'])
-        if not datacenter:
-            return error_handling.bad_request(resp,
-                                              'availability_zone missing')
-
         cci = SoftLayer.CCIManager(client)
 
-        payload = {
-            'hostname': body['server']['name'],
-            'domain': config.CONF['default_domain'] or 'jumpgate.com',
-            'cpus': flavor['cpus'],
-            'memory': flavor['ram'],
-            'local_disk': False if flavor['disk-type'] == 'SAN' else True,
-            'hourly': True,  # TODO(kmcdonald) - How do we set this accurately?
-            'datacenter': datacenter,
-            'image_id': body['server']['imageRef'],
-            'ssh_keys': ssh_keys,
-            'private': private_network_only,
-            'userdata': json.dumps(user_data),
-        }
-
         try:
-            port_speed = flavor['portspeed']
-            payload['nic_speed'] = port_speed
-        except Exception:
-            # If port speed is not specified, it is left to SoftLayer to
-            # provide the 'default' port speed
-            pass
-
-        try:
+            self._handle_flavor(payload, body)
+            self._handle_sshkeys(payload, body, client)
+            self._handle_user_data(payload, body)
+            self._handle_datacenter(payload, body)
+            if networks:
+                self._handle_network(payload, client, networks)
             new_instance = cci.create_instance(**payload)
-        except ValueError as e:
+        except Exception as e:
             return error_handling.bad_request(resp, message=str(e))
+
+        # This should be the first tag that the VS set. Adding any more tags
+        # will replace this tag
+        try:
+            flavor_id = int(body['server'].get('flavorRef'))
+            vs = client['Virtual_Guest']
+            vs.setTags('{"flavor_id": ' + str(flavor_id) + '}',
+                       id=new_instance['id'])
+        except Exception:
+            pass
 
         resp.set_header('x-compute-request-id', 'create')
         resp.status = 202
@@ -261,6 +221,120 @@ class ServersV2(object):
                 'rel': 'self'}],
             'adminPass': '',
         }}
+
+    def _handle_flavor(self, payload, body):
+        flavor_id = int(body['server'].get('flavorRef'))
+        for flavor in self.flavors:
+            if str(flavor_id) == flavor['id']:
+                payload['cpus'] = flavor['cpus']
+                payload['memory'] = flavor['ram']
+                payload['local_disk'] = (False if flavor['disk-type'] == 'SAN'
+                                         else True)
+                try:
+                    port_speed = flavor['portspeed']
+                    payload['nic_speed'] = port_speed
+                except Exception:
+                    # If port speed is not specified, it is left to SoftLayer
+                    # to provide the 'default' port speed
+                    pass
+                return
+        raise Exception('Flavor could not be found')
+
+    def _handle_sshkeys(self, payload, body, client):
+        ssh_keys = []
+        key_name = body['server'].get('key_name')
+        if key_name:
+            sshkey_mgr = SoftLayer.SshKeyManager(client)
+            keys = sshkey_mgr.list_keys(label=key_name)
+            if len(keys) == 0:
+                raise Exception('KeyPair could not be found')
+            ssh_keys.append(keys[0]['id'])
+        payload['ssh_keys'] = ssh_keys
+
+    def _handle_user_data(self, payload, body):
+        user_data = {}
+        if utils.lookup(body, 'server', 'metadata'):
+            user_data['metadata'] = utils.lookup(body, 'server', 'metadata')
+        if utils.lookup(body, 'server', 'user_data'):
+            user_data['user_data'] = utils.lookup(body, 'server', 'user_data')
+        if utils.lookup(body, 'server', 'personality'):
+            user_data['personality'] = utils.lookup(body,
+                                                    'server',
+                                                    'personality')
+        payload['userdata'] = json.dumps(user_data)
+
+    def _handle_datacenter(self, payload, body):
+        datacenter = (utils.lookup(body, 'server', 'availability_zone')
+                      or config.CONF['compute']['default_availability_zone'])
+        if not datacenter:
+            raise Exception('availability_zone missing')
+        payload['datacenter'] = datacenter
+
+    def _handle_network(self, payload, client, networks):
+        """Set the network part for the payload. Support the following:
+
+        1) --net-id=public
+
+        2) --net-id=private
+
+        3) --net-id=<private id>
+
+        4) --net-id=<private id> --net-id=<public id>
+        """
+
+        if len(networks) > 2:
+            raise Exception('Too many net-id arguments')
+
+        # support cases of the string 'public' or 'private'
+        if networks[0]['uuid'] == 'public':
+            if len(networks) > 1:
+                raise Exception('Too many net-id arguments. '
+                                'Please indicate only "public" or "private"')
+            payload['private'] = False
+            return
+        elif networks[0]['uuid'] == 'private':
+            if len(networks) > 1:
+                raise Exception('Too many net-id arguments. '
+                                'Please indicate only "public" or "private"')
+            payload['private'] = True
+            return
+
+        private_network_only = True
+
+        try:
+            _filter = {
+                'networkVlans': {'id': {'operation': int(networks[0]['uuid'])}}
+            }
+        except Exception:
+            raise ValueError('Invalid id format')
+
+        priv_id_valid = (
+            client['Account'].getPrivateNetworkVlans(filter=_filter))
+        if priv_id_valid:
+            payload['private_vlan'] = int(networks[0]['uuid'])
+        else:
+            raise Exception('Private vlan must be specified first '
+                            'or is invalid')
+
+        # if there is another net-id, then it should be a public network
+        if len(networks) == 2:
+            try:
+                _filter = {
+                    'networkVlans': {'id': {'operation':
+                                            int(networks[1]['uuid'])}}
+                }
+            except Exception:
+                raise ValueError('Invalid id format')
+            pub_id_valid = (
+                client['Account'].getPublicNetworkVlans(filter=_filter))
+            if pub_id_valid:
+                payload['public_vlan'] = int(networks[1]['uuid'])
+                private_network_only = False
+            else:
+                raise Exception('Public vlan must be specified second '
+                                'or is invalid')
+
+        payload['private'] = private_network_only
 
 
 def get_list_params(req):
@@ -337,7 +411,8 @@ class ServersDetailV2(object):
 
         results = []
         for instance in sl_instances:
-            results.append(get_server_details_dict(self.app, req, instance))
+            results.append(
+                get_server_details_dict(self.app, req, instance, False))
 
         resp.status = 200
         resp.body = {'servers': results}
@@ -354,7 +429,7 @@ class ServerV2(object):
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(self.app, req, instance)
+        results = get_server_details_dict(self.app, req, instance, True)
 
         resp.body = {'server': results}
 
@@ -388,19 +463,44 @@ class ServerV2(object):
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(self.app, req, instance)
+        results = get_server_details_dict(self.app, req, instance, False)
         resp.body = {'server': results}
 
 
-def get_server_details_dict(app, req, instance):
+def get_server_details_dict(app, req, instance, is_list):
+
     image_id = utils.lookup(instance,
                             'blockDeviceTemplateGroup',
                             'globalIdentifier')
     tenant_id = instance['accountId']
 
-    # TODO(kmcdonald) - Don't hardcode this flavor ID
-    flavor_url = app.get_endpoint_url(
-        'compute', req, 'v2_flavor', flavor_id=1)
+    client = req.env['sl_client']
+    vs = client['Virtual_Guest']
+
+    flavor_url = None
+    flavor_id = 1
+
+    if is_list:
+        tags = vs.getTagReferences(id=instance['id'])
+        for tag in tags:
+            if 'flavor_id' in tag['tag']['name']:
+                try:
+                    # Try to parse the flavor id from the tag format
+                    # i.e. 'flavor_id: 2'
+                    tag_string = tag['tag']['name']
+
+                    flavor_id = int(re.search(r'\d+', tag_string).group())
+                    flavor_url = app.get_endpoint_url(
+                        'compute', req, 'v2_flavor', flavor_id=flavor_id)
+                except Exception:
+                    pass
+
+    # Workaround of hardcoded ID for VS's created before flavor-id
+    # pushed into tags
+    if not flavor_url:
+        flavor_url = app.get_endpoint_url(
+            'compute', req, 'v2_flavor', flavor_id=1)
+
     server_url = app.get_endpoint_url(
         'compute', req, 'v2_server', server_id=instance['id'])
 
@@ -466,8 +566,7 @@ def get_server_details_dict(app, req, instance):
         'created': instance['createDate'],
         # TODO(nbeitenmiller) - Do I need to run this through isoformat()?
         'flavor': {
-            # TODO(kmcdonald) - Make this realistic
-            'id': '1',
+            'id': str(flavor_id),
             'links': [
                 {
                     'href': flavor_url,

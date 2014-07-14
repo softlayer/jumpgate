@@ -72,7 +72,7 @@ def format_subnetwork(subnet, tenant_id):
         "gateway_ip": subnet.get('gateway'),
         "ip_version": subnet.get('version'),
         "cidr": cidr,
-        "id": subnet.get('id'),
+        "id": str(subnet.get('id')),
         "enable_dhcp": False,
         "network_id": subnet.get('networkVlanId'),
         "dns_nameservers": [],

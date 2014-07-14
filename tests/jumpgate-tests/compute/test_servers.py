@@ -245,89 +245,6 @@ class TestServersServersDetailV2(unittest.TestCase):
         self.assertEquals(resp.status, 200)
 
 
-class TestServersV2(unittest.TestCase):
-
-    def perform_server_action(self, req, resp, tenant_id, flavors):
-        instance = servers.ServersV2(app=mock.MagicMock(), flavors=flavors)
-        instance.on_post(req, resp, tenant_id)
-
-    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager'
-                '.create_instance')
-    def test_on_post_change_port_speed_default(self, ccIMock):
-        '''Test that if port speed is not specified in the flavor, then the
-        instance is created with the default port speed by SoftLayer
-        '''
-        client, env = get_client_env(body='{"server": \
-        {"name": "unit-test", \
-        "imageRef": "9b013d4e-27ce-4673-9607-ef863a88e3a8", \
-        "availability_zone": "dal06", "flavorRef": "1", \
-        "max_count": 1, "min_count": 1}}')
-        test_dict = {1: {"disk-type": "SAN",
-                         "name": "1 vCPU, 2GB ram, \
-                         100GB, SAN",
-                         "ram": 2048, "cpus": 1, "disk": 100,
-                         "id": "1"}}
-        ccIMock.return_value = {'id': '333333'}
-        req = falcon.Request(env)
-        resp = falcon.Response()
-        self.perform_server_action(req, resp, TENANT_ID, test_dict)
-        payload = {
-            'hostname': u'unit-test',
-            'domain': 'jumpgate.com',
-            'cpus': 1,
-            'memory': 2048,
-            'local_disk': False,
-            'hourly': True,
-            'datacenter': u'dal06',
-            'image_id': u'9b013d4e-27ce-4673-9607-ef863a88e3a8',
-            'ssh_keys': [],
-            'private': False,
-            'userdata': '{}',
-        }
-        ccIMock.assert_called_with(**payload)
-        self.assertEquals(resp.status, 202)
-        self.assertEquals(list(resp.body.keys()), ['server'])
-        self.assertEquals(len(resp.body['server']), 3)
-
-    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager'
-                '.create_instance')
-    def test_on_post_change_port_speed_1000(self, ccIMock):
-        '''Test that if user specifies a port speed in the flavor, then that
-        port speed is used when creating the instance
-        '''
-        client, env = get_client_env(body='{"server": \
-        {"name": "unit-test", \
-        "imageRef": "9b013d4e-27ce-4673-9607-ef863a88e3a8", \
-        "availability_zone": "dal06", "flavorRef": "1", \
-        "max_count": 1, "min_count": 1}}')
-        test_dict = {1: {"disk-type": "SAN",
-                         "name": "1 vCPU, 2GB ram, 100GB, SAN",
-                         "ram": 2048, "cpus": 1, "disk": 100,
-                         "id": "1", "portspeed": 1000}}
-        ccIMock.return_value = {'id': '333333'}
-        req = falcon.Request(env)
-        resp = falcon.Response()
-        self.perform_server_action(req, resp, TENANT_ID, test_dict)
-        payload = {
-            'hostname': u'unit-test',
-            'domain': 'jumpgate.com',
-            'cpus': 1,
-            'memory': 2048,
-            'local_disk': False,
-            'hourly': True,
-            'datacenter': u'dal06',
-            'image_id': u'9b013d4e-27ce-4673-9607-ef863a88e3a8',
-            'ssh_keys': [],
-            'private': False,
-            'userdata': '{}',
-            'nic_speed': 1000,
-        }
-        ccIMock.assert_called_with(**payload)
-        self.assertEquals(resp.status, 202)
-        self.assertEquals(list(resp.body.keys()), ['server'])
-        self.assertEquals(len(resp.body['server']), 3)
-
-
 class TestServerDetail(unittest.TestCase):
     '''Certain properties such as 'metadata' and 'progress' are not being sent
     in the response, but are specified in the Openstack API reference.
@@ -372,6 +289,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_id(self):
         '''checking the type for the property 'id'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('id' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['id']), str)
@@ -380,6 +298,7 @@ class TestServerDetail(unittest.TestCase):
         '''checking the type for the property 'accessIPv4', and since the
         parameter is hard-coded, we check for the exact response as well
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('accessIPv4' in self.resp.body['server'].keys(),
                           True)
@@ -389,6 +308,7 @@ class TestServerDetail(unittest.TestCase):
         '''checking the type for the property 'accessIPv6', and since the
         parameter is hard-coded, we check for the exact response as well
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('accessIPv6' in self.resp.body['server'].keys(),
                           True)
@@ -397,6 +317,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_addresses(self):
         '''checking the type for the property 'addresses'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('addresses' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['addresses']), dict)
@@ -404,6 +325,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_flavor(self):
         '''checking the type for the property 'flavor'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('flavor' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['flavor']), dict)
@@ -411,6 +333,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_image(self):
         '''checking the type for the property 'image'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('image' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['image']), dict)
@@ -418,6 +341,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_links(self):
         '''checking the type for the property 'links'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('links' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['links']), list)
@@ -425,6 +349,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_status(self):
         '''checking the type for the property 'status'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('status' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['status']), str)
@@ -432,6 +357,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_image_name(self):
         '''checking the type for the property 'image_name'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('image_name' in self.resp.body['server'].keys(),
                           True)
@@ -440,6 +366,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_security_groups(self):
         '''checking the type for the property 'security_groups'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('security_groups' in self.resp.body['server'].keys(),
                           True)
@@ -449,6 +376,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_updated(self):
         '''checking the type for the property 'updated'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('updated' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['updated']), str)
@@ -456,6 +384,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_created(self):
         '''checking the type for the property 'created'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('created' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['created']), str)
@@ -463,6 +392,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_hostId(self):
         '''checking the type for the property 'hostId'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('hostId' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['hostId']), int)
@@ -470,6 +400,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_name(self):
         '''checking the type for the property 'name'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('name' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['name']), str)
@@ -477,6 +408,7 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_tenant_id(self):
         '''checking the type for the property 'tenant_id'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('tenant_id' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['tenant_id']), int)
@@ -484,7 +416,257 @@ class TestServerDetail(unittest.TestCase):
     def test_on_get_server_detail_progress(self):
         '''checking the type for the property 'user_id'
         '''
+
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('user_id' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['user_id']),
                           type(None))
+
+
+class TestServersV2(unittest.TestCase):
+    def setUp(self):
+
+        self.app = mock.MagicMock()
+        self.instance = servers.ServersV2(self.app, FLAVOR_LIST)
+        self.payload = {}
+        self.body = {'server': {'name': 'testserver',
+                                'imageRef':
+                                    'a1783280-6b1f',
+                                'availability_zone': 'dal05', 'flavorRef': '1',
+                                'max_count': 1, 'min_count': 1,
+                                'networks': [{'uuid': 489586},
+                                             {'uuid': 489588}]}}
+        self.body_string = '{"server": {"name": "testserver", ' \
+                           '"imageRef": "a1783280-6b1f", ' \
+                           '"availability_zone": "dal05", ' \
+                           '"flavorRef": "1", ' \
+                           '"max_count": 1, ' \
+                           '"min_count": 1, ' \
+                           '"networks": [{"uuid": 489586}, {"uuid": 489588}]}}'
+        self.client, env = get_client_env()
+
+    def test_init(self):
+        self.assertEqual(self.app, self.instance.app)
+
+    def test_handle_flavor(self):
+        self.instance._handle_flavor(self.payload, self.body)
+        self.assertEqual(self.payload['cpus'], 1)
+        self.assertEqual(self.payload['memory'], 1024)
+        self.assertEqual(self.payload['local_disk'], False)
+
+    def test_handle_sshkeys_empty(self):
+        self.instance._handle_sshkeys(self.payload, self.body, self.client)
+        self.assertEqual(self.payload['ssh_keys'], [])
+
+    @mock.patch('SoftLayer.managers.sshkey.SshKeyManager.list_keys')
+    def test_handle_sshkeys_nonempty_valid(self, sshKeyManagerList):
+        sshKeyManagerList.return_value = [{'id': 'fakeid'}]
+        self.body['server']['key_name'] = 'fakename'
+        self.instance._handle_sshkeys(self.payload, self.body, self.client)
+        self.assertEqual(self.payload['ssh_keys'], ['fakeid'])
+
+    @mock.patch('SoftLayer.managers.sshkey.SshKeyManager.list_keys')
+    def test_handle_sshkeys_nonempty_invalid(self, sshKeyManagerList):
+        sshKeyManagerList.return_value = []
+        self.body['server']['key_name'] = 'fakename'
+        should_fail = False
+        try:
+            self.instance._handle_sshkeys(self.payload, self.body, self.client)
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception expected')
+
+    def test_handle_user_data_empty(self):
+        self.instance._handle_user_data(self.payload, self.body)
+        self.assertEqual(self.payload['userdata'], '{}')
+
+    def test_handle_user_data_metadata(self):
+        self.body['server']['metadata'] = 'metadata'
+        self.instance._handle_user_data(self.payload, self.body)
+        self.assertEqual(self.payload['userdata'], '{"metadata": "metadata"}')
+
+    def test_handle_user_data_user_data(self):
+        self.body['server']['user_data'] = 'user_data'
+        self.instance._handle_user_data(self.payload, self.body)
+        self.assertEqual(self.payload['userdata'],
+                         '{"user_data": "user_data"}')
+
+    def test_handle_user_data_personality(self):
+        self.body['server']['personality'] = 'personality'
+        self.instance._handle_user_data(self.payload, self.body)
+        self.assertEqual(self.payload['userdata'],
+                         '{"personality": "personality"}')
+
+    def test_handle_datacenter(self):
+        self.body['server']['availability_zone'] = 'dal05'
+        self.instance._handle_datacenter(self.payload, self.body)
+        self.assertEqual(self.payload['datacenter'], 'dal05')
+
+    @mock.patch('oslo.config.cfg.ConfigOpts.GroupAttr')
+    def test_handle_datacenter_empty(self, conf_mock):
+        self.body['server']['availability_zone'] = None
+        conf_mock.return_value = {
+            "default_availability_zone": None
+        }
+        should_fail = False
+        try:
+            self.instance._handle_datacenter(self.payload, self.body)
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception expected')
+
+    def test_handle_network_valid_public_private_ids(self):
+
+        self.instance._handle_network(self.payload, self.client,
+                                      [{'uuid': 489586}, {'uuid': 489588}])
+        self.assertEqual(self.payload['public_vlan'], 489588)
+        self.assertEqual(self.payload['private_vlan'], 489586)
+        self.assertEqual(self.payload['private'], False)
+
+    def test_handle_network_invalid_too_many(self):
+        should_fail = False
+        try:
+            self.instance._handle_network(self.payload, self.client,
+                                          [{'uuid': 489588}, {'uuid': 489586},
+                                           {'uuid': 43}])
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception excepted, too many arguments')
+
+    def test_handle_network_invalid_id_order(self):
+        self.client['Account'].getPrivateNetworkVlans.return_value = []
+        should_fail = False
+        try:
+            self.instance._handle_network(self.payload, self.client,
+                                          [{'uuid': 489588}, {'uuid': 489586}])
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception excepted')
+
+    def test_handle_network_invalid_id_format(self):
+        self.client['Account'].getPrivateNetworkVlans.return_value = []
+        should_fail = False
+        try:
+            self.instance._handle_network(self.payload, self.client,
+                                          [{'uuid': 'bad_network'}])
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception excepted')
+
+    def test_handle_network_invalid_id_format_public(self):
+        self.client['Account'].getPrivateNetworkVlans.return_value = []
+        should_fail = False
+        try:
+            self.instance._handle_network(self.payload, self.client,
+                                          [{'uuid': '489586'},
+                                           {'uuid': 'bad_pub_id'}])
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception excepted')
+
+    def test_handle_network_valid_private_ids(self):
+        self.client['Account'].getPrivateNetworkVlans.return_value = [489586]
+        self.instance._handle_network(self.payload, self.client,
+                                      [{'uuid': 489586}])
+        self.assertEqual(self.payload['private_vlan'], 489586)
+        self.assertEqual(self.payload['private'], True)
+
+    def test_handle_network_valid_ids(self):
+        self.client['Account'].getPrivateNetworkVlans.return_value = [489586]
+        self.client['Account'].getPublicNetworkVlans.return_value = [489588]
+        self.instance._handle_network(self.payload, self.client,
+                                      [{'uuid': 489586}, {'uuid': 489588}])
+        self.assertEqual(self.payload['private_vlan'], 489586)
+        self.assertEqual(self.payload['public_vlan'], 489588)
+        self.assertEqual(self.payload['private'], False)
+
+    def test_handle_network_valid_public(self):
+        self.instance._handle_network(self.payload, self.client,
+                                      [{'uuid': 'public'}])
+        self.assertEqual(self.payload['private'], False)
+
+    def test_handle_network_valid_private(self):
+        self.instance._handle_network(self.payload, self.client,
+                                      [{'uuid': 'private'}])
+        self.assertEqual(self.payload['private'], True)
+
+    def test_handle_network_invalid_private(self):
+        should_fail = False
+        try:
+            self.instance._handle_network(self.payload, self.client,
+                                          [{'uuid': 'private'},
+                                           {'uuid': 'public'}])
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception excepted')
+
+    def test_handle_network_invalid_public(self):
+        should_fail = False
+        try:
+            self.instance._handle_network(self.payload, self.client,
+                                          [{'uuid': 'public'},
+                                           {'uuid': 'private'}])
+            should_fail = True
+        except Exception:
+            pass
+        if should_fail:
+            self.fail('Exception excepted')
+
+    @mock.patch('SoftLayer.managers.vs.VSManager.create_instance')
+    def test_on_post_valid(self, create_instance_mock):
+        create_instance_mock.return_value = \
+            {"domain": "jumpgate.com",
+             "maxMemory": 1024,
+             "maxCpuUnits": 'CORE',
+             "maxCpu": 1, "metricPollDate": "",
+             "createDate": "2014-06-23T14:44:27-05:00",
+             "hostname": "testserver",
+             "startCpus": 1,
+             "lastPowerStateId": "",
+             "lastVerifiedDate": "",
+             "statusId": 1001,
+             "globalIdentifier": "8bfd7c70-5ee4-4581-a2c1-6ae8986fc97a",
+             "dedicatedAccountHostOnlyFlag": False,
+             "modifyDate": '',
+             "accountId": 333582,
+             "id": 5139276,
+             "fullyQualifiedDomainName": "testserver2.jumpgate.com"}
+        client, env = get_client_env(body=self.body_string)
+        req = falcon.Request(env)
+        resp = falcon.Response()
+        self.instance.on_post(req, resp, 'tenant_id')
+        self.assertEqual(resp.status, 202)
+        self.assertEqual(resp.body['server']['id'], 5139276)
+
+    @mock.patch('SoftLayer.managers.vs.VSManager.create_instance')
+    def test_on_post_invalid_create(self, create_instance_mock):
+        create_instance_mock.side_effect = Exception('badrequest')
+        client, env = get_client_env(body=self.body_string)
+        req = falcon.Request(env)
+        resp = falcon.Response()
+        self.instance.on_post(req, resp, 'tenant_id')
+        self.assertEqual(resp.status, 400)
+
+    def test_on_post_invalid(self):
+        self.body['server']['networks'][0]['uuid'] = 'invalid'
+        client, env = get_client_env(
+            body='{"server": {"name": "testserver", '
+                 '"imageRef": "a1783280-6b1f", "flavorRef": "invalid"}}')
+        req = falcon.Request(env)
+        resp = falcon.Response()
+        self.instance.on_post(req, resp, 'tenant_id')
+        self.assertEqual(resp.status, 400)
