@@ -26,7 +26,8 @@ class LimitsV2(object):
                 'totalRAMUsed': 0,
                 'totalFloatingIpsUsed': 0,
                 'totalSecurityGroupsUsed': 0,
-            }
+            },
+            'rate': [],
         }
 
         resp.body = {'limits': limits}

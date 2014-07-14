@@ -40,7 +40,7 @@ def get_access(token_id, token_details, user):
     return {
         'token': {
             'expires': datetime.datetime.fromtimestamp(
-                token_details['expires']).isoformat(),
+                token_details['expires']).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'id': token_id,
             'tenant': {
                 'id': token_details['tenant_id'],

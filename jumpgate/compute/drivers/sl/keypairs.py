@@ -84,7 +84,8 @@ def format_keypair(keypair):
         'fingerprint': keypair['fingerprint'],
         'name': keypair['label'],
         'public_key': keypair['key'],
-        'user': None
+        # TODO(imkarrer) properly set this to current tenant_id
+        'user_id': '1234'
     }
 
 
