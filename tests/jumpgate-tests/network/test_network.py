@@ -23,7 +23,7 @@ class TestNetworkV2(unittest.TestCase):
         self.assertEqual(resp_body_network['shared'], False)
         self.assertEqual(resp_body_network['subnets'], ['1', '3', '5'])
         self.assertEqual(resp_body_network['name'], 'Public Network')
-        self.assertEqual(resp_body_network['id'], 11)
+        self.assertEqual(resp_body_network['id'], '11')
         self.assertEqual(resp_body_network['tenant_id'], 999999)
         self.assertEqual(resp_body_network['provider:network_type'], 'vlan')
         self.assertEqual(resp_body_network['provider:segmentation_id'], 999)
@@ -90,7 +90,7 @@ class TestNetworksV2(unittest.TestCase):
         self.assertEqual(resp_body_network['shared'], False)
         self.assertEqual(resp_body_network['subnets'], ['1', '3', '5'])
         self.assertEqual(resp_body_network['name'], 'Public Network')
-        self.assertEqual(resp_body_network['id'], 123321)
+        self.assertEqual(resp_body_network['id'], '123321')
         self.assertEqual(resp_body_network['tenant_id'], 999999)
         self.assertEqual(resp_body_network['provider:network_type'], 'vlan')
         self.assertEqual(resp_body_network['provider:segmentation_id'], 999)
@@ -132,7 +132,7 @@ class TestNetworksV2(unittest.TestCase):
 
         client, env = get_client_env(query_string='name=123321')
         client['Account'].getNetworkVlans.return_value = [
-            {'id': 123321,
+            {'id': '123321',
              'name': 'Public Network',
              'subnets': [{'id': 1}, {'id': 3}, {'id': 5}],
              'vlanNumber': 999,

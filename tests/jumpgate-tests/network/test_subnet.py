@@ -27,7 +27,7 @@ def get_client_env(**kwargs):
 class TestSubnetV2(unittest.TestCase):
 
     def check_body_response(self, body_subnet):
-        self.assertEqual(body_subnet['id'], 10)
+        self.assertEqual(body_subnet['id'], '10')
         self.assertEqual(body_subnet['name'], '')
         self.assertEqual(body_subnet['enable_dhcp'], False)
         self.assertEqual(body_subnet['gateway_ip'], '9.0.3.193')
@@ -66,7 +66,7 @@ class TestSubnetV2(unittest.TestCase):
 class TestSubnetsV2(unittest.TestCase):
 
     def check_body_response(self, body_subnet):
-        self.assertEqual(body_subnet['id'], 10)
+        self.assertEqual(body_subnet['id'], '10')
         self.assertEqual(body_subnet['name'], '')
         self.assertEqual(body_subnet['enable_dhcp'], False)
         self.assertEqual(body_subnet['gateway_ip'], '9.0.3.193')
