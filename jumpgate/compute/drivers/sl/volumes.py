@@ -46,11 +46,10 @@ class OSVolumeAttachmentsV2(object):
         '''Attaches a specified volume to a specified server.'''
         body = json.loads(req.stream.read().decode())
 
-        if any([len(body) == 0,
-                'volumeAttachment' not in body,
-                'volumeId' not in body['volumeAttachment']]):
-            return error_handling.bad_request(resp,
-                                              message="Malformed request body")
+        if (len(body) == 0 or 'volumeAttachment' not in body or
+                'volumeId' not in body['volumeAttachment']):
+            return error_handling.bad_request(resp, message="Malformed "
+                                                            "request body")
 
         vg_client = req.env['sl_client']['Virtual_Guest']
 
@@ -62,8 +61,8 @@ class OSVolumeAttachmentsV2(object):
 
         volume_id = body['volumeAttachment']['volumeId']
         if volume_id and len(volume_id) > OPENSTACK_VOLUME_UUID_LEN:
-            return error_handling.bad_request(resp,
-                                              message="Malformed request body")
+            return error_handling.bad_request(resp, message="Malformed "
+                                              "request body")
 
         vdi_client = req.env['sl_client']['Virtual_Disk_Image']
         volinfo = None
@@ -166,10 +165,10 @@ class OSVolumeAttachmentV2(object):
             if json_response:
                 resp.body = json_response
             else:
-                error_handling.volume_fault(resp, 'Invalid volume id.',
-                                            code=HTTP.BAD_REQUEST)
+                return error_handling.volume_fault(resp, 'Invalid volume id.',
+                                                   code=HTTP.BAD_REQUEST)
         except Exception as e:
-            error_handling.volume_fault(resp, e.faultString)
+            return error_handling.volume_fault(resp, e.faultString)
 
     def on_delete(self, req, resp, tenant_id, instance_id, volume_id):
         """Detach the requested volume from the specified instance."""
@@ -201,16 +200,18 @@ class OSVolumeAttachmentV2(object):
                                                       id=instance_id)
                             break
                         except Exception as e:
-                            error_handling.volume_fault(resp, e.faultString)
+                            error_handling.volume_fault(resp,
+                                                        e.faultString)
                     else:
                         return error_handling.volume_fault(
                             resp,
                             'The requested disk image is attached to another '
                             'guest and cannot be detached.',
                             code=HTTP.BAD_REQUEST)
+
         except Exception as e:
             return error_handling.volume_fault(resp, e.faultString,
-                                               code=HTTP.NOT_FOUND)
+                                               code=500)
 
         resp.status = HTTP.ACCEPTED
 
