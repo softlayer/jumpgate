@@ -1,0 +1,47 @@
+{
+    "1": {
+        "disk-type": "SAN",
+        "portspeed": 100,
+        "name": "1 vCPU, 1GB ram, 25GB, SAN",
+        "ram": 1024,
+        "cpus": 1,
+        "disk": 25,
+        "id": "1"
+    },
+    "2": {
+        "disk-type": "SAN",
+        "portspeed": 100,
+        "name": "1 vCPU, 1GB ram, 100GB, SAN",
+        "ram": 1024,
+        "cpus": 1,
+        "disk": 100,
+        "id": "2"
+    },
+    "3": {
+        "disk-type": "SAN",
+        "portspeed": 100,
+        "name": "2 vCPU, 2GB ram, 100GB, SAN",
+        "ram": 2048,
+        "cpus": 2,
+        "disk": 100,
+        "id": "3"
+    },
+    "4": {
+        "disk-type": "SAN",
+        "portspeed": 100,
+        "name": "4 vCPU, 4GB ram, 100GB, SAN",
+        "ram": 4096,
+        "cpus": 4,
+        "disk": 100,
+        "id": "4"
+    },
+    "5": {
+        "disk-type": "SAN",
+        "portspeed": 100,
+        "name": "8 vCPU, 8GB ram, 100GB, SAN",
+        "ram": 8192,
+        "cpus": 8,
+        "disk": 100,
+        "id": "5"
+    }
+}
