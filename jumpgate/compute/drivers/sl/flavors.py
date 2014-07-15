@@ -1,96 +1,15 @@
+import logging
+
 from jumpgate.common import error_handling
 
-FLAVORS = {
-    1: {
-        'id': '1',
-        'name': '1 vCPU, 1GB ram, 25GB, local',
-        'ram': 1024,
-        'disk': 25,
-        'disk-type': 'Local',
-        'cpus': 1,
-    },
-    2: {
-        'id': '2',
-        'name': '1 vCPU, 1GB ram, 100GB, local',
-        'ram': 1024,
-        'disk': 100,
-        'disk-type': 'Local',
-        'cpus': 1,
-    },
-    3: {
-        'id': '3',
-        'name': '2 vCPU, 2GB ram, 100GB, local',
-        'ram': 2 * 1024,
-        'disk': 100,
-        'disk-type': 'Local',
-        'cpus': 2,
-    },
-    4: {
-        'id': '4',
-        'name': '4 vCPU, 4GB ram, 100GB, local',
-        'ram': 4 * 1024,
-        'disk': 100,
-        'disk-type': 'Local',
-        'cpus': 4,
-    },
-    5: {
-        'id': '5',
-        'name': '8 vCPU, 8GB ram, 100GB, local',
-        'ram': 8 * 1024,
-        'disk': 100,
-        'disk-type': 'Local',
-        'cpus': 8,
-    },
-    11: {
-        'id': '11',
-        'name': '1 vCPU, 1GB ram, 25GB, SAN',
-        'ram': 1024,
-        'disk': 25,
-        'disk-type': 'SAN',
-        'cpus': 1,
-    },
-    12: {
-        'id': '12',
-        'name': '1 vCPU, 1GB ram, 100GB, SAN',
-        'ram': 1024,
-        'disk': 100,
-        'disk-type': 'SAN',
-        'cpus': 1,
-    },
-    13: {
-        'id': '13',
-        'name': '2 vCPU, 2GB ram, 100GB, SAN',
-        'ram': 2 * 1024,
-        'disk': 100,
-        'disk-type': 'SAN',
-        'cpus': 2,
-    },
-    14: {
-        'id': '14',
-        'name': '4 vCPU, 4GB ram, 100GB, SAN',
-        'ram': 4 * 1024,
-        'disk': 100,
-        'disk-type': 'SAN',
-        'cpus': 4,
-    },
-    15: {
-        'id': '15',
-        'name': '8 vCPU, 8GB ram, 100GB, SAN',
-        'ram': 8 * 1024,
-        'disk': 100,
-        'disk-type': 'SAN',
-        'cpus': 8,
-    },
-}
 
-
-# Set flavor '1' as the default
-FLAVORS[None] = FLAVORS[1]
+LOG = logging.getLogger(__name__)
 
 
 class FlavorV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_get(self, req, resp, flavor_id, tenant_id=None):
         try:
@@ -98,20 +17,24 @@ class FlavorV2(object):
         except ValueError:
             return error_handling.not_found(resp, 'Flavor could not be found')
 
-        if flavor_id not in FLAVORS:
+        if flavor_id not in self.flavors:
             return error_handling.not_found(resp, 'Flavor could not be found')
 
-        flavor = get_flavor_details(self.app, req, FLAVORS[flavor_id],
+        flavor = get_flavor_details(self.app, req, self.flavors[flavor_id],
                                     detail=True)
         resp.body = {'flavor': flavor}
 
 
 class FlavorsV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_get(self, req, resp, tenant_id=None):
-        flavor_refs = filter_flavor_refs(req, resp, get_listing_flavors())
+        '''Returns details of all available flavors
+
+        '''
+        flavor_refs = filter_flavor_refs(req, resp, self.flavors)
         if flavor_refs is None:
             return
         flavors = [get_flavor_details(self.app, req, flavor)
@@ -120,21 +43,22 @@ class FlavorsV2(object):
 
 
 class FlavorsDetailV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_get(self, req, resp, tenant_id=None):
-        flavor_refs = get_listing_flavors()
-        flavor_refs = filter_flavor_refs(req, resp, flavor_refs)
+        '''Returns details of all available flavors after filtering
+
+        certain flavors out based on the parameters set
+
+        '''
+        flavor_refs = filter_flavor_refs(req, resp, self.flavors)
         if flavor_refs is None:
             return
         flavors = [get_flavor_details(self.app, req, flavor, detail=True)
                    for flavor in flavor_refs]
         resp.body = {'flavors': flavors}
-
-
-def get_listing_flavors():
-    return [flavor for flavor_id, flavor in FLAVORS.items() if flavor_id]
 
 
 def filter_flavor_refs(req, resp, flavor_refs):
@@ -196,5 +120,9 @@ def get_flavor_details(app, req, flavor_ref, detail=False):
         flavor['os-flavor-access:is_public'] = True
         flavor['OS-FLV-EXT-DATA:ephemeral'] = 0
         flavor['OS-FLV-DISABLED:disabled'] = False
+        try:
+            flavor['portspeed'] = flavor_ref['portspeed']
+        except Exception:
+            pass
 
     return flavor

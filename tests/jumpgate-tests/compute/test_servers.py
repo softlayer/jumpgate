@@ -1,166 +1,260 @@
 import unittest
-
 import falcon
 from falcon.testing import helpers
-from mock import MagicMock, patch
+import mock
 import SoftLayer
 
-from jumpgate.compute.drivers.sl.servers import (ServerActionV2,
-                                                 ServerV2,
-                                                 ServersV2,
-                                                 ServersDetailV2)
+from jumpgate.compute.drivers.sl import flavor_list_loader
+from jumpgate.compute.drivers.sl import servers
 
 
 TENANT_ID = 333333
 INSTANCE_ID = 7890782
 SERVER_ID = 7777777
+FLAVOR_LIST = flavor_list_loader.Flavors.get_flavors(app=mock.MagicMock())
+
+
+def get_client_env(**kwargs):
+    client = mock.MagicMock()
+    env = helpers.create_environ(**kwargs)
+    env['sl_client'] = client
+    return client, env
 
 
 class TestServersServerActionV2(unittest.TestCase):
 
-    def test_init(self):
-        app = MagicMock()
-        instance = ServerActionV2(app)
-        self.assertEqual(app, instance.app)
-
-    def setUp(self):
-        self.req, self.resp = MagicMock(), MagicMock()
-        self.vg_clientMock = MagicMock()
-        self.req.env = {'sl_client': {
-                        'Virtual_Guest': self.vg_clientMock,
-                        'Account': MagicMock()}}
-
-    def perform_server_action(self, tenant_id, instance_id):
-        instance = ServerActionV2(app=None)
+    def perform_server_action(self, body_str, tenant_id,
+                              instance_id, flavors):
+        self.client, self.env = get_client_env(body=body_str)
+        self.vg_clientMock = self.client['Virtual_Guest']
+        self.req = falcon.Request(self.env)
+        self.resp = falcon.Response()
+        instance = servers.ServerActionV2(app=mock.MagicMock(),
+                                          flavors=flavors)
         instance.on_post(self.req, self.resp, tenant_id, instance_id)
 
-    @patch('SoftLayer.CCIManager')
-    @patch('SoftLayer.CCIManager.get_instance')
-    @patch('json.loads')
-    def test_on_post_create(self, bodyMock, cciGetInstanceMock,
-                            cciManagerMock):
-        bodyMock.return_value = {'createImage': {'name': 'foobar'}}
-        cciGetInstanceMock.return_value = {'blockDevices':
-                                           [{'device': 0},
-                                            {'device': 1}]}
-        instance = ServerActionV2(MagicMock())
-        instance.on_post(self.req, self.resp, TENANT_ID, INSTANCE_ID)
+    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager')
+    def test_on_post_create(self, cciMock):
+        body_str = '{"createImage": {"name": "foobar"}}'
+        self.perform_server_action(body_str, TENANT_ID,
+                                   INSTANCE_ID, flavors=FLAVOR_LIST)
+        client_cat = self.vg_clientMock.createArchiveTransaction
+        client_cat.assert_called_with("foobar", [], 'Auto-created by '
+                                      'OpenStack compatibility layer',
+                                      id=INSTANCE_ID)
+        filterMock = {'privateBlockDeviceTemplateGroups':
+                      {'name': {'operation': "foobar"},
+                       'createDate': {'operation': 'orderBy',
+                                      'options': [{'name': 'sort',
+                                                   'value': ['DESC']}], }}}
+        acc = self.client['Account'].getPrivateBlockDeviceTemplateGroups
+        acc.assert_called_with(mask='id, globalIdentifier',
+                               filter=filterMock, limit=1)
         self.assertEquals(self.resp.status, 202)
 
-    @patch('SoftLayer.CCIManager')
-    @patch('json.loads')
-    def test_on_post_create_fail(self, bodyMock, cciManagerMock):
+    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager')
+    def test_on_post_create_fail(self, cciMock):
+        client, env = get_client_env(body='{"createImage": \
+        {"name": "foobar"}}')
+        vg_clientMock = client['Virtual_Guest']
         e = SoftLayer.SoftLayerAPIError(123, 'abc')
-        self.vg_clientMock.createArchiveTransaction.side_effect = e
-        bodyMock.return_value = {'createImage': {'name': 'foobar'}}
-        instance = ServerActionV2(MagicMock())
-        instance.on_post(self.req, self.resp, TENANT_ID, INSTANCE_ID)
+        vg_clientMock.createArchiveTransaction.side_effect = e
+        req = falcon.Request(env)
+        resp = falcon.Response()
+        instance = servers.ServerActionV2(app=mock.MagicMock(),
+                                          flavors=FLAVOR_LIST)
+        instance.on_post(req, resp, TENANT_ID, INSTANCE_ID)
         self.assertRaises(SoftLayer.SoftLayerAPIError,
-                          self.vg_clientMock.createArchiveTransaction)
-        self.assertEquals(self.resp.status, 500)
+                          vg_clientMock.createArchiveTransaction)
+        self.assertEquals(resp.status, 500)
 
-    @patch('json.loads')
-    def test_on_post_powerOn(self, bodyMock):
-        bodyMock.return_value = {'os-start': None}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_powerOn(self):
+        body_str = '{"os-start": "None"}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 202)
         self.vg_clientMock.powerOn.assert_called_with(id=INSTANCE_ID)
 
-    @patch('json.loads')
-    def test_on_post_powerOff(self, bodyMock):
-        bodyMock.return_value = {'os-stop': None}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_powerOff(self):
+        body_str = '{"os-stop": "None"}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 202)
         self.vg_clientMock.powerOff.assert_called_with(id=INSTANCE_ID)
 
-    @patch('json.loads')
-    def test_on_post_reboot_soft(self, bodyMock):
-        bodyMock.return_value = {'reboot': {'type': 'SOFT'}}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_reboot_soft(self):
+        body_str = '{"reboot": {"type": "SOFT"}}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 202)
         self.vg_clientMock.rebootSoft.assert_called_with(id=INSTANCE_ID)
 
-    @patch('json.loads')
-    def test_on_post_reboot_hard(self, bodyMock):
-        bodyMock.return_value = {'reboot': {'type': 'HARD'}}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_reboot_hard(self):
+        body_str = '{"reboot": {"type": "HARD"}}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 202)
         self.vg_clientMock.rebootHard.assert_called_with(id=INSTANCE_ID)
 
-    @patch('json.loads')
-    def test_on_post_reboot_default(self, bodyMock):
-        bodyMock.return_value = {'reboot': {'type': 'DEFAULT'}}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_reboot_default(self):
+        body_str = '{"reboot": {"type": "DEFAULT"}}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 202)
         self.vg_clientMock.rebootDefault.assert_called_with(id=INSTANCE_ID)
 
-    @patch('json.loads')
-    @patch('SoftLayer.managers.vs.VSManager.upgrade')
-    def test_on_post_resize(self, upgradeMock, bodyMock):
-        bodyMock.return_value = {"resize": {"flavorRef": "2"}}
-        upgradeMock.return_value = True
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer'
+                '.CCIManager.upgrade')
+    def test_on_post_resize(self, cciMock):
+        body_str = '{"resize": {"flavorRef": "2"}}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
+        cciMock.assert_called_with(INSTANCE_ID, cpus=1, memory=1)
         self.assertEquals(self.resp.status, 202)
 
-    @patch('json.loads')
-    def test_on_post_resize_invalid(self, bodyMock):
-        bodyMock.return_value = {"resize": {"flavorRef": "17"}}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_resize_invalid(self):
+        body_str = '{"resize": {"flavorRef": "17"}}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 400)
 
-    @patch('json.loads')
-    def test_on_post_confirm_resize(self, bodyMock):
-        bodyMock.return_value = {'confirmResize': None}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_confirm_resize(self):
+        body_str = '{"confirmResize": "None"}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 204)
 
-    @patch('json.loads')
-    def test_on_post_body_empty(self, bodyMock):
-        bodyMock.return_value = {}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_body_empty(self):
+        body_str = '{}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 400)
-        self.assertEquals(self.resp.body['badRequest']
-                          ['message'], 'Malformed request body')
+        self.assertEquals(self.resp.body['badRequest']['message'],
+                          'Malformed request body')
 
-    @patch('json.loads')
-    def test_on_post_instanceid_empty(self, bodyMock):
-        bodyMock.return_value = {'os-stop': None}
-        self.perform_server_action(TENANT_ID, '')
+    def test_on_post_instanceid_empty(self):
+        body_str = '{"os-stop": "None"}'
+        self.perform_server_action(body_str, TENANT_ID, '',
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 404)
-        self.assertEquals(self.resp.body['notFound']
-                          ['message'], 'Invalid instance ID specified.')
+        self.assertEquals(self.resp.body['notFound']['message'],
+                          'Invalid instance ID specified.')
 
-    @patch('json.loads')
-    def test_on_post_instanceid_none(self, bodyMock):
-        bodyMock.return_value = {'os-start': None}
-        self.perform_server_action(TENANT_ID, None)
+    def test_on_post_instanceid_none(self):
+        body_str = '{"os-start": "None"}'
+        self.perform_server_action(body_str, TENANT_ID, None,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 404)
 
-    @patch('json.loads')
-    def test_on_post_malformed_body(self, bodyMock):
-        bodyMock.return_value = {'os_start': None}
-        self.perform_server_action(TENANT_ID, INSTANCE_ID)
+    def test_on_post_malformed_body(self):
+        body_str = '{"os_start": "None"}'
+        self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
+                                   flavors=FLAVOR_LIST)
         self.assertEquals(self.resp.status, 400)
+
+
+class TestServersServersDetailV2(unittest.TestCase):
+
+    @mock.patch('SoftLayer.CCIManager.list_instances')
+    def test_on_get(self, mockListInstance):
+        client, env = get_client_env()
+        href = u'http://localhost:5000/compute/v2/333582/servers/4846014'
+        dict = {'status': 'ACTIVE',
+                'updated': '2014-05-23T10:58:29-05:00',
+                'hostId': 4846014,
+                'user_id': 206942,
+                'addresses': {
+                    'public': [{
+                        'version': 4,
+                        'addr': '23.246.195.197',
+                        'OS-EXT-IPS:type': 'fixed'}],
+                    'private': [{
+                        'version': 4,
+                        'addr': '10.107.38.132',
+                        'OS-EXT-IPS:type': 'fixed'}]},
+                'links': [{
+                    'href': href,
+                    'rel': 'self'}],
+                'created': '2014-05-23T10:57:07-05:00',
+                'tenant_id': 333582,
+                'image_name': '',
+                'OS-EXT-STS:power_state': 1,
+                'accessIPv4': '',
+                'accessIPv6': '',
+                'OS-EXT-STS:vm_state': 'ACTIVE',
+                'OS-EXT-STS:task_state': None,
+                'flavor': {
+                    'id': '1',
+                    'links': [{
+                        'href': 'http://localhost:5000/compute/v2/flavors/1',
+                        'rel': 'bookmark'}]},
+                'OS-EXT-AZ:availability_zone': 154820,
+                'id': '4846014',
+                'security_groups': [{
+                    'name': 'default'}],
+                'name': 'minwoo-metis',
+                }
+        status = {'keyName': 'ACTIVE', 'name': 'Active'}
+        pwrState = {'keyName': 'RUNNING', 'name': 'Running'}
+        sshKeys = []
+        dataCenter = {'id': 154820, 'name': 'dal06', 'longName': 'Dallas 6'}
+        orderItem = {'itemId': 858,
+                     'setupFee': '0',
+                     'promoCodeId': '',
+                     'oneTimeFeeTaxRate': '.066',
+                     'description': '2 x 2.0 GHz Cores',
+                     'laborFee': '0',
+                     'oneTimeFee': '0',
+                     'itemPriceId': '1641',
+                     'setupFeeTaxRate': '.066',
+                     'order': {
+                         'userRecordId': 206942,
+                         'privateCloudOrderFlag': False},
+                     'laborFeeTaxRate': '.066',
+                     'categoryCode': 'guest_core',
+                     'setupFeeDeferralMonths': 12,
+                     'parentId': '',
+                     'recurringFee': '0',
+                     'id': 34750548,
+                     'quantity': '',
+                     }
+        billingItem = {'modifyDate': '2014-06-05T08:37:01-05:00',
+                       'resourceTableId': 4846014,
+                       'hostName': 'minwoo-metis',
+                       'recurringMonths': 1,
+                       'orderItem': orderItem,
+                       }
+
+        mockListInstance.return_value = {'billingItem': billingItem,
+                                         'datacenter': dataCenter,
+                                         'powerState': pwrState,
+                                         'sshKeys': sshKeys,
+                                         'status': status,
+                                         'accountId': 'foobar',
+                                         'id': '1234',
+                                         'createDate': 'foobar',
+                                         'hostname': 'foobar',
+                                         'modifyDate': 'foobar'
+                                         }
+        req = falcon.Request(env)
+        resp = falcon.Response()
+        instance = servers.ServersDetailV2(app=mock.MagicMock())
+        instance.on_get(req, resp, TENANT_ID)
+        self.assertEquals(set(resp.body['servers'][0].keys()),
+                          set(dict.keys()))
+        self.assertEquals(resp.status, 200)
 
 
 class TestServerDetail(unittest.TestCase):
     '''Certain properties such as 'metadata' and 'progress' are not being sent
     in the response, but are specified in the Openstack API reference.
-    Will add later when there is support.'''
-
-    def test_init(self):
-        app = MagicMock()
-        instance = ServerV2(app)
-        self.assertEqual(app, instance.app)
-
-    def setUp(self):
-        self.req, self.resp = MagicMock(), MagicMock()
-        self.clientMock = MagicMock()
-        self.req.env = {'sl_client': self.clientMock}
-
-    @patch('SoftLayer.CCIManager.get_instance')
+    Will add later when there is support.
+    '''
+    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager'
+                '.get_instance')
     def perform_server_detail(self, tenant_id, server_id, get_instance_mock):
-        instanceSV = ServerV2(app=MagicMock())
+        self.client, self.env = get_client_env()
+        instanceSV = servers.ServerV2(app=mock.MagicMock())
         instance = {'status': {'keyName': 'ACTIVE', 'name': 'Active'},
                     'modifyDate': '', 'maxCpu': 2,
                     'createDate': '2014-06-03T15:12:37-06:00',
@@ -179,18 +273,22 @@ class TestServerDetail(unittest.TestCase):
                      'accountId': 333582},
                     'maxMemory': 2048,
                     'accountId': 333582}
+
         get_instance_mock.return_value = instance
+        self.req = falcon.Request(self.env)
+        self.resp = falcon.Response()
         instanceSV.on_get(self.req, self.resp, tenant_id, server_id)
 
     def test_on_get_server_detail(self):
-        '''Testing the server details'''
-
+        '''Testing the server details
+        '''
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals(list(self.resp.body.keys()), ['server'])
-        self.assertEquals(len(self.resp.body['server']), 20)
+        self.assertEquals(len(list(self.resp.body['server'])), 20)
 
     def test_on_get_server_detail_id(self):
-        '''checking the type for the property 'id' '''
+        '''checking the type for the property 'id'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('id' in self.resp.body['server'].keys(), True)
@@ -198,7 +296,8 @@ class TestServerDetail(unittest.TestCase):
 
     def test_on_get_server_detail_accessIPv4(self):
         '''checking the type for the property 'accessIPv4', and since the
-        parameter is hard-coded, we check for the exact response as well'''
+        parameter is hard-coded, we check for the exact response as well
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('accessIPv4' in self.resp.body['server'].keys(),
@@ -207,7 +306,8 @@ class TestServerDetail(unittest.TestCase):
 
     def test_on_get_server_detail_accessIPv6(self):
         '''checking the type for the property 'accessIPv6', and since the
-        parameter is hard-coded, we check for the exact response as well'''
+        parameter is hard-coded, we check for the exact response as well
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('accessIPv6' in self.resp.body['server'].keys(),
@@ -215,42 +315,48 @@ class TestServerDetail(unittest.TestCase):
         self.assertEquals(self.resp.body['server']['accessIPv6'], "")
 
     def test_on_get_server_detail_addresses(self):
-        '''checking the type for the property 'addresses' '''
+        '''checking the type for the property 'addresses'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('addresses' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['addresses']), dict)
 
     def test_on_get_server_detail_flavor(self):
-        '''checking the type for the property 'flavor' '''
+        '''checking the type for the property 'flavor'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('flavor' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['flavor']), dict)
 
     def test_on_get_server_detail_image(self):
-        '''checking the type for the property 'image' '''
+        '''checking the type for the property 'image'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('image' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['image']), dict)
 
     def test_on_get_server_detail_links(self):
-        '''checking the type for the property 'links' '''
+        '''checking the type for the property 'links'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('links' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['links']), list)
 
     def test_on_get_server_detail_status(self):
-        '''checking the type for the property 'status' '''
+        '''checking the type for the property 'status'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('status' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['status']), str)
 
     def test_on_get_server_detail_image_name(self):
-        '''checking the type for the property 'image_name' '''
+        '''checking the type for the property 'image_name'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('image_name' in self.resp.body['server'].keys(),
@@ -258,73 +364,70 @@ class TestServerDetail(unittest.TestCase):
         self.assertEquals(type(self.resp.body['server']['image_name']), str)
 
     def test_on_get_server_detail_security_groups(self):
-        '''checking the type for the property 'security_groups' '''
+        '''checking the type for the property 'security_groups'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
-        self.assertEquals(
-            'security_groups' in self.resp.body['server'].keys(), True)
+        self.assertEquals('security_groups' in self.resp.body['server'].keys(),
+                          True)
         self.assertEquals(type(self.resp.body['server']['security_groups']),
                           list)
 
     def test_on_get_server_detail_updated(self):
-        '''checking the type for the property 'updated' '''
+        '''checking the type for the property 'updated'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('updated' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['updated']), str)
 
     def test_on_get_server_detail_created(self):
-        '''checking the type for the property 'created' '''
+        '''checking the type for the property 'created'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('created' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['created']), str)
 
     def test_on_get_server_detail_hostId(self):
-        '''checking the type for the property 'hostId' '''
+        '''checking the type for the property 'hostId'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('hostId' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['hostId']), int)
 
     def test_on_get_server_detail_name(self):
-        '''checking the type for the property 'name' '''
+        '''checking the type for the property 'name'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('name' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['name']), str)
 
     def test_on_get_server_detail_tenant_id(self):
-        '''checking the type for the property 'tenant_id' '''
+        '''checking the type for the property 'tenant_id'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('tenant_id' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['tenant_id']), int)
 
     def test_on_get_server_detail_progress(self):
-        '''checking the type for the property 'user_id' '''
+        '''checking the type for the property 'user_id'
+        '''
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('user_id' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['user_id']),
                           type(None))
 
-    def tearDown(self):
-        self.req, self.resp, self.vg_clientMock = None, None, None
 
-
-def get_client_env(**kwargs):
-    client = MagicMock()
-    env = helpers.create_environ(**kwargs)
-    env['sl_client'] = client
-    return client, env
-
-
-class TestServers(unittest.TestCase):
+class TestServersV2(unittest.TestCase):
     def setUp(self):
 
-        self.app = MagicMock()
-        self.instance = ServersV2(self.app)
+        self.app = mock.MagicMock()
+        self.instance = servers.ServersV2(self.app, FLAVOR_LIST)
         self.payload = {}
         self.body = {'server': {'name': 'testserver',
                                 'imageRef':
@@ -349,20 +452,20 @@ class TestServers(unittest.TestCase):
         self.instance._handle_flavor(self.payload, self.body)
         self.assertEqual(self.payload['cpus'], 1)
         self.assertEqual(self.payload['memory'], 1024)
-        self.assertEqual(self.payload['local_disk'], True)
+        self.assertEqual(self.payload['local_disk'], False)
 
     def test_handle_sshkeys_empty(self):
         self.instance._handle_sshkeys(self.payload, self.body, self.client)
         self.assertEqual(self.payload['ssh_keys'], [])
 
-    @patch('SoftLayer.managers.sshkey.SshKeyManager.list_keys')
+    @mock.patch('SoftLayer.managers.sshkey.SshKeyManager.list_keys')
     def test_handle_sshkeys_nonempty_valid(self, sshKeyManagerList):
         sshKeyManagerList.return_value = [{'id': 'fakeid'}]
         self.body['server']['key_name'] = 'fakename'
         self.instance._handle_sshkeys(self.payload, self.body, self.client)
         self.assertEqual(self.payload['ssh_keys'], ['fakeid'])
 
-    @patch('SoftLayer.managers.sshkey.SshKeyManager.list_keys')
+    @mock.patch('SoftLayer.managers.sshkey.SshKeyManager.list_keys')
     def test_handle_sshkeys_nonempty_invalid(self, sshKeyManagerList):
         sshKeyManagerList.return_value = []
         self.body['server']['key_name'] = 'fakename'
@@ -401,7 +504,7 @@ class TestServers(unittest.TestCase):
         self.instance._handle_datacenter(self.payload, self.body)
         self.assertEqual(self.payload['datacenter'], 'dal05')
 
-    @patch('oslo.config.cfg.ConfigOpts.GroupAttr')
+    @mock.patch('oslo.config.cfg.ConfigOpts.GroupAttr')
     def test_handle_datacenter_empty(self, conf_mock):
         self.body['server']['availability_zone'] = None
         conf_mock.return_value = {
@@ -523,7 +626,7 @@ class TestServers(unittest.TestCase):
         if should_fail:
             self.fail('Exception excepted')
 
-    @patch('SoftLayer.managers.vs.VSManager.create_instance')
+    @mock.patch('SoftLayer.managers.vs.VSManager.create_instance')
     def test_on_post_valid(self, create_instance_mock):
         create_instance_mock.return_value = \
             {"domain": "jumpgate.com",
@@ -549,7 +652,7 @@ class TestServers(unittest.TestCase):
         self.assertEqual(resp.status, 202)
         self.assertEqual(resp.body['server']['id'], 5139276)
 
-    @patch('SoftLayer.managers.vs.VSManager.create_instance')
+    @mock.patch('SoftLayer.managers.vs.VSManager.create_instance')
     def test_on_post_invalid_create(self, create_instance_mock):
         create_instance_mock.side_effect = Exception('badrequest')
         client, env = get_client_env(body=self.body_string)
@@ -567,99 +670,3 @@ class TestServers(unittest.TestCase):
         resp = falcon.Response()
         self.instance.on_post(req, resp, 'tenant_id')
         self.assertEqual(resp.status, 400)
-
-
-class TestServersServersDetailV2(unittest.TestCase):
-
-    def setUp(self):
-        self.req, self.resp = MagicMock(), MagicMock()
-        self.app = MagicMock()
-        self.instance = ServersDetailV2(self.app)
-
-    def test_init(self):
-        self.assertEquals(self.app, self.instance.app)
-
-    @patch('SoftLayer.CCIManager.list_instances')
-    def test_on_get(self, mockListInstance):
-        href = u'http://localhost:5000/compute/v2/333582/servers/4846014'
-        dict = {'status': 'ACTIVE',
-                'updated': '2014-05-23T10:58:29-05:00',
-                'hostId': 4846014,
-                'user_id': 206942,
-                'addresses': {
-                    'public': [{
-                        'version': 4,
-                        'addr': '23.246.195.197',
-                        'OS-EXT-IPS:type': 'fixed'}],
-                    'private': [{
-                        'version': 4,
-                        'addr': '10.107.38.132',
-                        'OS-EXT-IPS:type': 'fixed'}]},
-                'links': [{
-                    'href': href,
-                    'rel': 'self'}],
-                'created': '2014-05-23T10:57:07-05:00',
-                'tenant_id': 333582,
-                'image_name': '',
-                'OS-EXT-STS:power_state': 1,
-                'accessIPv4': '',
-                'accessIPv6': '',
-                'OS-EXT-STS:vm_state': 'ACTIVE',
-                'OS-EXT-STS:task_state': None,
-                'flavor': {
-                    'id': '1',
-                    'links': [{
-                        'href': 'http://localhost:5000/compute/v2/flavors/1',
-                        'rel': 'bookmark'}]},
-                'OS-EXT-AZ:availability_zone': 154820,
-                'id': '4846014',
-                'security_groups': [{
-                    'name': 'default'}],
-                'name': 'minwoo-metis',
-                }
-        status = {'keyName': 'ACTIVE', 'name': 'Active'}
-        pwrState = {'keyName': 'RUNNING', 'name': 'Running'}
-        sshKeys = []
-        dataCenter = {'id': 154820, 'name': 'dal06', 'longName': 'Dallas 6'}
-        orderItem = {'itemId': 858,
-                     'setupFee': '0',
-                     'promoCodeId': '',
-                     'oneTimeFeeTaxRate': '.066',
-                     'description': '2 x 2.0 GHz Cores',
-                     'laborFee': '0',
-                     'oneTimeFee': '0',
-                     'itemPriceId': '1641',
-                     'setupFeeTaxRate': '.066',
-                     'order': {
-                         'userRecordId': 206942,
-                         'privateCloudOrderFlag': False},
-                     'laborFeeTaxRate': '.066',
-                     'categoryCode': 'guest_core',
-                     'setupFeeDeferralMonths': 12,
-                     'parentId': '',
-                     'recurringFee': '0',
-                     'id': 34750548,
-                     'quantity': '',
-                     }
-        billingItem = {'modifyDate': '2014-06-05T08:37:01-05:00',
-                       'resourceTableId': 4846014,
-                       'hostName': 'minwoo-metis',
-                       'recurringMonths': 1,
-                       'orderItem': orderItem,
-                       }
-
-        mockListInstance.return_value = {'billingItem': billingItem,
-                                         'datacenter': dataCenter,
-                                         'powerState': pwrState,
-                                         'sshKeys': sshKeys,
-                                         'status': status,
-                                         'accountId': 'foobar',
-                                         'id': '1234',
-                                         'createDate': 'foobar',
-                                         'hostname': 'foobar',
-                                         'modifyDate': 'foobar'
-                                         }
-        self.instance.on_get(self.req, self.resp)
-        self.assertEquals(set(self.resp.body['servers'][0].keys()),
-                          set(dict.keys()))
-        self.assertEquals(self.resp.status, 200)
