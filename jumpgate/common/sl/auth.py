@@ -4,6 +4,7 @@ import time
 from jumpgate.common import exceptions
 from jumpgate.common import utils
 from jumpgate.identity.drivers import core as identity
+
 from oslo.config import cfg
 import SoftLayer
 
