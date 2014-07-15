@@ -5,3 +5,4 @@ coverage
 tox
 hacking
 pylint
+SoftLayer >= 3.2.0

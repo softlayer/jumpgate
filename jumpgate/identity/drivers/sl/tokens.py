@@ -142,7 +142,7 @@ class SLAuthDriver(identity.AuthDriver):
 
 class NoAuthDriver(identity.AuthDriver):
     """Encapsulates logic to auto-approve an identity request to a single 
-    default SL credentials.
+    default SL credential.
 
     Validates a consumer's identity in the jumpgate.conf and grants the 
     consumer eligibility for an authentication token.
@@ -153,15 +153,9 @@ class NoAuthDriver(identity.AuthDriver):
 
     def authenticate(self, creds):
         """Performs authentication
-
-        Authenticate the said credentials against an identity provider.
-        Upon successful authentication implementations should return an
-        auth object which typically contains additional details about the
-        authenticated user. The format of the response object is determined
-        by the requirements of the current TokenDriver's create_token method.
-
         :param creds: The credentials in dict form as passed to the API
-        in a request to authenticate and obtain a new token.
+        in a request to authenticate and obtain a new token.  Not used,
+        but present for parent-class compatibility.
         """
 
         endpoint = cfg.CONF['softlayer']['endpoint']
@@ -280,8 +274,8 @@ class TokenV2(object):
 class FakeTokenIdDriver(identity.TokenIdDriver):
     """Fake 'accept-anything' Jumpgate token ID driver
     to map to a single Softlayer user/tenant.  This is meant for environments that
-    use a separate 'real' keystone and want to just have any token work and map to 
-    a single SoftLayer user/tenant.
+    use a separate 'real' keystone and want to just have any token be accepted and 
+    map to a single SoftLayer user/tenant, defined in jumpgate.conf.
     """
 
     def __init__(self):
