@@ -1,19 +1,16 @@
-import mock
-
 from jumpgate.common import error_handling
-from jumpgate.compute.drivers.sl import flavor_list_loader
 
 
 class ExtraSpecsFlavorV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_get(self, req, resp, tenant_id, flavor_id):
         '''Returns the extra specs for a particular flavor
 
         '''
-        all_flavors = flavor_list_loader.Flavors.get_flavors(mock.MagicMock())
-        for flavor in all_flavors:
+        for flavor in self.flavors:
             if str(flavor_id) == flavor['id']:
                 extra_specs = flavor['extra_specs']
                 resp.status = 200
@@ -26,15 +23,15 @@ class ExtraSpecsFlavorV2(object):
 
 
 class ExtraSpecsFlavorKeyV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_get(self, req, resp, tenant_id, flavor_id, key_id):
         '''Returns the requested key from the optional extra specs
 
         '''
-        all_flavors = flavor_list_loader.Flavors.get_flavors(mock.MagicMock())
-        for flavor in all_flavors:
+        for flavor in self.flavors:
             if str(flavor_id) == flavor['id']:
                 extra_specs = flavor['extra_specs']
                 if key_id in extra_specs:

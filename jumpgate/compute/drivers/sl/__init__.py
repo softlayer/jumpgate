@@ -42,9 +42,10 @@ def setup_routes(app, disp):
     disp.set_handler('v2_extension', extensions.ExtensionV2())
 
     disp.set_handler('v2_os_extra_specs_flavor',
-                     extra_specs.ExtraSpecsFlavorV2(app))
+                     extra_specs.ExtraSpecsFlavorV2(app, flavors_from_config))
     disp.set_handler('v2_os_extra_specs_flavor_key',
-                     extra_specs.ExtraSpecsFlavorKeyV2(app))
+                     extra_specs.ExtraSpecsFlavorKeyV2(app,
+                                                       flavors_from_config))
 
     disp.set_handler('v2_flavor', flavor)
     disp.set_handler('v2_flavors', flavor_list)

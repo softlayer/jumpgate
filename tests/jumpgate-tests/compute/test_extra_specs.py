@@ -4,6 +4,7 @@ from falcon.testing import helpers
 import mock
 
 from jumpgate.compute.drivers.sl import extra_specs
+from jumpgate.compute.drivers.sl import flavor_list_loader
 
 
 TENANT_ID = 333333
@@ -23,7 +24,9 @@ class TestExtraSpecsFlavor(unittest.TestCase):
         env = get_client_env()
         self.req = falcon.Request(env)
         self.resp = falcon.Response()
-        instance = extra_specs.ExtraSpecsFlavorV2(app=mock.MagicMock())
+        flavors = flavor_list_loader.Flavors.get_flavors(app=mock.MagicMock())
+        instance = extra_specs.ExtraSpecsFlavorV2(app=mock.MagicMock(),
+                                                  flavors=flavors)
         instance.on_get(self.req, self.resp, tenant_id, flavor_id)
 
     def test_on_get_for_all_details(self):
@@ -65,7 +68,9 @@ class TestExtraSpecsFlavorKey(unittest.TestCase):
         env = get_client_env()
         self.req = falcon.Request(env)
         self.resp = falcon.Response()
-        instance = extra_specs.ExtraSpecsFlavorKeyV2(app=mock.MagicMock())
+        flavors = flavor_list_loader.Flavors.get_flavors(app=mock.MagicMock())
+        instance = extra_specs.ExtraSpecsFlavorKeyV2(app=mock.MagicMock(),
+                                                     flavors=flavors)
         instance.on_get(self.req, self.resp, tenant_id, flavor_id, key_id)
 
     def test_on_get_for_portspeed(self):
