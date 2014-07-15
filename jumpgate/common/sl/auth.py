@@ -30,6 +30,7 @@ def get_token_details(token, tenant_id=None):
 
     return token_details
 
+
 def get_new_token_v3(credentials):
     token_driver = identity.token_driver()
     token_id = utils.lookup(credentials, 'auth', 'identity', 'token', 'id')
