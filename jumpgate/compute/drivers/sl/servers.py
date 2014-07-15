@@ -1,6 +1,8 @@
 import json
+import re
 
 import SoftLayer
+
 
 from jumpgate.common import config
 from jumpgate.common import error_handling
@@ -191,6 +193,16 @@ class ServersV2(object):
             new_instance = cci.create_instance(**payload)
         except Exception as e:
             return error_handling.bad_request(resp, message=str(e))
+
+        # This should be the first tag that the VS set. Adding any more tags
+        # will replace this tag
+        try:
+            flavor_id = int(body['server'].get('flavorRef'))
+            vs = client['Virtual_Guest']
+            vs.setTags('{"flavor_id": ' + str(flavor_id) + '}',
+                       id=new_instance['id'])
+        except Exception:
+            pass
 
         resp.set_header('x-compute-request-id', 'create')
         resp.status = 202
@@ -385,7 +397,8 @@ class ServersDetailV2(object):
 
         results = []
         for instance in sl_instances:
-            results.append(get_server_details_dict(self.app, req, instance))
+            results.append(
+                get_server_details_dict(self.app, req, instance, False))
 
         resp.status = 200
         resp.body = {'servers': results}
@@ -402,7 +415,7 @@ class ServerV2(object):
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(self.app, req, instance)
+        results = get_server_details_dict(self.app, req, instance, True)
 
         resp.body = {'server': results}
 
@@ -436,19 +449,44 @@ class ServerV2(object):
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(self.app, req, instance)
+        results = get_server_details_dict(self.app, req, instance, False)
         resp.body = {'server': results}
 
 
-def get_server_details_dict(app, req, instance):
+def get_server_details_dict(app, req, instance, is_list):
+
     image_id = utils.lookup(instance,
                             'blockDeviceTemplateGroup',
                             'globalIdentifier')
     tenant_id = str(instance['accountId'])
 
-    # TODO(kmcdonald) - Don't hardcode this flavor ID
-    flavor_url = app.get_endpoint_url(
-        'compute', req, 'v2_flavor', flavor_id=1)
+    client = req.env['sl_client']
+    vs = client['Virtual_Guest']
+
+    flavor_url = None
+    flavor_id = 1
+
+    if is_list:
+        tags = vs.getTagReferences(id=instance['id'])
+        for tag in tags:
+            if 'flavor_id' in tag['tag']['name']:
+                try:
+                    # Try to parse the flavor id from the tag format
+                    # i.e. 'flavor_id: 2'
+                    tag_string = tag['tag']['name']
+
+                    flavor_id = int(re.search(r'\d+', tag_string).group())
+                    flavor_url = app.get_endpoint_url(
+                        'compute', req, 'v2_flavor', flavor_id=flavor_id)
+                except Exception:
+                    pass
+
+    # Workaround of hardcoded ID for VS's created before flavor-id
+    # pushed into tags
+    if not flavor_url:
+        flavor_url = app.get_endpoint_url(
+            'compute', req, 'v2_flavor', flavor_id=1)
+
     server_url = app.get_endpoint_url(
         'compute', req, 'v2_server', server_id=instance['id'])
 
@@ -528,8 +566,7 @@ def get_server_details_dict(app, req, instance):
         'created': instance['createDate'],
         # TODO(nbeitenmiller) - Do I need to run this through isoformat()?
         'flavor': {
-            # TODO(kmcdonald) - Make this realistic
-            'id': '1',
+            'id': str(flavor_id),
             'links': [
                 {
                     'href': flavor_url,
