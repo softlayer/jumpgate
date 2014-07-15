@@ -207,6 +207,7 @@ class ServersV2(object):
         resp.set_header('x-compute-request-id', 'create')
         resp.status = 202
         resp.body = {'server': {
+            # TODO - Casted to string to make tempest pass, make sure corret
             'id': str(new_instance['id']),
             'links': [{
                 'href': self.app.get_endpoint_url(
@@ -214,6 +215,7 @@ class ServersV2(object):
                     instance_id=new_instance['id']),
                 'rel': 'self'}],
             'adminPass': '',
+            # TODO - Added security_groups to make tempest pass, need real groups
             'security_groups': []
         }}
 
