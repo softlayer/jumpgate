@@ -1,11 +1,17 @@
 import json
+import logging
+import re
 
 import SoftLayer
+
 
 from jumpgate.common import config
 from jumpgate.common import error_handling
 from jumpgate.common import utils
-from jumpgate.compute.drivers.sl import flavors
+
+
+LOG = logging.getLogger(__name__)
+
 
 # This comes from Horizon. I wonder if there's a better place to get it.
 OPENSTACK_POWER_MAP = {
@@ -21,8 +27,9 @@ OPENSTACK_POWER_MAP = {
 
 
 class ServerActionV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_post(self, req, resp, tenant_id, instance_id):
         body = json.loads(req.stream.read().decode())
@@ -117,14 +124,14 @@ class ServerActionV2(object):
             return
         elif 'resize' in body:
             flavor_id = int(body['resize'].get('flavorRef'))
-            if flavor_id not in flavors.FLAVORS:
-                return error_handling.bad_request(
-                    resp, message="Invalid flavor id in the request body")
-            flavor = flavors.FLAVORS[flavor_id]
-            cci.upgrade(instance_id, cpus=flavor['cpus'],
-                        memory=flavor['ram'] / 1024)
-            resp.status = 202
-            return
+            for flavor in self.flavors:
+                if str(flavor_id) == flavor['id']:
+                    cci.upgrade(instance_id, cpus=flavor['cpus'],
+                                memory=flavor['ram'] / 1024)
+                    resp.status = 202
+                    return
+            return error_handling.bad_request(resp, message="Invalid flavor "
+                                              "id in the request body")
         elif 'confirmResize' in body:
             resp.status = 204
             return
@@ -136,8 +143,9 @@ class ServerActionV2(object):
 
 
 class ServersV2(object):
-    def __init__(self, app):
+    def __init__(self, app, flavors):
         self.app = app
+        self.flavors = flavors
 
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
@@ -192,6 +200,16 @@ class ServersV2(object):
         except Exception as e:
             return error_handling.bad_request(resp, message=str(e))
 
+        # This should be the first tag that the VS set. Adding any more tags
+        # will replace this tag
+        try:
+            flavor_id = int(body['server'].get('flavorRef'))
+            vs = client['Virtual_Guest']
+            vs.setTags('{"flavor_id": ' + str(flavor_id) + '}',
+                       id=new_instance['id'])
+        except Exception:
+            pass
+
         resp.set_header('x-compute-request-id', 'create')
         resp.status = 202
         resp.body = {'server': {
@@ -206,13 +224,21 @@ class ServersV2(object):
 
     def _handle_flavor(self, payload, body):
         flavor_id = int(body['server'].get('flavorRef'))
-        if flavor_id not in flavors.FLAVORS:
-            raise Exception('Flavor could not be found')
-
-        flavor = flavors.FLAVORS[flavor_id]
-        payload['cpus'] = flavor['cpus']
-        payload['memory'] = flavor['ram']
-        payload['local_disk'] = False if flavor['disk-type'] == 'SAN' else True
+        for flavor in self.flavors:
+            if str(flavor_id) == flavor['id']:
+                payload['cpus'] = flavor['cpus']
+                payload['memory'] = flavor['ram']
+                payload['local_disk'] = (False if flavor['disk-type'] == 'SAN'
+                                         else True)
+                try:
+                    port_speed = flavor['portspeed']
+                    payload['nic_speed'] = port_speed
+                except Exception:
+                    # If port speed is not specified, it is left to SoftLayer
+                    # to provide the 'default' port speed
+                    pass
+                return
+        raise Exception('Flavor could not be found')
 
     def _handle_sshkeys(self, payload, body, client):
         ssh_keys = []
@@ -384,7 +410,8 @@ class ServersDetailV2(object):
 
         results = []
         for instance in sl_instances:
-            results.append(get_server_details_dict(self.app, req, instance))
+            results.append(
+                get_server_details_dict(self.app, req, instance, False))
 
         resp.status = 200
         resp.body = {'servers': results}
@@ -401,7 +428,7 @@ class ServerV2(object):
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(self.app, req, instance)
+        results = get_server_details_dict(self.app, req, instance, True)
 
         resp.body = {'server': results}
 
@@ -435,19 +462,44 @@ class ServerV2(object):
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
 
-        results = get_server_details_dict(self.app, req, instance)
+        results = get_server_details_dict(self.app, req, instance, False)
         resp.body = {'server': results}
 
 
-def get_server_details_dict(app, req, instance):
+def get_server_details_dict(app, req, instance, is_list):
+
     image_id = utils.lookup(instance,
                             'blockDeviceTemplateGroup',
                             'globalIdentifier')
     tenant_id = instance['accountId']
 
-    # TODO(kmcdonald) - Don't hardcode this flavor ID
-    flavor_url = app.get_endpoint_url(
-        'compute', req, 'v2_flavor', flavor_id=1)
+    client = req.env['sl_client']
+    vs = client['Virtual_Guest']
+
+    flavor_url = None
+    flavor_id = 1
+
+    if is_list:
+        tags = vs.getTagReferences(id=instance['id'])
+        for tag in tags:
+            if 'flavor_id' in tag['tag']['name']:
+                try:
+                    # Try to parse the flavor id from the tag format
+                    # i.e. 'flavor_id: 2'
+                    tag_string = tag['tag']['name']
+
+                    flavor_id = int(re.search(r'\d+', tag_string).group())
+                    flavor_url = app.get_endpoint_url(
+                        'compute', req, 'v2_flavor', flavor_id=flavor_id)
+                except Exception:
+                    pass
+
+    # Workaround of hardcoded ID for VS's created before flavor-id
+    # pushed into tags
+    if not flavor_url:
+        flavor_url = app.get_endpoint_url(
+            'compute', req, 'v2_flavor', flavor_id=1)
+
     server_url = app.get_endpoint_url(
         'compute', req, 'v2_server', server_id=instance['id'])
 
@@ -513,8 +565,7 @@ def get_server_details_dict(app, req, instance):
         'created': instance['createDate'],
         # TODO(nbeitenmiller) - Do I need to run this through isoformat()?
         'flavor': {
-            # TODO(kmcdonald) - Make this realistic
-            'id': '1',
+            'id': str(flavor_id),
             'links': [
                 {
                     'href': flavor_url,

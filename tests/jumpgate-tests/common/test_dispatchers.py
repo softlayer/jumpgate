@@ -12,6 +12,10 @@ MOCK_CONFIG.softlayer.catalog_template_file = os.path.join(
     DIR_PATH, '../identity.templates')
 MOCK_CONFIG.softlayer.catalog_template_file_v3 = os.path.join(
     DIR_PATH, '../identity_v3.templates')
+MOCK_CONFIG.flavors.flavor_list = os.path.join(DIR_PATH,
+                                               '../flavor_list.json')
+MOCK_CONFIG.volume.volume_types = os.path.join(
+    DIR_PATH, '../volume_types.json')
 
 
 class TestServiceDispatchers(unittest.TestCase):
