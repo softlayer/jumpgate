@@ -7,9 +7,9 @@ from jumpgate.common import aes
 from jumpgate.common import exceptions
 from jumpgate.common import utils
 from jumpgate.identity.drivers import core as identity
-
 from oslo.config import cfg
 import SoftLayer
+
 
 LOG = logging.getLogger(__name__)
 USER_MASK = 'id, username, accountId'
@@ -141,8 +141,7 @@ class SLAuthDriver(identity.AuthDriver):
 
 
 class NoAuthDriver(identity.AuthDriver):
-    """Encapsulates logic to auto-approve an identity request to a single
-    default SL credential.
+    """Auto-approve an identity request to a single default SL credential.
 
     Validates a consumer's identity in the jumpgate.conf and grants the
     consumer eligibility for an authentication token.
@@ -152,7 +151,8 @@ class NoAuthDriver(identity.AuthDriver):
         super(NoAuthDriver, self).__init__()
 
     def authenticate(self, creds):
-        """Performs authentication
+        """Performs faux authentication
+
         :param creds: The credentials in dict form as passed to the API
         in a request to authenticate and obtain a new token.  Not used,
         but present for parent-class compatibility.
@@ -273,11 +273,12 @@ class TokenV2(object):
 
 
 class FakeTokenIdDriver(identity.TokenIdDriver):
-    """Fake 'accept-anything' Jumpgate token ID driver to map to a
-    single Softlayer user/tenant.  This is meant for environments that
-    use a separate 'real' keystone and want to just have any token be
-    accepted andmap to a single SoftLayer user/tenant, defined in
-    the jumpgate.conf.
+    """Fake 'accept-anything' Jumpgate token ID driver
+
+    All token ids map to a single Softlayer user/tenant.
+    This is meant for environments that use a separate 'real' keystone
+    and want to just have any token be accepted andmap to a single
+    SoftLayer user/tenant, defined in the jumpgate.conf.
     """
 
     def __init__(self):

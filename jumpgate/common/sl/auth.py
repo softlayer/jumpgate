@@ -1,15 +1,12 @@
-import base64
-import json
 import logging
 import time
 
-from oslo.config import cfg
-import SoftLayer
-
-from jumpgate.common import aes
 from jumpgate.common import exceptions
 from jumpgate.common import utils
 from jumpgate.identity.drivers import core as identity
+from oslo.config import cfg
+import SoftLayer
+
 
 USER_MASK = 'id, username, accountId'
 LOG = logging.getLogger(__name__)
