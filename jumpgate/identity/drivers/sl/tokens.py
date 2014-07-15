@@ -141,10 +141,10 @@ class SLAuthDriver(identity.AuthDriver):
 
 
 class NoAuthDriver(identity.AuthDriver):
-    """Encapsulates logic to auto-approve an identity request to a single 
+    """Encapsulates logic to auto-approve an identity request to a single
     default SL credential.
 
-    Validates a consumer's identity in the jumpgate.conf and grants the 
+    Validates a consumer's identity in the jumpgate.conf and grants the
     consumer eligibility for an authentication token.
     """
 
@@ -163,9 +163,9 @@ class NoAuthDriver(identity.AuthDriver):
         default_user = cfg.CONF['softlayer']['noauth_user']
         default_api_key = cfg.CONF['softlayer']['noauth_api_key']
         client = SoftLayer.Client(username=default_user,
-                                      api_key=default_api_key,
-                                      endpoint_url=endpoint,
-                                      proxy=proxy)
+                                  api_key=default_api_key,
+                                  endpoint_url=endpoint,
+                                  proxy=proxy)
         user = client['Account'].getCurrentUser(mask=USER_MASK)
         return {'user': user, 'credential': default_api_key,
                 'auth_type': 'api_key'}
@@ -271,26 +271,30 @@ class TokenV2(object):
         resp.status = 202
         resp.body = ''
 
+
 class FakeTokenIdDriver(identity.TokenIdDriver):
-    """Fake 'accept-anything' Jumpgate token ID driver
-    to map to a single Softlayer user/tenant.  This is meant for environments that
-    use a separate 'real' keystone and want to just have any token be accepted and 
-    map to a single SoftLayer user/tenant, defined in jumpgate.conf.
+    """Fake 'accept-anything' Jumpgate token ID driver to map to a
+    single Softlayer user/tenant.  This is meant for environments that
+    use a separate 'real' keystone and want to just have any token be
+    accepted andmap to a single SoftLayer user/tenant, defined in
+    the jumpgate.conf.
     """
 
     def __init__(self):
         super(FakeTokenIdDriver, self).__init__()
 
     def create_token_id(self, token):
-        # Doesn't matter how we encode, since decode will always give same result
-        # no matter what input, but for now do the same as our default driver
+        # Doesn't matter how we encode, since decode will always give
+        # same result no matter what input, but for now do the same as our
+        # default driver
         return base64.b64encode(aes.encode_aes(json.dumps(token)))
 
     def token_from_id(self, token_id):
         try:
             tokens = identity.token_driver()
             if (identity.auth_driver().__class__.__name__ != "NoAuthDriver"):
-                raise exceptions.InvalidTokenError('Auth-driver must be NoAuthDriver')
+                raise exceptions.InvalidTokenError(
+                    'Auth-driver must be NoAuthDriver')
             auth = identity.auth_driver().authenticate(None)
             if auth is None:
                 raise exceptions.Unauthorized('Unauthorized credentials')
@@ -298,4 +302,3 @@ class FakeTokenIdDriver(identity.TokenIdDriver):
             return token
         except (TypeError, ValueError):
             raise exceptions.InvalidTokenError('Malformed token')
-

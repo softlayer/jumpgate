@@ -2,8 +2,8 @@ from mock import MagicMock, patch
 
 from jumpgate.common.exceptions import (Unauthorized, InvalidTokenError)
 from jumpgate.identity.drivers.sl.tokens import (NoAuthDriver, SLAuthDriver,
-                                              TokensV2, FakeTokenIdDriver
-                                              )
+                                                 TokensV2, FakeTokenIdDriver
+                                                 )
 import unittest
 
 
@@ -14,10 +14,10 @@ class TestNoAuthDriver(unittest.TestCase):
         self.instance = NoAuthDriver()
 
     @patch('SoftLayer.Client')
-    def test_authenticate(self, mockSLClient):     
+    def test_authenticate(self, mockSLClient):
         mockAccount = MagicMock()
         mockAccount.getCurrentUser.return_value = 'testuser'
-        mockSLClient.return_value = {'Account' : mockAccount }        
+        mockSLClient.return_value = {'Account': mockAccount}
 
         result = self.instance.authenticate(self.creds)
         self.assertEquals(result['user'], 'testuser')
@@ -42,4 +42,3 @@ class TestFakeTokenIdDriver(unittest.TestCase):
         mockNoAuthDriver.authenticate.return_value = None
         with self.assertRaises(Unauthorized):
             self.instance.token_from_id(self.token_id)
-
