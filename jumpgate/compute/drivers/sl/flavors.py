@@ -12,17 +12,13 @@ class FlavorV2(object):
         self.flavors = flavors
 
     def on_get(self, req, resp, flavor_id, tenant_id=None):
-        try:
-            flavor_id = int(flavor_id)
-        except ValueError:
-            return error_handling.not_found(resp, 'Flavor could not be found')
-
-        if flavor_id not in self.flavors:
-            return error_handling.not_found(resp, 'Flavor could not be found')
-
-        flavor = get_flavor_details(self.app, req, self.flavors[flavor_id],
-                                    detail=True)
-        resp.body = {'flavor': flavor}
+        for flavor in self.flavors:
+            if str(flavor_id) == flavor['id']:
+                flavor = get_flavor_details(self.app, req,
+                                            flavor, detail=True)
+                resp.body = {'flavor': flavor}
+                return
+        return error_handling.not_found(resp, 'Flavor could not be found')
 
 
 class FlavorsV2(object):
