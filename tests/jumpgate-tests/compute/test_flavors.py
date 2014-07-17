@@ -236,3 +236,32 @@ class TestFlavorList(unittest.TestCase):
 
     def tearDown(self):
         flavor_list_loader.Flavors._flavors = None
+
+
+class TestFlavorV2(unittest.TestCase):
+    def perform_flavor_detail(self, tenant_id, flavor_list, flavor_id):
+        env = get_client_env()
+        self.req = falcon.Request(env)
+        self.resp = falcon.Response()
+        self.app = mock.MagicMock()
+        instance = flavors.FlavorV2(app=self.app, flavors=flavor_list)
+        instance.on_get(self.req, self.resp, flavor_id, tenant_id)
+
+    def test_on_get(self):
+        self.perform_flavor_detail(TENANT_ID, FLAVOR_LIST, 3)
+        self.assertEquals(list(self.resp.body.keys()), ['flavor'])
+        flavor_detail_keys = ['name', 'links', 'ram',
+                              'OS-FLV-DISABLED:disabled', 'vcpus',
+                              'OS-FLV-DISK-TYPE:disk_type', 'swap',
+                              'rxtx_factor', 'os-flavor-access:is_public',
+                              'OS-FLV-EXT-DATA:ephemeral', 'disk', 'id']
+        self.assertEquals(set(self.resp.body['flavor'].keys()),
+                          set(flavor_detail_keys))
+        self.assertEquals(self.resp.status, '200 OK')
+
+    def test_on_get_fail_flavor_not_found(self):
+        self.perform_flavor_detail(TENANT_ID, FLAVOR_LIST, 42)
+        self.assertEquals(self.resp.body, {'notFound':
+                                           {'message': 'Flavor could not '
+                                            'be found', 'code': '404'}})
+        self.assertEquals(self.resp.status, 404)
