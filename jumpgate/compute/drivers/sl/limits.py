@@ -27,7 +27,7 @@ class LimitsV2(object):
                 'totalFloatingIpsUsed': 0,
                 'totalSecurityGroupsUsed': 0,
             },
-            # TODO - Added rate to make tempest pass, need real rate
+            # TODO(imkarrer) - Added rate to make tempest pass, need real rate
             'rate': [],
         }
 

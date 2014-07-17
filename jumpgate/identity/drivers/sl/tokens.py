@@ -41,7 +41,7 @@ def get_access(token_id, token_details):
     tokens = identity.token_driver()
     return {
         'token': {
-            # TODO - replaced isoformat() with strftime to make tempest pass
+            # TODO(imkarrer) - replaced isoformat() with strftime to make tempest pass  # noqa
             'expires': datetime.datetime.fromtimestamp(
                 tokens.expires(token_details)).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'id': token_id,

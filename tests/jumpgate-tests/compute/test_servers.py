@@ -193,6 +193,7 @@ class TestServersServersDetailV2(unittest.TestCase):
                 'security_groups': [{
                     'name': 'default'}],
                 'name': 'minwoo-metis',
+                'metadata': {},
                 }
         status = {'keyName': 'ACTIVE', 'name': 'Active'}
         pwrState = {'keyName': 'RUNNING', 'name': 'Running'}
@@ -284,7 +285,7 @@ class TestServerDetail(unittest.TestCase):
         '''
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals(list(self.resp.body.keys()), ['server'])
-        self.assertEquals(len(list(self.resp.body['server'])), 20)
+        self.assertEquals(len(list(self.resp.body['server'])), 21)
 
     def test_on_get_server_detail_id(self):
         '''checking the type for the property 'id'
@@ -395,7 +396,7 @@ class TestServerDetail(unittest.TestCase):
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('hostId' in self.resp.body['server'].keys(), True)
-        self.assertEquals(type(self.resp.body['server']['hostId']), int)
+        self.assertEquals(type(self.resp.body['server']['hostId']), str)
 
     def test_on_get_server_detail_name(self):
         '''checking the type for the property 'name'
@@ -411,7 +412,7 @@ class TestServerDetail(unittest.TestCase):
 
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('tenant_id' in self.resp.body['server'].keys(), True)
-        self.assertEquals(type(self.resp.body['server']['tenant_id']), int)
+        self.assertEquals(type(self.resp.body['server']['tenant_id']), str)
 
     def test_on_get_server_detail_progress(self):
         '''checking the type for the property 'user_id'
@@ -420,7 +421,7 @@ class TestServerDetail(unittest.TestCase):
         self.perform_server_detail(TENANT_ID, SERVER_ID)
         self.assertEquals('user_id' in self.resp.body['server'].keys(), True)
         self.assertEquals(type(self.resp.body['server']['user_id']),
-                          type(None))
+                          str)
 
 
 class TestServersV2(unittest.TestCase):
@@ -642,7 +643,7 @@ class TestServersV2(unittest.TestCase):
              "globalIdentifier": "8bfd7c70-5ee4-4581-a2c1-6ae8986fc97a",
              "dedicatedAccountHostOnlyFlag": False,
              "modifyDate": '',
-             "accountId": 333582,
+             "accountId": str(333582),
              "id": 5139276,
              "fullyQualifiedDomainName": "testserver2.jumpgate.com"}
         client, env = get_client_env(body=self.body_string)
@@ -650,7 +651,7 @@ class TestServersV2(unittest.TestCase):
         resp = falcon.Response()
         self.instance.on_post(req, resp, 'tenant_id')
         self.assertEqual(resp.status, 202)
-        self.assertEqual(resp.body['server']['id'], 5139276)
+        self.assertEqual(resp.body['server']['id'], str(5139276))
 
     @mock.patch('SoftLayer.managers.vs.VSManager.create_instance')
     def test_on_post_invalid_create(self, create_instance_mock):

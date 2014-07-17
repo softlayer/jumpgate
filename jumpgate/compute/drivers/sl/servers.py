@@ -213,7 +213,7 @@ class ServersV2(object):
         resp.set_header('x-compute-request-id', 'create')
         resp.status = 202
         resp.body = {'server': {
-            # TODO - Casted to string to make tempest pass, make sure corret
+            # TODO(imkarrer) - Casted to string to make tempest pass, make sure correct  # noqa
             'id': str(new_instance['id']),
             'links': [{
                 'href': self.app.get_endpoint_url(
@@ -221,7 +221,7 @@ class ServersV2(object):
                     instance_id=new_instance['id']),
                 'rel': 'self'}],
             'adminPass': '',
-            # TODO - Added security_groups to make tempest pass, need real groups
+            # TODO(imkarrer) - Added security_groups to make tempest pass, need real groups  # noqa
             'security_groups': []
         }}
 
@@ -560,18 +560,18 @@ def get_server_details_dict(app, req, instance, is_list):
 
     # TODO(kmcdonald) - Don't hardcode this
     image_name = ''
-    # TODO(imkarrer) - returning None makes tempest fail, conditionally returning empty string
+    # TODO(imkarrer) - returning None makes tempest fail, conditionally returning empty string  # noqa
     # TODO(imkarrer) - same thing with zone
     uid = str(utils.lookup(instance,
-                                    'billingItem',
-                                    'orderItem',
-                                    'order',
-                                    'userRecordId'))
+                           'billingItem',
+                           'orderItem',
+                           'order',
+                           'userRecordId'))
     if not uid:
         uid = ''
     zone = str(utils.lookup(instance,
-                                        'datacenter',
-                                        'id'))
+                            'datacenter',
+                            'id'))
     if not zone:
         zone = ''
 
@@ -608,7 +608,7 @@ def get_server_details_dict(app, req, instance, is_list):
         'tenant_id': tenant_id,
         # NOTE(bodenr): userRecordId accessibility determined by permissions
         # of API caller's user id and api key. Otherwise it will be None
-        # TODO(imkarrer) - returning None makes tempest fail, conditionally returning empty string
+        # TODO(imkarrer) - returning None makes tempest fail, conditionally returning empty string  # noqa
         'user_id': uid,
         'updated': instance['modifyDate'],
         'image_name': image_name,
