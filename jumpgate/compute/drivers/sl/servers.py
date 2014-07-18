@@ -213,7 +213,7 @@ class ServersV2(object):
         resp.set_header('x-compute-request-id', 'create')
         resp.status = 202
         resp.body = {'server': {
-            # TODO(imkarrer) - Casted to string to make tempest pass, make sure correct  # noqa
+            # Casted to string to make tempest pass
             'id': str(new_instance['id']),
             'links': [{
                 'href': self.app.get_endpoint_url(
@@ -560,8 +560,8 @@ def get_server_details_dict(app, req, instance, is_list):
 
     # TODO(kmcdonald) - Don't hardcode this
     image_name = ''
-    # TODO(imkarrer) - returning None makes tempest fail, conditionally returning empty string  # noqa
-    # TODO(imkarrer) - same thing with zone
+    # returning None makes tempest fail,
+    # conditionally returning empty string for uid and zone
     uid = str(utils.lookup(instance,
                            'billingItem',
                            'orderItem',
@@ -608,7 +608,6 @@ def get_server_details_dict(app, req, instance, is_list):
         'tenant_id': tenant_id,
         # NOTE(bodenr): userRecordId accessibility determined by permissions
         # of API caller's user id and api key. Otherwise it will be None
-        # TODO(imkarrer) - returning None makes tempest fail, conditionally returning empty string  # noqa
         'user_id': uid,
         'updated': instance['modifyDate'],
         'image_name': image_name,

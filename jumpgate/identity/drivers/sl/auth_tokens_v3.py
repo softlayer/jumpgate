@@ -39,7 +39,7 @@ def parse_templates(template_lines):
 def get_access(token_id, token_details, user):
     return {
         'token': {
-            # TODO(imkarrer) - replaced isoformat() with strftime to make tempest pass  # noqa
+            # replaced isoformat() with strftime to make tempest pass
             'expires': datetime.datetime.fromtimestamp(
                 token_details['expires']).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'id': token_id,
