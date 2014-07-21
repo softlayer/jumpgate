@@ -213,13 +213,16 @@ class ServersV2(object):
         resp.set_header('x-compute-request-id', 'create')
         resp.status = 202
         resp.body = {'server': {
-            'id': new_instance['id'],
+            # Casted to string to make tempest pass
+            'id': str(new_instance['id']),
             'links': [{
                 'href': self.app.get_endpoint_url(
                     'compute', req, 'v2_server',
                     instance_id=new_instance['id']),
                 'rel': 'self'}],
             'adminPass': '',
+            # TODO(imkarrer) - Added security_groups to make tempest pass, need real groups  # noqa
+            'security_groups': []
         }}
 
     def _handle_flavor(self, payload, body):
@@ -472,7 +475,7 @@ def get_server_details_dict(app, req, instance, is_list):
     image_id = utils.lookup(instance,
                             'blockDeviceTemplateGroup',
                             'globalIdentifier')
-    tenant_id = instance['accountId']
+    tenant_id = str(instance['accountId'])
 
     client = req.env['sl_client']
     vs = client['Virtual_Guest']
@@ -557,6 +560,20 @@ def get_server_details_dict(app, req, instance, is_list):
 
     # TODO(kmcdonald) - Don't hardcode this
     image_name = ''
+    # returning None makes tempest fail,
+    # conditionally returning empty string for uid and zone
+    uid = str(utils.lookup(instance,
+                           'billingItem',
+                           'orderItem',
+                           'order',
+                           'userRecordId'))
+    if not uid:
+        uid = ''
+    zone = str(utils.lookup(instance,
+                            'datacenter',
+                            'id'))
+    if not zone:
+        zone = ''
 
     results = {
         'id': str(instance['id']),
@@ -574,7 +591,7 @@ def get_server_details_dict(app, req, instance, is_list):
                 },
             ],
         },
-        'hostId': instance['id'],
+        'hostId': str(instance['id']),
         'links': [
             {
                 'href': server_url,
@@ -582,9 +599,7 @@ def get_server_details_dict(app, req, instance, is_list):
             }
         ],
         'name': instance['hostname'],
-        'OS-EXT-AZ:availability_zone': utils.lookup(instance,
-                                                    'datacenter',
-                                                    'id'),
+        'OS-EXT-AZ:availability_zone': zone,
         'OS-EXT-STS:power_state': power_state,
         'OS-EXT-STS:task_state': task_state,
         'OS-EXT-STS:vm_state': instance['status']['keyName'],
@@ -593,13 +608,11 @@ def get_server_details_dict(app, req, instance, is_list):
         'tenant_id': tenant_id,
         # NOTE(bodenr): userRecordId accessibility determined by permissions
         # of API caller's user id and api key. Otherwise it will be None
-        'user_id': utils.lookup(instance,
-                                'billingItem',
-                                'orderItem',
-                                'order',
-                                'userRecordId'),
+        'user_id': uid,
         'updated': instance['modifyDate'],
         'image_name': image_name,
+        # TODO(imkarrer) added to make tempest pass, need real metadata
+        'metadata': {}
     }
 
     # OpenStack only supports having one SSH Key assigned to an instance

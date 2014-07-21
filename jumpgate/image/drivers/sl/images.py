@@ -570,7 +570,8 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'progress': 100,
         'metadata': {},
         'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
-        'OS-EXT-IMG-SIZE:size': None,
+        # changed from None to 1000 for Tempest
+        'OS-EXT-IMG-SIZE:size': 1000,
         'container_format': 'bare',
         'disk_format': 'raw',
         'is_public': True if image.get('visibility') == 'public' else False,

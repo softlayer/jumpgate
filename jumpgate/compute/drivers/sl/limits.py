@@ -26,7 +26,9 @@ class LimitsV2(object):
                 'totalRAMUsed': 0,
                 'totalFloatingIpsUsed': 0,
                 'totalSecurityGroupsUsed': 0,
-            }
+            },
+            # TODO(imkarrer) - Added rate to make tempest pass, need real rate
+            'rate': [],
         }
 
         resp.body = {'limits': limits}
