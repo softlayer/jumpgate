@@ -303,7 +303,6 @@ class ServersV2(object):
             return
 
         private_network_only = True
-
         try:
             _filter = {
                 'networkVlans': {'id': {'operation': int(networks[0]['uuid'])}}

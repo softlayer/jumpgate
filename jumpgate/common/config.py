@@ -33,6 +33,8 @@ FILE_OPTIONS = {
         cfg.StrOpt('endpoint', default=SoftLayer.API_PUBLIC_ENDPOINT),
         cfg.StrOpt('proxy', default=None),
         cfg.StrOpt('catalog_template_file', default='identity.templates'),
+        cfg.StrOpt('noauth_user', default=''),
+        cfg.StrOpt('noauth_api_key', default=''),
     ],
     'identity': [
         cfg.StrOpt('driver', default='jumpgate.identity.drivers.sl'),
