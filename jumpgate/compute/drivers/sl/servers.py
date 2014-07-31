@@ -126,6 +126,8 @@ class ServerActionV2(object):
             flavor_id = int(body['resize'].get('flavorRef'))
             for flavor in self.flavors:
                 if str(flavor_id) == flavor['id']:
+                    vg_client.setTags('{"flavor_id": ' + str(flavor_id) + '}',
+                                      id=instance_id)
                     cci.upgrade(instance_id, cpus=flavor['cpus'],
                                 memory=flavor['ram'] / 1024)
                     resp.status = 202
