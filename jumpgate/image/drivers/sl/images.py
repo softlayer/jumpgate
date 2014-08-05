@@ -1,226 +1,24 @@
+import itertools
 import json
 import uuid
 
-from SoftLayer import utils as sl_utils
-
 from jumpgate.common import error_handling
 from jumpgate.common import utils
+from jumpgate.image.drivers.sl import schema
+
+
+IMAGE_MASK = ('id,accountId,name,globalIdentifier,blockDevices,parentId,'
+              'createDate,blockDevicesDiskSpaceTotal')
 
 
 class SchemaImageV2(object):
     # TODO() - This needs to be updated for our specifications
-    image_schema = {
-        "name": "image",
-        "properties": {
-            "architecture": {
-                "description": "Operating system architecture as specified in "
-                               "http://docs.openstack.org/trunk/"
-                               "openstack-compute/admin/content/"
-                               "adding-images.html",
-                "type": "string"
-            },
-            "checksum": {
-                "description": "md5 hash of image contents. (READ-ONLY)",
-                "maxLength": 32,
-                "type": "string"
-            },
-            "container_format": {
-                "description": "Format of the container",
-                "enum": [
-                    "ami",
-                    "ari",
-                    "aki",
-                    "bare",
-                    "ovf"
-                ],
-                "type": "string"
-            },
-            "created_at": {
-                "description": "Date and time of image registration "
-                               "(READ-ONLY)",
-                "type": "string"
-            },
-            "direct_url": {
-                "description": "URL to access the image file kept in external "
-                               "store (READ-ONLY)",
-                "type": "string"
-            },
-            "disk_format": {
-                "description": "Format of the disk",
-                "enum": [
-                    "ami",
-                    "ari",
-                    "aki",
-                    "vhd",
-                    "vmdk",
-                    "raw",
-                    "qcow2",
-                    "vdi",
-                    "iso"
-                ],
-                "type": "string"
-            },
-            "file": {
-                "description": "(READ-ONLY)",
-                "type": "string"
-            },
-            "id": {
-                "description": "An identifier for the image",
-                "pattern": "^([0-9a-fA-F]){8}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){12}$",
-                "type": "string"
-            },
-            "instance_uuid": {
-                "description": "ID of instance used to create this image.",
-                "type": "string"
-            },
-            "kernel_id": {
-                "description": "ID of image stored in Glance that should be "
-                               "used as the kernel when booting an AMI-style "
-                               "image.",
-                "pattern": "^([0-9a-fA-F]){8}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){12}$",
-                "type": "string"
-            },
-            "locations": {
-                "description": "A set of URLs to access the image file kept "
-                               "in external store",
-                "items": {
-                    "properties": {
-                        "metadata": {
-                            "type": "object"
-                        },
-                        "url": {
-                            "maxLength": 255,
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "url",
-                        "metadata"
-                    ],
-                    "type": "object"
-                },
-                "type": "array"
-            },
-            "min_disk": {
-                "description": "Amount of disk space (in GB) required to boot "
-                               "image.",
-                "type": "integer"
-            },
-            "min_ram": {
-                "description": "Amount of ram (in MB) required to boot image.",
-                "type": "integer"
-            },
-            "name": {
-                "description": "Descriptive name for the image",
-                "maxLength": 255,
-                "type": "string"
-            },
-            "os_distro": {
-                "description": "Common name of operating system distribution "
-                               "as specified in "
-                               "http://docs.openstack.org/trunk/"
-                               "openstack-compute/admin/content/"
-                               "adding-images.html",
-                "type": "string"
-            },
-            "os_version": {
-                "description": "Operating system version as specified by the "
-                               "distributor",
-                "type": "string"
-            },
-            "protected": {
-                "description": "If true, image will not be deletable.",
-                "type": "boolean"
-            },
-            "ramdisk_id": {
-                "description": "ID of image stored in Glance that should be "
-                               "used as the ramdisk when booting an AMI-style "
-                               "image.",
-                "pattern": "^([0-9a-fA-F]){8}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){12}$",
-                "type": "string"
-            },
-            "schema": {
-                "description": "(READ-ONLY)",
-                "type": "string"
-            },
-            "self": {
-                "description": "(READ-ONLY)",
-                "type": "string"
-            },
-            "size": {
-                "description": "Size of image file in bytes (READ-ONLY)",
-                "type": "integer"
-            },
-            "status": {
-                "description": "Status of the image (READ-ONLY)",
-                "enum": [
-                    "queued",
-                    "saving",
-                    "active",
-                    "killed",
-                    "deleted",
-                    "pending_delete"
-                ],
-                "type": "string"
-            },
-            "tags": {
-                "description": "List of strings related to the image",
-                "items": {
-                    "maxLength": 255,
-                    "type": "string"
-                },
-                "type": "array"
-            },
-            "updated_at": {
-                "description": "Date and time of the last image modification "
-                               "(READ-ONLY)",
-                "type": "string"
-            },
-            "visibility": {
-                "description": "Scope of image accessibility",
-                "enum": [
-                    "public",
-                    "private"
-                ],
-                "type": "string"
-            }
-        },
-        "additionalProperties": {
-            "type": "string"
-        },
-        "links": [
-            {
-                "href": "{self}",
-                "rel": "self"
-            },
-            {
-                "href": "{file}",
-                "rel": "enclosure"
-            },
-            {
-                "href": "{schema}",
-                "rel": "describedby"
-            }
-        ]
-    }
 
     def on_get(self, req, resp):
-        resp.body = self.image_schema
+        resp.body = schema.image
 
 
-class SchemaImagesV2(SchemaImageV2):
+class SchemaImagesV2(object):
     # TODO() - This needs to be updated for our specifications
     def on_get(self, req, resp):
         resp.body = {
@@ -230,7 +28,7 @@ class SchemaImagesV2(SchemaImageV2):
                     "type": "string"
                 },
                 "images": {
-                    "items": self.image_schema,
+                    "items": schema.image,
                     "type": "array"
                 },
                 "next": {
@@ -259,57 +57,18 @@ class SchemaImagesV2(SchemaImageV2):
 
 class SchemaMemberV2(object):
     # TODO() - This needs to be updated for our specifications
-    member_schema = {
-        "name": "member",
-        "properties": {
-            "created_at": {
-                "description": "Date and time of image member creation",
-                "type": "string"
-            },
-            "image_id": {
-                "description": "An identifier for the image",
-                "pattern": "^([0-9a-fA-F]){8}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){4}-"
-                           "([0-9a-fA-F]){12}$",
-                "type": "string"
-            },
-            "member_id": {
-                "description": "An identifier for the image member (tenantId)",
-                "type": "string"
-            },
-            "status": {
-                "description": "The status of this image member",
-                "enum": [
-                    "pending",
-                    "accepted",
-                    "rejected"
-                ],
-                "type": "string"
-            },
-            "updated_at": {
-                "description": "Date and time of last modification of image "
-                               "member",
-                "type": "string"
-            },
-            "schema": {
-                "type": "string"
-            }
-        }
-    }
 
     def on_get(self, req, resp):
-        resp.body = self.member_schema
+        resp.body = schema.member
 
 
-class SchemaMembersV2(SchemaMemberV2):
+class SchemaMembersV2(object):
     # TODO() - This needs to be updated for our specifications
     def on_get(self, req, resp):
         resp.body = {
             "name": "members",
             "properties": {
-                "members": self.member_schema,
+                "members": schema.member,
                 "schema": {
                     "type": "string"
                 }
@@ -332,8 +91,7 @@ class ImagesV2(object):
             return error_handling.not_found(resp, 'Image could not be found')
 
         client = req.env['sl_client']
-        image_obj = SLImages(client)
-        results = image_obj.get_image(image_guid)
+        results = get_image(client, image_guid)
 
         if not results:
             return error_handling.not_found(resp, 'Image could not be found')
@@ -385,43 +143,23 @@ class ImagesV2(object):
         client = req.env['sl_client']
         tenant_id = tenant_id or utils.lookup(req.env, 'auth', 'tenant_id')
 
-        image_obj = SLImages(client)
+        images = []
+        for image in get_all_images(client):
+            images.append(get_v2_image_details_dict(self.app,
+                                                    req,
+                                                    image,
+                                                    tenant_id))
 
-        output = []
-        limit = None
+        sorted_images = sorted(images, key=lambda x: x['id'].lower())
+        if req.get_param('marker'):
+            predicate = lambda x: x['id'] <= req.get_param('marker')
+            sorted_images = list(itertools.dropwhile(predicate, sorted_images))
+
         if req.get_param('limit'):
-            limit = int(req.get_param('limit'))
+            sorted_images = sorted_images[:int(req.get_param('limit'))]
 
-        marker = req.get_param('marker')
-        for visibility, funct in [('public', image_obj.get_public_images),
-                                  ('private', image_obj.get_private_images)]:
-
-            if limit == 0:
-                break
-            results = funct(name=req.get_param('name'),
-                            limit=limit,
-                            marker=marker)
-
-            if not results:
-                continue
-
-            if not isinstance(results, list):
-                results = [results]
-
-            for image in results:
-                formatted_image = get_v2_image_details_dict(self.app,
-                                                            req,
-                                                            image,
-                                                            tenant_id)
-
-                if formatted_image:
-                    formatted_image['visibility'] = visibility
-                    output.append(formatted_image)
-                    if limit is not None:
-                        limit -= 1
         resp.status = 200
-        resp.body = {'images': sorted(output,
-                                      key=lambda x: x['name'].lower())}
+        resp.body = {'images': sorted_images}
 
 
 class ImageV1(object):
@@ -433,8 +171,7 @@ class ImageV1(object):
             return error_handling.not_found(resp, 'Image could not be found')
 
         client = req.env['sl_client']
-        image_obj = SLImages(client)
-        results = image_obj.get_image(image_guid)
+        results = get_image(client, image_guid)
 
         if not results:
             return error_handling.not_found(resp, 'Image could not be found')
@@ -446,21 +183,20 @@ class ImageV1(object):
 
     def on_get(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
-        image_obj = SLImages(client)
-        results = image_obj.get_image(image_guid)
+        results = get_image(client, image_guid)
 
         if not results:
             return error_handling.not_found(resp, 'Image could not be found')
 
+        details = get_v1_image_details_dict(self.app, req, results)
+
         resp.status = 200
-        resp.body = {
-            'image': get_v1_image_details_dict(self.app, req, results)}
+        resp.body = {'image': details}
 
     def on_head(self, req, resp, image_guid, tenant_id=None):
         client = req.env['sl_client']
-        image_obj = SLImages(client)
-        results = get_v1_image_details_dict(
-            self.app, req, image_obj.get_image(image_guid))
+        image = get_image(client, image_guid)
+        results = get_v1_image_details_dict(self.app, req, image)
 
         if not results:
             return error_handling.not_found(resp, 'Image could not be found')
@@ -524,8 +260,9 @@ def get_v2_image_details_dict(app, req, image, tenant_id):
         return {}
 
     # TODO() - Don't hardcode some of these values
+    guid = image['globalIdentifier']
     results = {
-        'id': image['globalIdentifier'],
+        'id': guid,
         'name': image['name'],
         'status': 'active',
         'visibility': image.get('visibility', 'public'),
@@ -544,10 +281,10 @@ def get_v2_image_details_dict(app, req, image, tenant_id):
         'created': image.get('createDate'),
         'links': [
             {'href': app.get_endpoint_url('image', req, 'v2_image',
-                                          image_guid=image['id']),
+                                          image_guid=guid),
              'rel': 'self'},
             {'href': app.get_endpoint_url('image', req, 'v2_image_file',
-                                          image_guid=image['id']),
+                                          image_guid=guid),
              'rel': 'file'},
             {'href': app.get_endpoint_url('image', req, 'v2_schema_image'),
              'rel': 'schema'},
@@ -562,11 +299,12 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         return {}
 
     # TODO() - Don't hardcode some of these values
+    guid = image['globalIdentifier']
     results = {
         'status': 'ACTIVE',
         'updated': image.get('createDate'),
         'created': image.get('createDate'),
-        'id': image['globalIdentifier'],
+        'id': guid,
         'progress': 100,
         'metadata': {},
         'size': int(image.get('blockDevicesDiskSpaceTotal', 0)),
@@ -583,12 +321,12 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'links': [
             {
                 'href': app.get_endpoint_url('image', req, 'v1_image',
-                                             image_guid=image['id']),
+                                             image_guid=guid),
                 'rel': 'self',
             },
             {
                 'href': app.get_endpoint_url('image', req, 'v1_image',
-                                             image_guid=image['id']),
+                                             image_guid=guid),
                 'rel': 'bookmark',
             }
         ],
@@ -597,75 +335,27 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
     return results
 
 
-class SLImages(object):
-    image_mask = ('id,accountId,name,globalIdentifier,blockDevices,parentId,'
-                  'createDate,blockDevicesDiskSpaceTotal')
+def get_all_images(client):
+    images = []
+    get_private_images = client['Account'].getPrivateBlockDeviceTemplateGroups
+    for image in force_list(get_private_images(mask=IMAGE_MASK)):
+        image['visibility'] = 'private'
+        images.append(image)
 
-    def __init__(self, client):
-        self.client = client
+    vgbdtg = client['Virtual_Guest_Block_Device_Template_Group']
+    for image in force_list(vgbdtg.getPublicImages(mask=IMAGE_MASK)):
+        image['visibility'] = 'public'
+        images.append(image)
 
-    def get_image(self, guid):
-        matching_image = None
+    return images
 
-        matching_image = self.get_public_images(guid=guid, limit=1)
-        if matching_image:
-            matching_image['visibility'] = 'public'
-            return matching_image
 
-        matching_image = self.get_private_images(guid=guid, limit=1)
-        if matching_image:
-            matching_image['visibility'] = 'private'
-            return matching_image
+def get_image(client, guid):
+    vgbdtg = client['Virtual_Guest_Block_Device_Template_Group']
+    return vgbdtg.getObject(id=guid)
 
-        return matching_image
 
-    def get_private_images(self, guid=None, name=None, limit=None,
-                           marker=None):
-        _filter = sl_utils.NestedDict()
-        if name:
-            _filter['privateBlockDeviceTemplateGroups']['name'] = (
-                sl_utils.query_filter(name))
-
-        if marker is not None:
-            _filter['privateBlockDeviceTemplateGroups']['globalIdentifier'] = (
-                sl_utils.query_filter('> %s' % marker))
-
-        if guid:
-            _filter['privateBlockDeviceTemplateGroups'] = {
-                'globalIdentifier': sl_utils.query_filter(guid)}
-
-        params = {}
-        params['mask'] = self.image_mask
-
-        if _filter:
-            params['filter'] = _filter.to_dict()
-
-        if limit:
-            params['limit'] = limit
-
-        account = self.client['Account']
-        return account.getPrivateBlockDeviceTemplateGroups(**params)
-
-    def get_public_images(self, guid=None, name=None, limit=None, marker=None):
-        _filter = sl_utils.NestedDict()
-        if name:
-            _filter['name'] = sl_utils.query_filter(name)
-
-        if guid:
-            _filter['globalIdentifier'] = sl_utils.query_filter(guid)
-
-        if marker is not None:
-            _filter['globalIdentifier'] = sl_utils.query_filter('> %s'
-                                                                % marker)
-
-        params = {}
-        params['mask'] = self.image_mask
-
-        if _filter:
-            params['filter'] = _filter.to_dict()
-
-        if limit:
-            params['limit'] = limit
-
-        vgbdtg = self.client['Virtual_Guest_Block_Device_Template_Group']
-        return vgbdtg.getPublicImages(**params)
+def force_list(results):
+    if not isinstance(results, list):
+        results = [results]
+    return results

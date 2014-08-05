@@ -27,6 +27,7 @@ class UserV2(object):
                 return error_handling.not_found(resp,
                                                 "Invalid User ID specified")
             raise
+
         fieldMap = {
             # SL-Field : OpenStack-Field
             'id': 'id',
