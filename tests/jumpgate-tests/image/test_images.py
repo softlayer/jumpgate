@@ -1,150 +1,165 @@
-from mock import MagicMock, patch
-from jumpgate.image.drivers.sl.images import (SLImages, ImagesV2, ImageV1,
-                                              get_v1_image_details_dict,
-                                              get_v2_image_details_dict,
-                                              )
-import SoftLayer
+import mock
 import unittest
+
+import falcon
+from falcon.testing import helpers
+import SoftLayer
+
+from jumpgate.image.drivers.sl import images
+
+
+def get_client_env(**kwargs):
+    client = mock.MagicMock()
+    env = helpers.create_environ(**kwargs)
+    env['sl_client'] = client
+    return client, env
 
 
 class TestImageV1(unittest.TestCase):
 
     def setUp(self):
-        self.req, self.resp, self.img = MagicMock(), MagicMock(), MagicMock()
-        self.app = MagicMock()
-        self.instance = ImageV1(self.app)
+        self.req = mock.MagicMock()
+        self.resp = mock.MagicMock()
+        self.img = mock.MagicMock()
+        self.app = mock.MagicMock()
 
-    def test_init(self):
-        self.assertEquals(self.instance.app, self.app)
+    def test_on_get(self):
+        client, env = get_client_env()
+        vgbdtg = client['Virtual_Guest_Block_Device_Template_Group']
+        vgbdtg.getObject.return_value = {
+            'globalIdentifier': 'uuid',
+            'blockDevicesDiskSpaceTotal': 1000,
+            'name': 'some image',
+        }
 
-    @patch('jumpgate.image.drivers.sl.images.SLImages')
-    def test_on_get(self, mockSLImage):
-        dict = {'image': None}
-        self.instance.on_get(self.req, self.resp, self.img)
-        self.assertEquals(dict.keys(), self.resp.body.keys())
-        self.assertEquals(self.resp.status, 200)
+        req = falcon.Request(env)
+        resp = falcon.Response()
 
-    @patch('jumpgate.image.drivers.sl.images.SLImages.get_image')
-    def test_on_get_fail(self, mockGetImage):
-        mockGetImage.return_value = None
-        self.instance.on_get(self.req, self.resp, self.img)
-        self.assertTrue('notFound' in self.resp.body)
+        images.ImageV1(self.app).on_get(req, resp, '1')
+
+        image = resp.body['image']
+        self.assertEquals(image['id'], 'uuid')
+        self.assertEquals(image['name'], 'some image')
+        self.assertEquals(image['size'], 1000)
+
+    def test_on_get_fail(self):
+        client, env = get_client_env()
+        vgbdtg = client['Virtual_Guest_Block_Device_Template_Group']
+        error = SoftLayer.SoftLayerAPIError(
+            "SoftLayer_Exception_ObjectNotFound",
+            "Unable to find object with id of '1'")
+        vgbdtg.getObject.side_effect = error
+
+        req = falcon.Request(env)
+        resp = falcon.Response()
+
+        self.assertRaises(SoftLayer.SoftLayerAPIError,
+                          images.ImageV1(self.app).on_get, req, resp, '1')
 
     def test_get_v1_image_details_dict(self):
-        dict = {
-            'status': None,
-            'updated': None,
-            'created': None,
-            'id': None,
-            'progress': None,
-            'metadata': None,
-            'size': None,
-            'OS-EXT-IMG-SIZE:size': None,
-            'container_format': None,
-            'disk_format': None,
-            'is_public': None,
-            'protected': None,
-            'owner': None,
-            'minDisk': None,
-            'minRam': None,
-            'name': None,
-            'links': [{'href': None,
-                       'rel': None},
-                      {'href': None,
-                       'rel': None}]}
-        app, req, image, tenant_id = (
-            MagicMock(), MagicMock(), MagicMock(), MagicMock())
-        res = get_v1_image_details_dict(app, req, image, tenant_id)
-        self.assertEquals(set(dict.keys()), set(res.keys()))
+        expected_keys = [
+            'status',
+            'updated',
+            'created',
+            'id',
+            'progress',
+            'metadata',
+            'size',
+            'OS-EXT-IMG-SIZE:size',
+            'container_format',
+            'disk_format',
+            'is_public',
+            'protected',
+            'owner',
+            'minDisk',
+            'minRam',
+            'name',
+            'links',
+        ]
+        app, req, image, tenant_id = (mock.MagicMock(),
+                                      mock.MagicMock(),
+                                      mock.MagicMock(),
+                                      mock.MagicMock())
+        res = images.get_v1_image_details_dict(app, req, image, tenant_id)
+        self.assertEquals(set(expected_keys), set(res.keys()))
 
     def test_get_v1_image_details_dict_fail(self):
-        app, req, image, tenant_id = (
-            MagicMock(), MagicMock(), None, MagicMock())
-        res = get_v1_image_details_dict(app, req, image, tenant_id)
+        app, req, image, tenant_id = (mock.MagicMock(),
+                                      mock.MagicMock(),
+                                      None,
+                                      mock.MagicMock())
+        res = images.get_v1_image_details_dict(app, req, image, tenant_id)
         self.assertFalse(res)
 
 
 class TestImagesV2(unittest.TestCase):
 
     def setUp(self):
-        self.req, self.resp = MagicMock(), MagicMock()
-        self.app = MagicMock()
-        self.instance = ImagesV2(self.app)
-
-    def test_init(self):
-        self.assertEquals(self.app, self.instance.app)
+        self.req, self.resp = mock.MagicMock(), mock.MagicMock()
+        self.app = mock.MagicMock()
 
     def test_get_v2_image_details_dict(self):
-        dict = {
-            'status': None,
-            'updated': None,
-            'created': None,
-            'id': None,
-            'progress': None,
-            'metadata': None,
-            'size': None,
-            'container_format': None,
-            'disk_format': None,
-            'is_public': None,
-            'protected': None,
-            'owner': None,
-            'minDisk': None,
-            'minRam': None,
-            'name': None,
-            'visibility': None,
-            'links': [{'href': None,
-                       'rel': None},
-                      {'href': None,
-                       'rel': None}]}
-        app, req, image, tenant_id = (
-            MagicMock(), MagicMock(), MagicMock(), MagicMock())
-        res = get_v2_image_details_dict(app, req, image, tenant_id)
-        self.assertEquals(set(dict.keys()), set(res.keys()))
+        expected_keys = [
+            'status',
+            'updated',
+            'created',
+            'id',
+            'progress',
+            'metadata',
+            'size',
+            'container_format',
+            'disk_format',
+            'is_public',
+            'protected',
+            'owner',
+            'minDisk',
+            'minRam',
+            'name',
+            'visibility',
+            'links',
+        ]
+        app, req, image, tenant_id = (mock.MagicMock(),
+                                      mock.MagicMock(),
+                                      mock.MagicMock(),
+                                      mock.MagicMock())
+        res = images.get_v2_image_details_dict(app, req, image, tenant_id)
+        self.assertEquals(set(expected_keys), set(res.keys()))
 
     def test_get_v2_image_details_dict_fail(self):
-        app, req, image, tenant_id = (
-            MagicMock(), MagicMock(), None, MagicMock())
-        res = get_v2_image_details_dict(app, req, image, tenant_id)
+        app, req, image, tenant_id = (mock.MagicMock(),
+                                      mock.MagicMock(),
+                                      None,
+                                      mock.MagicMock())
+        res = images.get_v2_image_details_dict(app, req, image, tenant_id)
         self.assertFalse(res)
 
     def test_on_get(self):
-        dict = {'images': {'name': None}}
-        self.req.get_param('limit').return_value = None
-        self.req.get_param('marker').return_value = None
-        self.instance.on_get(self.req, self.resp)
-        self.assertEquals(self.resp.body.keys(), dict.keys())
-        self.assertEquals(self.resp.status, 200)
+        client, env = get_client_env()
+        vgbdtg = client['Virtual_Guest_Block_Device_Template_Group']
+        vgbdtg.getPublicImages.return_value = [{
+            'globalIdentifier': 'uuid',
+            'blockDevicesDiskSpaceTotal': 1000,
+            'name': 'some image',
+        }]
+        client['Account'].getPrivateBlockDeviceTemplateGroups.return_value = [{
+            'globalIdentifier': 'uuid2',
+            'blockDevicesDiskSpaceTotal': 2000,
+            'name': 'some other image',
+        }]
 
-class TestSLImages(unittest.TestCase):
-    def setUp(self):
-        self.client = MagicMock()
-        self.instance = SLImages(self.client)
-        self.name = 'foo'
-        self.guid = '1234'
-        self.limit = '5555'
-        self.marker = '4321'
+        req = falcon.Request(env)
+        resp = falcon.Response()
 
-    def test_init(self):
-        self.assertEquals(self.client, self.instance.client)
+        images.ImagesV2(self.app).on_get(req, resp)
 
-    @patch('SoftLayer.utils.query_filter')
-    def test_get_private_images(self, queryMock):
-        retExpected = self.client['Account']
-        retExpected.getPrivateBlockDeviceTemplateGroups.return_value = []
-        ret = self.instance.get_private_images(self.guid, self.name,
-                                               self.limit, self.marker)
-        queryMock.assert_any_call(self.name)
-        queryMock.assert_any_call(self.guid)
-        queryMock.assert_any_call('> %s' % self.marker)
-        self.assertEquals(type(ret), list)
+        self.assertEquals(resp.status, 200)
+        self.assertEquals(len(resp.body['images']), 2)
+        image1 = resp.body['images'][0]
+        self.assertEquals(image1['id'], 'uuid')
+        self.assertEquals(image1['name'], 'some image')
+        self.assertEquals(image1['size'], 1000)
 
-    @patch('SoftLayer.utils.query_filter')
-    def test_get_public_image(self, queryMock):
-        retExpected = self.client['Virtual_Guest_Block_Device_Template_Group']
-        retExpected.getPrivateBlockDeviceTemplateGroups.return_value = []
-        ret = self.instance.get_private_images(self.guid, self.name,
-                                               self.limit, self.marker)
-        queryMock.assert_any_call(self.name)
-        queryMock.assert_any_call(self.guid)
-        queryMock.assert_any_call('> %s' % self.marker)
-        self.assertEquals(type(ret), list)
+        image2 = resp.body['images'][1]
+        self.assertEquals(image2['id'], 'uuid2')
+        self.assertEquals(image2['name'], 'some other image')
+        self.assertEquals(image2['size'], 2000)
