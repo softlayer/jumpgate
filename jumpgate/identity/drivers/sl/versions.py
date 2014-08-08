@@ -1,3 +1,4 @@
+import falcon
 
 
 class Versions(object):
@@ -5,6 +6,7 @@ class Versions(object):
         self.disp = disp
 
     def on_get(self, req, resp):
+        resp.status = falcon.HTTP_300
         resp.body = {
             'versions': {
                 'values': [
