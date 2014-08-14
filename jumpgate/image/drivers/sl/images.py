@@ -221,6 +221,7 @@ class ImageV1(object):
         }
 
         resp.set_headers(headers)
+        resp.content_type = 'text/html; charset=utf-8'
 
 
 class ImagesV1(ImagesV2):
