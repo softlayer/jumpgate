@@ -54,11 +54,15 @@ def get_new_token_v3(credentials):
 
     username = utils.lookup(credentials,
                             'auth',
-                            'passwordCredentials',
-                            'username')
+                            'identity',
+                            'password',
+                            'user',
+                            'name')
     credential = utils.lookup(credentials,
                               'auth',
-                              'passwordCredentials',
+                              'identity',
+                              'password',
+                              'user',
                               'password')
 
     # If the 'password' is the right length, treat it as an API api_key
