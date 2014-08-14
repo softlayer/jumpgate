@@ -145,10 +145,16 @@ class ImagesV2(object):
 
         images = []
         for image in get_all_images(client):
-            images.append(get_v2_image_details_dict(self.app,
-                                                    req,
-                                                    image,
-                                                    tenant_id))
+            img = get_v2_image_details_dict(self.app, req, image, tenant_id)
+
+            # Apply conditions from filters
+            # TODO(zhiyan): Will add more filters continuously
+            # with requirement-driven way.
+            if req.get_param('name'):
+                if img['name'] != req.get_param('name'):
+                    continue
+
+            images.append(img)
 
         sorted_images = sorted(images, key=lambda x: x['id'].lower())
         if req.get_param('marker'):
@@ -221,6 +227,7 @@ class ImageV1(object):
         }
 
         resp.set_headers(headers)
+        resp.content_type = 'text/html; charset=utf-8'
 
 
 class ImagesV1(ImagesV2):

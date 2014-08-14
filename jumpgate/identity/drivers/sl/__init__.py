@@ -16,13 +16,6 @@ def setup_routes(app, disp):
     disp.set_handler('v3_auth_index', v3.V3(disp))
     disp.set_handler('v3_user_projects', user_projects_v3.UserProjectsV3())
 
-    # V2 Routes
-    disp.set_handler('v2_tenants', tenants.TenantsV2())
-    disp.set_handler('v2_token', tokens.TokenV2())
-    disp.set_handler('v2_user', user.UserV2())
-
-    disp.set_handler('versions', versions.Versions(disp))
-
     template_file = app.config.softlayer.catalog_template_file
     if not os.path.exists(template_file):
         template_file = app.config.find_file(template_file)
@@ -36,6 +29,13 @@ def setup_routes(app, disp):
 
     if template_file_v3 is None:
         raise ValueError('Template file v3 not found')
+
+    # V2 Routes
+    disp.set_handler('v2_tenants', tenants.TenantsV2())
+    disp.set_handler('v2_token', tokens.TokenV2(template_file))
+    disp.set_handler('v2_user', user.UserV2())
+
+    disp.set_handler('versions', versions.Versions(disp))
 
     disp.set_handler('v2_tokens', tokens.TokensV2(template_file))
     disp.set_handler('v2_token_endpoints', tokens.TokensV2(template_file))

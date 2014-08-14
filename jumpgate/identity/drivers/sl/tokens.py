@@ -196,19 +196,8 @@ class TokensV2(object):
                     o[region][service][k] = v.replace('$(', '%(') % d
         return o
 
-    def on_post(self, req, resp):
-        body = req.stream.read().decode()
-        credentials = json.loads(body)
+    def _add_catalog_to_access(self, access, token):
         tokens = identity.token_driver()
-
-        auth = identity.auth_driver().authenticate(credentials)
-        if auth is None:
-            raise exceptions.Unauthorized('Unauthorized credentials')
-        token = tokens.create_token(credentials, auth)
-        tok_id = identity.token_id_driver().create_token_id(token)
-        access = get_access(tok_id, token)
-
-        # Add catalog to the access data
         raw_catalog = self._get_catalog(tokens.tenant_id(token),
                                         tokens.user_id(token))
         catalog = []
@@ -226,8 +215,22 @@ class TokensV2(object):
                     'endpoint_links': [],
                 }
                 catalog.append(d)
-
         access['serviceCatalog'] = catalog
+
+    def on_post(self, req, resp):
+        body = req.stream.read().decode()
+        credentials = json.loads(body)
+        tokens = identity.token_driver()
+
+        auth = identity.auth_driver().authenticate(credentials)
+        if auth is None:
+            raise exceptions.Unauthorized('Unauthorized credentials')
+        token = tokens.create_token(credentials, auth)
+        tok_id = identity.token_id_driver().create_token_id(token)
+        access = get_access(tok_id, token)
+
+        # Add catalog to the access data
+        self._add_catalog_to_access(access, token)
 
         resp.status = 200
         resp.body = {'access': access}
@@ -255,12 +258,18 @@ class TokensV2(object):
         resp.body = {'endpoints': endpoints, 'endpoints_links': []}
 
 
-class TokenV2(object):
+class TokenV2(TokensV2):
+    def __init__(self, template_file):
+        super(TokenV2, self).__init__(template_file)
+
     def on_get(self, req, resp, token_id):
         token = identity.token_id_driver().token_from_id(token_id)
         identity.token_driver().validate_access(token, tenant_id=req.get_param(
             'belongsTo'))
         access = get_access(token_id, token)
+
+        # Add catalog to the access data
+        self._add_catalog_to_access(access, token)
 
         resp.status = 200
         resp.body = {'access': access}
