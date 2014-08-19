@@ -274,6 +274,7 @@ Each section below includes the following compatibility references for the SoftL
 * Compute (Nova)
 * Images (Glance)
 * Block Storage (Cinder)
+* Network (Quantum)
 
 ## Identity
 
@@ -294,35 +295,6 @@ This table includes compatibility references for Identity (Keystone).
     </thead>
 
     <tbody>
-      <tr>
-        <td>GET</td>
-
-        <td>v2.0</td>
-
-        <td>Yes</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2.0/extensions</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2.0/extensions/{alias}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
 
       <tr>
         <td>POST</td>
@@ -335,11 +307,21 @@ This table includes compatibility references for Identity (Keystone).
       </tr>
 
       <tr>
-        <td>HEAD</td>
+        <td>GET</td>
 
         <td>v2.0/tokens/{tokenId}</td>
 
-        <td>No</td>
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2.0/tokens/{tokenId}</td>
+
+        <td>Mocked</td>
 
         <td></td>
       </tr>
@@ -357,36 +339,6 @@ This table includes compatibility references for Identity (Keystone).
       <tr>
         <td>GET</td>
 
-        <td>v2.0/users/</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2.0/users/{user_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2.0/users/{user_id}/roles</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
         <td>v2.0/tenants</td>
 
         <td>Yes</td>
@@ -397,9 +349,19 @@ This table includes compatibility references for Identity (Keystone).
       <tr>
         <td>GET</td>
 
-        <td>v2.0/tenants/{tenantId}</td>
+        <td>v3</td>
 
-        <td>No</td>
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v3/auth/tokens</td>
+
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -407,9 +369,29 @@ This table includes compatibility references for Identity (Keystone).
       <tr>
         <td>GET</td>
 
-        <td>v2.0/tenants/{tenantId}/users/{userId}/roles</td>
+        <td>v3/tokens/{token_id}</td>
 
-        <td>No</td>
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v3/tokens/{token_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v3/tokens/{token_id</td>
+
+        <td>Mocked</td>
 
         <td></td>
       </tr>
@@ -436,6 +418,16 @@ This table includes compatibility references for Compute (Nova).
     </thead>
 
     <tbody>
+      <tr>
+        <td>GET</td>
+
+        <td>/</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
       <tr>
         <td>GET</td>
 
@@ -473,7 +465,7 @@ This table includes compatibility references for Compute (Nova).
 
         <td>Mocked</td>
 
-        <td>Hardcoded to garbage data. This would effect Horizon's neat graphical displays.</td>
+        <td>Hardcoded to mocked data. This would effect Horizon's neat graphical displays.</td>
       </tr>
 
       <tr>
@@ -537,21 +529,11 @@ This table includes compatibility references for Compute (Nova).
       </tr>
 
       <tr>
-        <td>PUT</td>
+        <td>GET</td>
 
-        <td>v2/{tenant_id}/servers/{server_id}/metadata</td>
+        <td>v2/{tenant_id}/servers/{server_id}/ips</td>
 
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>POST</td>
-
-        <td>v2/{tenant_id}/servers/{server_id}/metadata</td>
-
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -559,39 +541,9 @@ This table includes compatibility references for Compute (Nova).
       <tr>
         <td>GET</td>
 
-        <td>v2/{tenant_id}/servers/{server_id}/metadata</td>
+        <td>v2/{tenant_id}/servers/{server_id}/ips/{network_label}</td>
 
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/servers/{server_id}/metadata/{key}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v2/{tenant_id}/servers/{server_id}/metadata/{key}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-
-        <td>v2/{tenant_id}/servers/{server_id}/metadata/{key}</td>
-
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -609,9 +561,9 @@ This table includes compatibility references for Compute (Nova).
       <tr>
         <td>GET</td>
 
-        <td>v2/{tenant_id}/servers/ips</td>
+        <td>v2/{tenant_id}/servers/{server_id}/os-instance-actions</td>
 
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -619,9 +571,9 @@ This table includes compatibility references for Compute (Nova).
       <tr>
         <td>GET</td>
 
-        <td>v2/{tenant_id}/servers/ips/{network_id}</td>
+        <td>v2/{tenant_id}/servers/{server_id}/os-instance-actions/{action_id}</td>
 
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -637,6 +589,16 @@ This table includes compatibility references for Compute (Nova).
       </tr>
 
       <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/images</td>
+
+        <td>Yes</td>
+
+        <td>Only works with SL Object Storage URLs</td>
+      </tr>
+
+      <tr>
         <td>GET</td>
 
         <td>v2/{tenant_id}/images/detail</td>
@@ -647,6 +609,16 @@ This table includes compatibility references for Compute (Nova).
       </tr>
 
       <tr>
+        <td>HEAD</td>
+
+        <td>v2/{tenant_id}/images/{image_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
         <td>GET</td>
 
         <td>v2/{tenant_id}/images/{image_id}</td>
@@ -657,71 +629,11 @@ This table includes compatibility references for Compute (Nova).
       </tr>
 
       <tr>
-        <td>POST</td>
+        <td>DELETE</td>
 
         <td>v2/{tenant_id}/images/{image_id}</td>
 
-        <td>No</td>
-
-        <td>Missing: Importing images, creating 'empty' image records to be populated later</td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v2/{tenant_id}/images/{image_id}/metadata</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>POST</td>
-
-        <td>v2/{tenant_id}/images/{image_id}/metadata</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/images/{image_id}/metadata</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/images/{image_id}/metadata/{key}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/images/{image_id}/metadata/{key}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-
-        <td>v2/{tenant_id}/images/{image_id}/metadata/{key}</td>
-
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -731,9 +643,9 @@ This table includes compatibility references for Compute (Nova).
 
         <td>v2/{tenant_id}/flavors</td>
 
-        <td>Mocked</td>
+        <td>Yes</td>
 
-        <td>This is currently hardcoded until we determine how we're going to support flavors.</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -741,9 +653,9 @@ This table includes compatibility references for Compute (Nova).
 
         <td>v2/{tenant_id}/flavors/detail</td>
 
-        <td>Mocked</td>
+        <td>Yes</td>
 
-        <td>This is currently hardcoded until we determine how we're going to support flavors.</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -751,9 +663,199 @@ This table includes compatibility references for Compute (Nova).
 
         <td>v2/{tenant_id}/flavors/{flavor_id}</td>
 
-        <td>Mocked</td>
+        <td>Yes</td>
 
-        <td>This is currently hardcoded until we determine how we're going to support flavors.</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/flavors/{flavor_id}/os-extra_specs</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/flavors/{flavor_id}/os-extra_specs/{key_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-availability-zone</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-availability-zone/detail</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-floating-ips-dns</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-floating-ips-dns/{domain}/entries/{entry}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>PUT</td>
+
+        <td>v2/{tenant_id}/os-floating-ips-dns/{domain}/entries/{entry}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/{tenant_id}/os-floating-ips-dns/{domain}/entries/{entry}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-keypairs</td>
+
+        <td>Yes</td>
+
+        <td>Private keys are not stored by SoftLayer</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/os-keypairs</td>
+
+        <td>Yes</td>
+
+        <td>Private keys are not stored by SoftLayer</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-keypairs/{keypair_name}</td>
+
+        <td>Yes</td>
+
+        <td>Private keys are not stored by SoftLayer</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v2/{tenant_id}/os-keypairs/{keypair_name}</td>
+
+        <td>Yes</td>
+
+        <td>Private keys are not stored by SoftLayer</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-tenant-networks</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-tenant-networks/{network_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-networks</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-networks/{network_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/os-simple-tenant-usage/{target_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v2/{tenant_id}/servers/{insance_id}/os-volume_attachments/{volume_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v2/{tenant_id}/servers/{insance_id}/os-volume_attachments/{volume_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -805,17 +907,7 @@ This table includes compatibility references for Images (Glance).
 
         <td>Yes</td>
 
-        <td>Need to understand how this differs from /v2/{tenant_id}/images</td>
-      </tr>
-
-      <tr>
-        <td>POST</td>
-
-        <td>v2/images</td>
-
-        <td>No</td>
-
-        <td>Mocked, but not even remotely functional</td>
+        <td></td>
       </tr>
 
       <tr>
@@ -829,164 +921,15 @@ This table includes compatibility references for Images (Glance).
       </tr>
 
       <tr>
-        <td>PATCH</td>
-
-        <td>v2/images/{image_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
         <td>DELETE</td>
 
         <td>v2/images/{image_id}</td>
 
-        <td>No</td>
-
-        <td>Mocked, but does nothing</td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v2/images/{image_id}/file</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/images/{image_id}/file</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>POST</td>
-
-        <td>v2/images/{image_id}/tags/{tag}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-
-        <td>v2/images/{image_id}/tags/{tag}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v1/images</td>
-
         <td>Yes</td>
 
         <td></td>
       </tr>
 
-      <tr>
-        <td>POST</td>
-
-        <td>v1/images</td>
-
-        <td>No</td>
-
-        <td>Mocked, but not functional</td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v1/images/detail</td>
-
-        <td>Yes</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v1/images/{image_id}</td>
-
-        <td>Yes</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v1/images/{image_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-
-        <td>v1/images/{image_id}</td>
-
-        <td>No</td>
-
-        <td>Mocked, but does nothing</td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v1/images/{image_id}/members</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v1/images/{image_id}/members/{owner}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-
-        <td>v1/images/{image_id}/members/{owner}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v1/shared-images/{owner}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
     </tbody>
   </table>
 </div>
@@ -1009,13 +952,95 @@ This table includes compatibility references for Block Storage (Cinder).
       </tr>
     </thead>
 
+      <tr>
+        <td>GET</td>
+
+        <td>v1/{tenant_id}/types</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/{tenant_id}/volumes</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+
+        <td>v1/{tenant_id}/volumes</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/{tenant_id}/volumes/{volume_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>DELETE</td>
+
+        <td>v1/{tenant_id}/volumes/{volume_id}</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/{tenant_id}/volumes/detail</td>
+
+        <td>Yes</td>
+
+        <td></td>
+      </tr>
+
     <tbody>
+    </tbody>
+  </table>
+</div>
+
+## Network
+
+This table includes compatibility references for Network (Quantum).
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
       <tr>
-        <td>POST</td>
+        <th>Verb</th>
 
-        <td>v2/{tenant_id}/volumes</td>
+        <th>Endpoint</th>
 
-        <td>No</td>
+        <th>Available</th>
+
+        <th>Notes</th>
+      </tr>
+    </thead>
+
+      <tr>
+        <td>GET</td>
+
+        <td>v1/{tenant_id}/networks</td>
+
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -1023,19 +1048,9 @@ This table includes compatibility references for Block Storage (Cinder).
       <tr>
         <td>GET</td>
 
-        <td>v2/{tenant_id}/volumes</td>
+        <td>v1/{tenant_id}/networks/{network_id}</td>
 
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/volumes/detail</td>
-
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -1043,29 +1058,9 @@ This table includes compatibility references for Block Storage (Cinder).
       <tr>
         <td>GET</td>
 
-        <td>v2/{tenant_id}/volumes/{volume_id</td>
+        <td>v1/{tenant_id}/subnets</td>
 
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v2/{tenant_id}/volumes/{volume_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-
-        <td>v2/{tenant_id}/volumes/{volume_id}</td>
-
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -1073,29 +1068,9 @@ This table includes compatibility references for Block Storage (Cinder).
       <tr>
         <td>GET</td>
 
-        <td>v2/{tenant_id}/types</td>
+        <td>v1/{tenant_id}/subnets/{subnet_id}</td>
 
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/types/{volume_type_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>POST</td>
-
-        <td>v2/{tenant_id}/snapshots</td>
-
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
@@ -1103,52 +1078,14 @@ This table includes compatibility references for Block Storage (Cinder).
       <tr>
         <td>GET</td>
 
-        <td>v2/{tenant_id}/snapshots</td>
+        <td>v1/{tenant_id}/extensions</td>
 
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/snapshots/detail</td>
-
-        <td>No</td>
+        <td>Yes</td>
 
         <td></td>
       </tr>
 
-      <tr>
-        <td>GET</td>
-
-        <td>v2/{tenant_id}/snapshots/{snapshot_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>PUT</td>
-
-        <td>v2/{tenant_id}/snapshots/{snapshot_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
-
-      <tr>
-        <td>DELETE</td>
-
-        <td>v2/{tenant_id}/snapshots/{snapshot_id}</td>
-
-        <td>No</td>
-
-        <td></td>
-      </tr>
+    <tbody>
     </tbody>
   </table>
 </div>
