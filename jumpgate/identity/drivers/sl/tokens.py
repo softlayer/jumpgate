@@ -33,6 +33,7 @@ def parse_templates(template_lines):
         region_ref = o.get(region, {})
         service_ref = region_ref.get(service, {})
         service_ref[key] = v
+        service_ref['region'] = region
 
         region_ref[service] = service_ref
         o[region] = region_ref
