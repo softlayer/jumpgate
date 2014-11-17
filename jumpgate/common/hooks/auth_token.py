@@ -9,7 +9,7 @@ from jumpgate.identity.drivers import core as identity
 LOG = logging.getLogger(__name__)
 NOAUTH = [re.compile(e) for e in ['GET:/$', 'GET:\/v[\d]+[\/]?$',
                                   'GET:\/v[\d]+.[\d]+[\/]?$',
-                                  'POST:\/v[\d]+\/tokens$',
+                                  'POST:\/v[\d]+\/auth/tokens$',
                                   'POST:\/v[\d]+.[\d]+\/tokens$',
                                   'GET:\/v[\d]+\/tokens/\w+$',
                                   'GET:\/v[\d]+.[\d]+\/tokens/\w+$']]

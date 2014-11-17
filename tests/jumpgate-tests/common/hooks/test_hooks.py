@@ -4,6 +4,7 @@ import unittest
 from jumpgate.common.exceptions import InvalidTokenError
 from jumpgate.common.hooks.core import hook_format, hook_set_uuid
 from jumpgate.common.hooks.log import log_request
+from jumpgate.common.hooks.log import log_response
 from jumpgate.common.hooks.admin_token import admin_token
 from jumpgate.common.hooks.auth_token import validate_token
 
@@ -49,10 +50,27 @@ class TestHookLogRequest(unittest.TestCase):
         req.env = {'REQUEST_ID': '123456'}
         resp = MagicMock()
         resp.status = '200 OK'
-        log_request(req, resp)
+        log_request(req, resp, {'key': 'value'})
 
         log.info.assert_called_with(
-            '%s %s %s %s [ReqId: %s]',
+            'REQ: %s %s %s %s [ReqId: %s]',
+            'GET', '/', 'something=value', {'key': 'value'}, '123456')
+
+
+class TestHookLogResponse(unittest.TestCase):
+    @patch('jumpgate.common.hooks.log.LOG')
+    def test_log_response(self, log):
+        req = MagicMock()
+        req.method = 'GET'
+        req.path = '/'
+        req.query_string = 'something=value'
+        req.env = {'REQUEST_ID': '123456'}
+        resp = MagicMock()
+        resp.status = '200 OK'
+        log_response(req, resp)
+
+        log.info.assert_called_with(
+            'RESP: %s %s %s %s [ReqId: %s]',
             'GET', '/', 'something=value', '200 OK', '123456')
 
 
@@ -91,8 +109,9 @@ class TestHookAuthToken(unittest.TestCase):
 
     def test_unprotected(self):
         for api in ['GET:/v2', 'GET:/v2/', 'GET:/v3.0', 'GET:/v3.0/',
-                    'GET:/v10.22', 'POST:/v2/tokens', 'POST:/v2.1/tokens',
-                    'GET:/v2/tokens/a8Vs7bS', 'GET:/v2.0/tokens/a8Vs7bS']:
+                    'GET:/v10.22', 'POST:/v2.0/tokens', 'POST:/v2.1/tokens',
+                    'GET:/v2/tokens/a8Vs7bS', 'GET:/v2.0/tokens/a8Vs7bS',
+                    'POST:/v3/auth/tokens']:
             req = MagicMock()
             req.headers = {'X-AUTH-TOKEN': None}
             req.method = api.split(':')[0]
