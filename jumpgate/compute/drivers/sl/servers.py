@@ -287,18 +287,24 @@ class ServersV2(object):
         4) --net-id=<private id> --net-id=<public id>
         """
 
-        if len(networks) > 2:
+        # De-duplicate requested networks
+        unique_nets = []
+        unique_nets = [unique_nets.append(n) or n
+                       for n in networks
+                       if n not in unique_nets]
+
+        if len(unique_nets) > 2:
             raise Exception('Too many net-id arguments')
 
         # support cases of the string 'public' or 'private'
-        if networks[0]['uuid'] == 'public':
-            if len(networks) > 1:
+        if unique_nets[0]['uuid'] == 'public':
+            if len(unique_nets) > 1:
                 raise Exception('Too many net-id arguments. '
                                 'Please indicate only "public" or "private"')
             payload['private'] = False
             return
-        elif networks[0]['uuid'] == 'private':
-            if len(networks) > 1:
+        elif unique_nets[0]['uuid'] == 'private':
+            if len(unique_nets) > 1:
                 raise Exception('Too many net-id arguments. '
                                 'Please indicate only "public" or "private"')
             payload['private'] = True
@@ -307,7 +313,8 @@ class ServersV2(object):
         private_network_only = True
         try:
             _filter = {
-                'networkVlans': {'id': {'operation': int(networks[0]['uuid'])}}
+                'networkVlans': {'id': {'operation':
+                                        int(unique_nets[0]['uuid'])}}
             }
         except Exception:
             raise ValueError('Invalid id format')
@@ -315,24 +322,24 @@ class ServersV2(object):
         priv_id_valid = (
             client['Account'].getPrivateNetworkVlans(filter=_filter))
         if priv_id_valid:
-            payload['private_vlan'] = int(networks[0]['uuid'])
+            payload['private_vlan'] = int(unique_nets[0]['uuid'])
         else:
             raise Exception('Private vlan must be specified first '
                             'or is invalid')
 
         # if there is another net-id, then it should be a public network
-        if len(networks) == 2:
+        if len(unique_nets) == 2:
             try:
                 _filter = {
                     'networkVlans': {'id': {'operation':
-                                            int(networks[1]['uuid'])}}
+                                            int(unique_nets[1]['uuid'])}}
                 }
             except Exception:
                 raise ValueError('Invalid id format')
             pub_id_valid = (
                 client['Account'].getPublicNetworkVlans(filter=_filter))
             if pub_id_valid:
-                payload['public_vlan'] = int(networks[1]['uuid'])
+                payload['public_vlan'] = int(unique_nets[1]['uuid'])
                 private_network_only = False
             else:
                 raise Exception('Public vlan must be specified second '
