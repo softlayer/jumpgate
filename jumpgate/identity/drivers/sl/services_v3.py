@@ -72,7 +72,7 @@ class ServicesV3(object):
                     'endpoints': [{
                         'region': service.get('region', 'RegionOne'),
                         'publicURL': service.get('publicURL'),
-                        'privateURL': service.get('privateURL'),
+                        'internalURL': service.get('internalURL'),
                         'adminURL': service.get('adminURL'),
                     }],
                     'endpoint_links': [],
