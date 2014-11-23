@@ -210,7 +210,7 @@ class TokensV2(object):
                     'endpoints': [{
                         'region': service.get('region', 'RegionOne'),
                         'publicURL': service.get('publicURL'),
-                        'privateURL': service.get('privateURL'),
+                        'internalURL': service.get('internalURL'),
                         'adminURL': service.get('adminURL'),
                     }],
                     'endpoint_links': [],
@@ -249,7 +249,7 @@ class TokensV2(object):
                     'adminURL': service.get('adminURL'),
                     'name': service.get('name', 'Unknown'),
                     'publicURL': service.get('publicURL'),
-                    'privateURL': service.get('privateURL'),
+                    'internalURL': service.get('internalURL'),
                     'region': service.get('region', 'RegionOne'),
                     'tenantId': tokens.tenant_id(token),
                     'type': service_type,

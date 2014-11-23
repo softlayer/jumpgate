@@ -1,24 +1,24 @@
 
 catalog.RegionOne.identity.name = Identity Service
 catalog.RegionOne.identity.publicURL = http://localhost:5000/v2.0
-catalog.RegionOne.identity.privateURL = http://localhost:5000/v2.0
+catalog.RegionOne.identity.internalURL = http://localhost:5000/v2.0
 
 catalog.RegionOne.baremetal.name = Bare Metal Service
 catalog.RegionOne.baremetal.publicURL = http://localhost:5000/v2/baremetal
-catalog.RegionOne.baremetal.privateURL = http://localhost:5000/v2/baremetal
+catalog.RegionOne.baremetal.internalURL = http://localhost:5000/v2/baremetal
 
 catalog.RegionOne.compute.name = Compute Service
 catalog.RegionOne.compute.publicURL = http://localhost:5000/compute/v2/$(tenant_id)s
-catalog.RegionOne.compute.privateURL = http://localhost:5000/compute/v2/$(tenant_id)s
+catalog.RegionOne.compute.internalURL = http://localhost:5000/compute/v2/$(tenant_id)s
 
 catalog.RegionOne.image.name = Image Service
 catalog.RegionOne.image.publicURL = http://localhost:5000/image/v2
-catalog.RegionOne.image.privateURL = http://localhost:5000/image/v2
+catalog.RegionOne.image.internalURL = http://localhost:5000/image/v2
 
 catalog.RegionOne.network.name = Image Service
 catalog.RegionOne.network.publicURL = http://localhost:5000/network/v2
-catalog.RegionOne.network.privateURL = http://localhost:5000/network/v2
+catalog.RegionOne.network.internalURL = http://localhost:5000/network/v2
 
 #catalog.RegionOne.volume.name = Block Storage Service
 #catalog.RegionOne.volume.publicURL = http://localhost:5000/volume/v1/$(tenant_id)s
-#catalog.RegionOne.volume.privateURL = http://localhost:5000/volume/v1/$(tenant_id)s
+#catalog.RegionOne.volume.internalURL = http://localhost:5000/volume/v1/$(tenant_id)s
