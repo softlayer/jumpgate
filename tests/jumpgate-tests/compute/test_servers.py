@@ -593,6 +593,24 @@ class TestServersV2(unittest.TestCase):
         self.assertEqual(self.payload['public_vlan'], 489588)
         self.assertEqual(self.payload['private'], False)
 
+    def test_handle_network_valid_duplicated_public_private_ids(self):
+        self.instance._handle_network(self.payload, self.client,
+                                      [{'uuid': 489586}, {'uuid': 489588},
+                                       {'uuid': 489588}, {'uuid': 489586}])
+        self.assertEqual(self.payload['public_vlan'], 489588)
+        self.assertEqual(self.payload['private_vlan'], 489586)
+        self.assertEqual(self.payload['private'], False)
+
+    def test_handle_network_valid_duplicated_ids(self):
+        self.client['Account'].getPrivateNetworkVlans.return_value = [489586]
+        self.client['Account'].getPublicNetworkVlans.return_value = [489588]
+        self.instance._handle_network(self.payload, self.client,
+                                      [{'uuid': 489586}, {'uuid': 489588},
+                                       {'uuid': 489588}, {'uuid': 489586}])
+        self.assertEqual(self.payload['private_vlan'], 489586)
+        self.assertEqual(self.payload['public_vlan'], 489588)
+        self.assertEqual(self.payload['private'], False)
+
     def test_handle_network_valid_public(self):
         self.instance._handle_network(self.payload, self.client,
                                       [{'uuid': 'public'}])
