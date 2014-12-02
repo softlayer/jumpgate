@@ -279,8 +279,8 @@ def get_v2_image_details_dict(app, req, image, tenant_id):
         'disk_format': 'raw',
         'container_format': 'bare',
         'protected': False,
-        'minDisk': 0,
-        'minRam': 0,
+        'min_disk': 0,
+        'min_ram': 0,
         'progress': 100,
         'metadata': {},
         # "checksum":"2cec138d7dae2aa59038ef8c9aec2390",
@@ -322,8 +322,8 @@ def get_v1_image_details_dict(app, req, image, tenant_id=None):
         'is_public': True if image.get('visibility') == 'public' else False,
         'protected': False,
         'owner': image.get('accountId'),
-        'minDisk': 0,
-        'minRam': 0,
+        'min_disk': 0,
+        'min_ram': 0,
         'name': image['name'],
         'links': [
             {

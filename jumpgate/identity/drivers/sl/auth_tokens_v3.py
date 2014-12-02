@@ -128,7 +128,7 @@ class AuthTokensV3(object):
                         # 'id': "????"
                         'interface': "internal",
                         'region': service.get('region', 'RegionOne'),
-                        'url': service.get('privateURL')
+                        'url': service.get('internalURL')
                     }, {
                         # 'id': "????"
                         'interface': "public",
