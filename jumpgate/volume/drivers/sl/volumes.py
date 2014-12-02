@@ -249,6 +249,8 @@ class VolumesV1(object):
                                         "SoftLayerAPIError",
                                         e.faultString,
                                         code=e.faultCode)
+        except IndexError as e:
+            return error_handling.bad_request(resp, str(e))
         except Exception as e:
             return error_handling.volume_fault(resp, str(e))
 
@@ -295,25 +297,31 @@ class VolumesV1(object):
             price_matrix = {}
             for x in price_list:
                 price_matrix.update({int(x['capacity']): x['prices']})
-            # find the closet capacity to the requested size
-            if exact_capacity:
-                ret = False
-                for x in price_matrix:
-                    if size == x:
-                        ret = True
-                        capacity_idx = x
-                        break
-                if not ret:
-                    raise SoftLayer.SoftLayerAPIError(
-                        HTTP.BAD_REQUEST,
-                        'volume_types: extra_specs: '
-                        'drivers:exact_capacity is set to'
-                        ' True and there is no volume with'
-                        ' matching capacity')
-            else:
-                capacity_idx = min(price_matrix, key=lambda x: abs(x - size))
+            try:
+                # find the closest capacity to the requested size
+                if exact_capacity:
+                    ret = False
+                    for x in price_matrix:
+                        if size == x:
+                            ret = True
+                            capacity_idx = x
+                            break
+                    if not ret:
+                        raise SoftLayer.SoftLayerAPIError(
+                            HTTP.BAD_REQUEST,
+                            'volume_types: extra_specs: '
+                            'drivers:exact_capacity is set to'
+                            ' True and there is no volume with'
+                            ' matching capacity')
+                else:
+                    capacity_idx = sorted([cap for cap in price_matrix
+                                           if cap >= size])[0]
 
-            return price_matrix[capacity_idx]
+                return price_matrix[capacity_idx]
+            except IndexError:
+                msg = "Unsupported volume size: %d" % size
+                LOG.error(msg)
+                raise IndexError(msg)
 
         def _find_availibility_zone_location(zone):
             # make sure there is an availability_zone selected
