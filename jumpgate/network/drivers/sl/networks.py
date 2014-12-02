@@ -36,18 +36,26 @@ class NetworksV2(object):
         @param req: Http Request body
         @param resp: Http Response body
         """
-        tenant_id = req.env['auth']['tenant_id']
         client = req.env['sl_client']
+        tenant_id = req.env['auth']['tenant_id']
 
-        _filter = {'networkVlans': {}}
-        if req.get_param('name'):
-            _filter['networkVlans']['id'] = {
-                'operation': req.get_param('name')}
+        if (req.get_param('tenant_id', store={'tenant_id': tenant_id}) !=
+                tenant_id):
+            resp.status = 401
 
-        vlans = client['Account'].getNetworkVlans(mask=NETWORK_MASK,
-                                                  filter=_filter)
-        network = [format_network(vlan, tenant_id)
-                   for vlan in sorted(vlans, key=operator.itemgetter('id'))]
+        if not req.get_param_as_bool('shared', store={'shared': False}):
+            _filter = {'networkVlans': {}}
+            if req.get_param('name'):
+                _filter['networkVlans']['id'] = {
+                    'operation': req.get_param('name')}
+
+            vlans = client['Account'].getNetworkVlans(mask=NETWORK_MASK,
+                                                      filter=_filter)
+            network = [format_network(vlan, tenant_id)
+                       for vlan in sorted(vlans,
+                                          key=operator.itemgetter('id'))]
+        else:
+            network = []
 
         resp.body = {'networks': network}
         resp.status = 200

@@ -114,6 +114,18 @@ class TestNetworksV2(unittest.TestCase):
         self.assertEqual(resp.status, 200)
         self.check_response_body(resp.body['networks'][0])
 
+    def test_on_get_response_networksv2_shared_networks_show(self):
+        """Test show function in NetworksV2 for shared networks"""
+
+        _, env = get_client_env(query_string='name=123321&shared=True')
+
+        req = falcon.Request(env)
+        resp = falcon.Response()
+
+        networks.NetworksV2().on_get(req, resp)
+        self.assertEqual(resp.status, 200)
+        self.assertEqual(len(resp.body['networks']), 0)
+
     def test_on_get_response_networksv2_show_no_match(self):
         """Test show function in NetworksV2 with no matching ID"""
 
@@ -144,3 +156,15 @@ class TestNetworksV2(unittest.TestCase):
         networks.NetworksV2().on_get(req, resp)
         self.assertEqual(resp.status, 200)
         self.check_response_body(resp.body['networks'][0])
+
+    def test_on_get_response_networksv2_shared_networks_list(self):
+        """Test list function for shared networks"""
+
+        _, env = get_client_env(query_string='name=123321&shared=True')
+
+        req = falcon.Request(env)
+        resp = falcon.Response()
+
+        networks.NetworksV2().on_get(req, resp)
+        self.assertEqual(resp.status, 200)
+        self.assertEqual(len(resp.body['networks']), 0)
