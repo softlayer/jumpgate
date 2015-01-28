@@ -1,4 +1,4 @@
-from SoftLayer import CCIManager
+from SoftLayer import VSManager
 
 from jumpgate.common.error_handling import not_found
 
@@ -6,7 +6,7 @@ from jumpgate.common.error_handling import not_found
 class ServerIpsV2(object):
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
 
         instance = cci.get_instance(
             server_id, mask='id, primaryIpAddress, primaryBackendIpAddress')
@@ -40,7 +40,7 @@ class ServerIpsNetworkV2(object):
             return not_found(resp, message='Network does not exist')
 
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
         instance = cci.get_instance(server_id, mask='id, ' + network_mask)
 
         resp.body = {

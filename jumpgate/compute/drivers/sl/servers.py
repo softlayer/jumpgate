@@ -1,6 +1,6 @@
 import json
 
-from SoftLayer import CCIManager, SshKeyManager, SoftLayerAPIError
+from SoftLayer import VSManager, SshKeyManager, SoftLayerAPIError
 
 from jumpgate.common.config import CONF
 from jumpgate.common.utils import lookup
@@ -32,7 +32,7 @@ class ServerActionV2(object):
             return bad_request(resp, message="Malformed request body")
 
         vg_client = req.env['sl_client']['Virtual_Guest']
-        cci = CCIManager(req.env['sl_client'])
+        cci = VSManager(req.env['sl_client'])
 
         try:
             instance_id = int(instance_id)
@@ -126,7 +126,7 @@ class ServersV2(object):
 
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
 
         params = get_list_params(req)
 
@@ -194,7 +194,7 @@ class ServersV2(object):
         if lookup(body, 'server', 'availability_zone'):
             datacenter = lookup(body, 'server', 'availability_zone')
 
-        cci = CCIManager(client)
+        cci = VSManager(client)
 
         payload = {
             'hostname': body['server']['name'],
@@ -292,7 +292,7 @@ class ServersDetailV2(object):
 
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
 
         params = get_list_params(req)
 
@@ -314,7 +314,7 @@ class ServerV2(object):
 
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
 
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
@@ -325,7 +325,7 @@ class ServerV2(object):
 
     def on_delete(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
 
         try:
             cci.cancel_instance(server_id)
@@ -340,7 +340,7 @@ class ServerV2(object):
 
     def on_put(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
         body = json.loads(req.stream.read().decode())
 
         if 'name' in lookup(body, 'server'):

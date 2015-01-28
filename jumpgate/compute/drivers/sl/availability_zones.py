@@ -1,5 +1,5 @@
 
-from SoftLayer import CCIManager
+from SoftLayer import VSManager
 
 from jumpgate.common.utils import lookup
 
@@ -7,7 +7,7 @@ from jumpgate.common.utils import lookup
 class AvailabilityZonesV2(object):
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
-        cci = CCIManager(client)
+        cci = VSManager(client)
 
         all_options = cci.get_create_options()
 
