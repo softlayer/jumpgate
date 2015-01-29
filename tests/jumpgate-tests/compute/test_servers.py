@@ -33,7 +33,7 @@ class TestServersServerActionV2(unittest.TestCase):
                                           flavors=flavors)
         instance.on_post(self.req, self.resp, tenant_id, instance_id)
 
-    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager')
+    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.VSManager')
     def test_on_post_create(self, cciMock):
         body_str = '{"createImage": {"name": "foobar"}}'
         self.perform_server_action(body_str, TENANT_ID,
@@ -52,7 +52,7 @@ class TestServersServerActionV2(unittest.TestCase):
                                filter=filterMock, limit=1)
         self.assertEquals(self.resp.status, 202)
 
-    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager')
+    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.VSManager')
     def test_on_post_create_fail(self, cciMock):
         client, env = get_client_env(body='{"createImage": \
         {"name": "foobar"}}')
@@ -104,7 +104,7 @@ class TestServersServerActionV2(unittest.TestCase):
         self.vg_clientMock.rebootDefault.assert_called_with(id=INSTANCE_ID)
 
     @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer'
-                '.CCIManager.upgrade')
+                '.VSManager.upgrade')
     def test_on_post_resize(self, cciMock):
         body_str = '{"resize": {"flavorRef": "2"}}'
         self.perform_server_action(body_str, TENANT_ID, INSTANCE_ID,
@@ -155,7 +155,7 @@ class TestServersServerActionV2(unittest.TestCase):
 
 class TestServersServersDetailV2(unittest.TestCase):
 
-    @mock.patch('SoftLayer.CCIManager.list_instances')
+    @mock.patch('SoftLayer.VSManager.list_instances')
     def test_on_get(self, mockListInstance):
         client, env = get_client_env()
         href = u'http://localhost:5000/compute/v2/333582/servers/4846014'
@@ -251,7 +251,7 @@ class TestServerDetail(unittest.TestCase):
     in the response, but are specified in the Openstack API reference.
     Will add later when there is support.
     '''
-    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.CCIManager'
+    @mock.patch('jumpgate.compute.drivers.sl.servers.SoftLayer.VSManager'
                 '.get_instance')
     def perform_server_detail(self, tenant_id, server_id, get_instance_mock):
         self.client, self.env = get_client_env()

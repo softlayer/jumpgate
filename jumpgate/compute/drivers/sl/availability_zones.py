@@ -7,7 +7,7 @@ from jumpgate.common import utils
 class AvailabilityZonesV2(object):
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
 
         all_options = cci.get_create_options()
 

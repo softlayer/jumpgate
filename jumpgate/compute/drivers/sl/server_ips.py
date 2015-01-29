@@ -6,7 +6,7 @@ from jumpgate.common import error_handling
 class ServerIpsV2(object):
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
 
         instance = cci.get_instance(
             server_id, mask='id, primaryIpAddress, primaryBackendIpAddress')
@@ -41,7 +41,7 @@ class ServerIpsNetworkV2(object):
                                             message='Network does not exist')
 
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
         instance = cci.get_instance(server_id, mask='id, ' + network_mask)
 
         resp.body = {

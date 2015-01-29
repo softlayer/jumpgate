@@ -39,7 +39,7 @@ class ServerActionV2(object):
                                               message="Malformed request body")
 
         vg_client = req.env['sl_client']['Virtual_Guest']
-        cci = SoftLayer.CCIManager(req.env['sl_client'])
+        cci = SoftLayer.VSManager(req.env['sl_client'])
 
         try:
             instance_id = int(instance_id)
@@ -151,7 +151,7 @@ class ServersV2(object):
 
     def on_get(self, req, resp, tenant_id):
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
 
         params = get_list_params(req)
 
@@ -189,7 +189,7 @@ class ServersV2(object):
         payload['hourly'] = True
 
         networks = utils.lookup(body, 'server', 'networks')
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
 
         try:
             self._handle_flavor(payload, body)
@@ -405,7 +405,7 @@ class ServersDetailV2(object):
 
     def on_get(self, req, resp, tenant_id=None):
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
 
         params = get_list_params(req)
 
@@ -428,7 +428,7 @@ class ServerV2(object):
 
     def on_get(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
 
         instance = cci.get_instance(server_id,
                                     mask=get_virtual_guest_mask())
@@ -439,7 +439,7 @@ class ServerV2(object):
 
     def on_delete(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
 
         try:
             cci.cancel_instance(server_id)
@@ -454,7 +454,7 @@ class ServerV2(object):
 
     def on_put(self, req, resp, tenant_id, server_id):
         client = req.env['sl_client']
-        cci = SoftLayer.CCIManager(client)
+        cci = SoftLayer.VSManager(client)
         body = json.loads(req.stream.read().decode())
 
         if 'name' in utils.lookup(body, 'server'):

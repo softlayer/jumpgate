@@ -7,10 +7,9 @@ LOG = logging.getLogger(__name__)
 
 
 class APIHooks(object):
-    # singleton pattern: http://goo.gl/1MtF3B
 
-    class __APIHooks:
-
+    class __APIHooks(object):
+        # singleton pattern: http://goo.gl/1MtF3
         def __init__(self):
             self.reset()
 
