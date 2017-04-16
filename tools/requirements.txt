@@ -6,3 +6,4 @@ softlayer>=3.2.0
 pycrypto
 iso8601
 cython
+py2-ipaddress
